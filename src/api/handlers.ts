@@ -10,7 +10,7 @@ export async function getCardsHandler(c: Context) {
   try {
     const cards = getCards();
     return jsonResponse(c, { success: true, data: cards });
-  } catch (error) {
+  } catch {
     return jsonResponse(c, { success: false, error: 'Failed to fetch cards' }, 500);
   }
 }
@@ -20,7 +20,7 @@ export async function getBenefitsHandler(c: Context) {
     const cardId = c.req.query('cardId');
     const benefits = cardId ? getBenefits(cardId) : getAllBenefitsWithCards();
     return jsonResponse(c, { success: true, data: benefits });
-  } catch (error) {
+  } catch {
     return jsonResponse(c, { success: false, error: 'Failed to fetch benefits' }, 500);
   }
 }
@@ -33,7 +33,7 @@ export async function getBenefitHandler(c: Context) {
       return jsonResponse(c, { success: false, error: 'Benefit not found' }, 404);
     }
     return jsonResponse(c, { success: true, data: benefit });
-  } catch (error) {
+  } catch {
     return jsonResponse(c, { success: false, error: 'Failed to fetch benefit' }, 500);
   }
 }
@@ -55,7 +55,7 @@ export async function updateBenefitHandler(c: Context) {
     
     const updated = updateBenefit(id, body);
     return jsonResponse(c, { success: true, data: updated });
-  } catch (error) {
+  } catch {
     return jsonResponse(c, { success: false, error: 'Failed to update benefit' }, 500);
   }
 }
@@ -75,7 +75,7 @@ export async function getRemindersHandler(c: Context) {
     const days = parseInt(c.req.query('days') || '30');
     const expirations = getUpcomingExpirations(days);
     return jsonResponse(c, { success: true, data: expirations });
-  } catch (error) {
+  } catch {
     return jsonResponse(c, { success: false, error: 'Failed to fetch reminders' }, 500);
   }
 }
@@ -84,7 +84,7 @@ export async function getStatsHandler(c: Context) {
   try {
     const stats = getStats();
     return jsonResponse(c, { success: true, data: stats });
-  } catch (error) {
+  } catch {
     return jsonResponse(c, { success: false, error: 'Failed to fetch stats' }, 500);
   }
 }

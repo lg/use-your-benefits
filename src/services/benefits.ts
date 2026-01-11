@@ -1,4 +1,4 @@
-import { getCards, getBenefits, getBenefitById, updateBenefit, updateBenefitPeriod } from '../models/storage.ts';
+import { getCards, getBenefits, getBenefitById, updateBenefit } from '../models/storage.ts';
 import { calculateBenefitStatus } from '../utils/dates.ts';
 
 export function getCardsWithBenefits() {

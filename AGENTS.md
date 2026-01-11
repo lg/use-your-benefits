@@ -41,6 +41,16 @@ cd client && bun run build
 # Backend serves built files in production mode
 ```
 
+### Linting
+
+```bash
+# Run oxlint
+bun run lint
+
+# Run with all plugins
+bun run check
+```
+
 ## Code Conventions
 
 ### TypeScript

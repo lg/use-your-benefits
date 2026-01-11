@@ -1,0 +1,21 @@
+{
+  "name": "dumb-benefits",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "dev": "bun run src/index.ts",
+    "build": "cd client && bun run build",
+    "lint": "oxlint",
+    "check": "oxlint --import-plugin --typescript-plugin --jsx-a11y-plugin"
+  },
+  "dependencies": {
+    "hono": ">=4.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "bun-types": ">=1.0.0",
+    "oxlint": ">=0.5.0",
+    "typescript": ">=5.0.0"
+  }
+}

@@ -10,3 +10,8 @@ typescript = ">=5.0.0"
 
 [devDependencies]
 bun-types = ">=1.0.0"
+oxlint = ">=0.5.0"
+
+[scripts]
+lint = "oxlint"
+check = "oxlint --import-plugin --typescript-plugin --jsx-a11y-plugin"

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://oxlint.io/schema.json",
+  "plugins": ["import", "typescript", "jsx-a11y"],
+  "rules": {
+    "import/no-unresolved": "error",
+    "import/named": "error",
+    "typescript/consistent-type-imports": "warn",
+    "typescript/no-unused-vars": "warn",
+    "jsx-a11y/anchor-is-valid": "warn",
+    "jsx-a11y/click-events-have-key-events": "warn",
+    "jsx-a11y/no-noninteractive-element-interactions": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["client/**/*.{ts,tsx}"],
+      "rules": {
+        "typescript/consistent-type-imports": "error"
+      }
+    }
+  ],
+  "settings": {
+    "import/resolver": {
+      "typescript": true,
+      "node": true
+    }
+  }
+}

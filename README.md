@@ -30,7 +30,6 @@ A web application to track credit card benefits for Amex Platinum and Chase Sapp
 dumb-benefits/
 ├── README.md                    # This file
 ├── AGENTS.md                    # Agent instructions for development
-├── bun.toml                     # Bun configuration
 ├── tsconfig.json                # TypeScript configuration
 ├── vite.config.ts               # Vite configuration
 ├── tailwind.config.js           # Tailwind CSS configuration
@@ -123,9 +122,6 @@ bun run build
 ```bash
 # Run backend unit tests
 bun test src
-
-# Run with coverage
-bun test src --coverage
 
 # Run E2E tests
 bun run test:e2e

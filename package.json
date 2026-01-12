@@ -11,8 +11,6 @@
     "lint": "oxlint",
     "check": "oxlint --import-plugin --jsx-a11y-plugin",
     "test": "bun test src",
-    "test:coverage": "bun test src --coverage",
-    "test:watch": "bun test src --watch",
     "test:e2e": "bunx playwright test --config=e2e/playwright.config.js",
     "test:e2e:ui": "bunx playwright test --config=e2e/playwright.config.js --ui",
     "test:e2e:install": "bunx playwright install chromium"
@@ -24,14 +22,12 @@
   },
   "devDependencies": {
     "@playwright/test": ">=1.40.0",
-    "@testing-library/react": ">=14.0.0",
     "@types/bun": "latest",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.0",
     "bun-types": ">=1.0.0",
-    "happy-dom": "^20.1.0",
     "oxlint": ">=0.5.0",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",

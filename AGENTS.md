@@ -63,9 +63,6 @@ bun run check
 # Run backend unit tests
 bun test src
 
-# Run with coverage
-bun test src --coverage
-
 # Run E2E tests
 bun run test:e2e
 

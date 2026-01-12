@@ -46,8 +46,12 @@ dumb-benefits/
 │   │   └── storage.ts           # JSON file operations
 │   ├── services/
 │   │   └── benefits.ts          # Business logic
-│   └── utils/
-│       └── dates.ts             # Date utilities
+│   ├── utils/
+│   │   └── dates.ts             # Date utilities
+│   └── __tests__/               # Backend tests
+│       ├── dates.test.ts
+│       ├── benefits.test.ts
+│       └── routes.test.ts
 └── client/                      # Frontend (React)
     ├── index.html
     ├── package.json
@@ -71,6 +75,10 @@ dumb-benefits/
         │   └── index.ts
         └── utils/
             └── dateUtils.ts
+
+e2e/                             # Playwright E2E tests
+├── playwright.config.js
+└── browser.test.js
 ```
 
 ## Getting Started
@@ -106,6 +114,32 @@ Then open http://localhost:5173 in your browser.
 cd client && bun run build
 
 # The backend serves the built files automatically in production
+```
+
+### Running Tests
+
+```bash
+# Run backend unit tests
+bun test
+
+# Run with coverage
+bun test --coverage
+
+# Run E2E tests
+npx playwright test --config=e2e/playwright.config.js
+
+# Install Playwright browsers
+bun run test:e2e:install
+```
+
+### Linting
+
+```bash
+# Run oxlint
+bun run lint
+
+# Run with all plugins
+bun run check
 ```
 
 ## Seeded Benefits

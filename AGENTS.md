@@ -9,6 +9,7 @@ This document provides instructions for AI agents working on the Credit Card Ben
 3. **JSON for storage** - Data is stored in `data/benefits.json`
 4. **UTC timezone** - All date handling assumes UTC
 5. **Calendar year for Amex, anniversary for Chase** - Reset dates vary by card
+6. **No automatic commits** - Never commit changes unless explicitly instructed by the user
 
 ## Development Commands
 
@@ -49,6 +50,22 @@ bun run lint
 
 # Run with all plugins
 bun run check
+```
+
+### Testing
+
+```bash
+# Run backend unit tests
+bun test
+
+# Run with coverage
+bun test --coverage
+
+# Run E2E tests (requires running backend)
+npx playwright test --config=e2e/playwright.config.js
+
+# Install Playwright browsers
+bun run test:e2e:install
 ```
 
 ## Code Conventions
@@ -164,8 +181,19 @@ All endpoints return the following structure:
 When adding tests:
 
 - Use `bun test` for unit tests
-- Place tests alongside source files with `.test.ts` extension
-- Mock storage layer for isolated testing
+- Place backend tests alongside source files with `.test.ts` extension
+- Place E2E tests in `e2e/` directory with `.test.js` extension
+- Test files follow this structure:
+  - `src/utils/dates.test.ts` - Date utility tests
+  - `src/services/benefits.test.ts` - Service layer tests
+  - `src/api/routes.test.ts` - API endpoint tests
+  - `e2e/browser.test.js` - Playwright E2E tests
+
+### Test Categories
+
+- **Unit Tests**: Backend logic (dates, services, storage)
+- **Integration Tests**: API endpoint testing
+- **E2E Tests**: Full browser testing with Playwright
 
 ## Deployment
 

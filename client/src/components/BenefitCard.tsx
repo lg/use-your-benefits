@@ -1,6 +1,6 @@
 import { Benefit } from '../types';
 import { ProgressBar } from './ProgressBar';
-import { formatDate, getDaysUntilExpiry } from '../utils/dateUtils';
+import { formatDate, getDaysUntilExpiry, getTimeProgress } from '../utils/dateUtils';
 
 interface StatusBadgeProps {
   status: 'pending' | 'completed' | 'missed';
@@ -29,8 +29,12 @@ interface BenefitCardProps {
 export function BenefitCard({ benefit, onEdit, onToggleActivation }: BenefitCardProps) {
   const daysUntilExpiry = getDaysUntilExpiry(benefit.endDate);
   const progressPercent = Math.min((benefit.currentUsed / benefit.creditAmount) * 100, 100);
-  
+  const overallTimeProgress = getTimeProgress(benefit.startDate, benefit.endDate);
+
   const segmentsCount = () => {
+    if (benefit.periods && benefit.periods.length > 0) {
+      return benefit.periods.length;
+    }
     switch (benefit.resetFrequency) {
       case 'quarterly':
         return 4;
@@ -43,34 +47,61 @@ export function BenefitCard({ benefit, onEdit, onToggleActivation }: BenefitCard
     }
   };
 
+  const getCurrentPeriodIndex = (): number => {
+    if (!benefit.periods || benefit.periods.length === 0) {
+      return -1;
+    }
+    const now = new Date();
+    return benefit.periods.findIndex(p => {
+      const start = new Date(p.startDate);
+      const end = new Date(p.endDate);
+      return now >= start && now <= end;
+    });
+  };
+
   interface ProgressSegment {
     id: string;
     status: 'pending' | 'completed' | 'missed';
     label?: string;
+    timeProgress?: number;
   }
 
   const getSegments = (): ProgressSegment[] => {
     if (benefit.periods && benefit.periods.length > 0) {
-      return benefit.periods.map(p => ({
+      const currentIndex = getCurrentPeriodIndex();
+      return benefit.periods.map((p, i) => ({
         id: p.id,
         status: p.status as 'pending' | 'completed' | 'missed',
-        label: `${formatDate(p.startDate)} - ${formatDate(p.endDate)}`
+        label: `${formatDate(p.startDate)} - ${formatDate(p.endDate)}`,
+        timeProgress: i === currentIndex && p.status === 'pending' ? getTimeProgress(p.startDate, p.endDate) : undefined
       }));
     }
-    
+
     const count = segmentsCount();
     const segmentUsed = benefit.creditAmount / count;
     const currentSegmentIndex = Math.floor(benefit.currentUsed / segmentUsed);
-    
-    return Array.from({ length: count }).map((_, i): ProgressSegment => ({
-      id: `seg-${i}`,
-      status: i < currentSegmentIndex 
-        ? 'completed' 
-        : i === currentSegmentIndex && benefit.currentUsed < benefit.creditAmount
-        ? 'pending'
-        : 'missed',
-      label: `Segment ${i + 1}`
-    }));
+
+    const start = new Date(benefit.startDate);
+    const end = new Date(benefit.endDate);
+    const totalDuration = end.getTime() - start.getTime();
+    const segmentDuration = totalDuration / count;
+
+    return Array.from({ length: count }).map((_, i): ProgressSegment => {
+      const segmentStart = new Date(start.getTime() + i * segmentDuration);
+      const segmentEnd = new Date(start.getTime() + (i + 1) * segmentDuration);
+      const isPending = i === currentSegmentIndex && benefit.currentUsed < benefit.creditAmount;
+
+      return {
+        id: `seg-${i}`,
+        status: i < currentSegmentIndex
+          ? 'completed'
+          : isPending
+          ? 'pending'
+          : 'missed',
+        label: `Segment ${i + 1}`,
+        timeProgress: isPending ? getTimeProgress(segmentStart.toISOString(), segmentEnd.toISOString()) : undefined
+      };
+    });
   };
 
   const activationClass = () => {
@@ -97,14 +128,20 @@ export function BenefitCard({ benefit, onEdit, onToggleActivation }: BenefitCard
             ${benefit.currentUsed.toFixed(0)} / ${benefit.creditAmount}
           </span>
         </div>
-        <div className="w-full bg-slate-700 rounded-full h-2">
-          <div 
+        <div className="w-full bg-slate-700 rounded-full h-2 relative">
+          <div
             className={`h-2 rounded-full transition-all ${
               benefit.status === 'completed' ? 'bg-emerald-500' :
               benefit.status === 'missed' ? 'bg-red-500' : 'bg-amber-400'
             }`}
             style={{ width: `${progressPercent}%` }}
           />
+          {benefit.status === 'pending' && (
+            <div
+              className="absolute -top-1 -bottom-1 w-1 bg-white border border-slate-800 rounded-sm z-10"
+              style={{ left: `${overallTimeProgress}%` }}
+            />
+          )}
         </div>
       </div>
 

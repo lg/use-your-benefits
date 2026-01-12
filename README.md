@@ -1,5 +1,7 @@
 # Credit Card Benefits Tracker
 
+![Screenshot](screenshot.png)
+
 A web application to track credit card benefits for Amex Platinum and Chase Sapphire Reserve, with usage tracking, progress visualization, and activation reminders.
 
 ## Features

@@ -197,6 +197,16 @@ When adding tests:
 - **Integration Tests**: API endpoint testing
 - **E2E Tests**: Full browser testing with Playwright
 
+## Pre-commit Checklist
+
+Before committing changes:
+
+1. **Run checks**: `bun run check`
+2. **Run linter**: `bun run lint`
+3. **Run tests**: `bun test src`
+
+All three must pass before creating a commit.
+
 ## Deployment
 
 For production deployment:

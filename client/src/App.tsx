@@ -109,14 +109,14 @@ function App() {
                 <button
                   key={card.id}
                   onClick={() => setSelectedCardId(card.id)}
-                  className={`px-3 py-1 rounded ${
+                  className={`px-4 py-2 rounded text-sm font-medium ${
                     selectedCardId === card.id ? 'text-white' : 'text-slate-400 hover:text-white'
                   }`}
                   style={{ 
                     backgroundColor: selectedCardId === card.id ? card.color : undefined 
                   }}
                 >
-                  {card.name.split(' ')[0]}
+                  {card.name}
                 </button>
               ))}
             </nav>

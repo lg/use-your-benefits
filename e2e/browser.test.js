@@ -33,21 +33,22 @@ test.describe('Benefit Cards', () => {
   });
 
   test('displays benefit name and description', async ({ page }) => {
-    await expect(page.locator('text=Uber Cash')).toBeVisible();
-    await expect(page.locator('text=$200 annually')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Uber Cash' })).toBeVisible();
+    await expect(page.getByText('$200 annually for Uber rides and Eats')).toBeVisible();
   });
 
   test('shows progress bar', async ({ page }) => {
-    const uberCard = page.locator('text=Uber Cash').locator('..').locator('..');
-    await expect(uberCard.locator('text=$0 / $200')).toBeVisible();
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
+    await expect(uberCard.getByText('$0 / $200')).toBeVisible();
   });
 
   test('shows status badge', async ({ page }) => {
-    await expect(page.locator('text=Pending').first()).toBeVisible();
+    await expect(page.getByText('Pending').first()).toBeVisible();
   });
 
   test('shows expiration date', async ({ page }) => {
-    await expect(page.locator('text=Expires:')).toBeVisible();
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
+    await expect(uberCard.getByText('Expires: Dec 31, 2026')).toBeVisible();
   });
 });
 
@@ -57,46 +58,57 @@ test.describe('Edit Modal', () => {
   });
 
   test('opens when Edit button clicked', async ({ page }) => {
-    const editButton = page.locator('button:has-text("Edit")').first();
-    await editButton.click();
-    await expect(page.locator('text=Edit')).toBeVisible();
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
+    await uberCard.getByRole('button', { name: 'Edit' }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
   });
 
   test('pre-fills current amount', async ({ page }) => {
-    await page.locator('button:has-text("Edit")').first().click();
-    const input = page.locator('input[type="number"]');
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
+    await uberCard.getByRole('button', { name: 'Edit' }).click();
+    const dialog = page.getByRole('dialog');
+    const input = dialog.getByLabel('Amount Used ($200 total)');
     await expect(input).toHaveValue('0');
   });
 
   test('saves updated amount', async ({ page }) => {
-    await page.locator('button:has-text("Edit")').first().click();
-    await page.locator('input[type="number"]').fill('100');
-    await page.locator('button:has-text("Save")').click();
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
+    await uberCard.getByRole('button', { name: 'Edit' }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByLabel('Amount Used ($200 total)').fill('100');
+    await dialog.getByRole('button', { name: 'Save' }).click();
     
-    const card = page.locator('text=Uber Cash').locator('..').locator('..');
-    await expect(card.locator('text=$100 / $200')).toBeVisible();
+    await expect(uberCard.getByText('$100 / $200')).toBeVisible();
   });
 
   test('cancels without saving', async ({ page }) => {
-    await page.locator('button:has-text("Edit")').first().click();
-    await page.locator('input[type="number"]').fill('100');
-    await page.locator('button:has-text("Cancel")').click();
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
+    const initialValue = await uberCard.getByText(/\$\d+ \/ \$200/).textContent();
+    expect(initialValue).not.toBeNull();
+
+    await uberCard.getByRole('button', { name: 'Edit' }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByLabel('Amount Used ($200 total)').fill('100');
+    await dialog.getByRole('button', { name: 'Cancel' }).click();
     
-    const card = page.locator('text=Uber Cash').locator('..').locator('..');
-    await expect(card.locator('text=$0 / $200')).toBeVisible();
+    await expect(uberCard.getByText(initialValue?.trim() ?? '')).toBeVisible();
   });
 
   test('Clear button resets to 0', async ({ page }) => {
-    await page.locator('button:has-text("Edit")').first().click();
-    await page.locator('input[type="number"]').fill('100');
-    await page.locator('button:has-text("Clear")').click();
-    await expect(page.locator('input[type="number"]')).toHaveValue('0');
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
+    await uberCard.getByRole('button', { name: 'Edit' }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByLabel('Amount Used ($200 total)').fill('100');
+    await dialog.getByRole('button', { name: 'Clear' }).click();
+    await expect(dialog.getByLabel('Amount Used ($200 total)')).toHaveValue('0');
   });
 
   test('Full Amount button sets to max', async ({ page }) => {
-    await page.locator('button:has-text("Edit")').first().click();
-    await page.locator('button:has-text("Full Amount")').click();
-    await expect(page.locator('input[type="number"]')).toHaveValue('200');
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
+    await uberCard.getByRole('button', { name: 'Edit' }).click();
+    const dialog = page.getByRole('dialog');
+    await dialog.getByRole('button', { name: 'Full Amount' }).click();
+    await expect(dialog.getByLabel('Amount Used ($200 total)')).toHaveValue('200');
   });
 });
 
@@ -106,12 +118,14 @@ test.describe('Activation Toggle', () => {
   });
 
   test('shows Needs Activation for unactivated benefits', async ({ page }) => {
-    await expect(page.locator('button:has-text("Needs Activation")').first()).toBeVisible();
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
+    await expect(uberCard.getByRole('button', { name: 'Needs Activation' })).toBeVisible();
   });
 
   test('toggles to Activated when clicked', async ({ page }) => {
-    await page.locator('button:has-text("Needs Activation")').first().click();
-    await expect(page.locator('button:has-text("Activated")').first()).toBeVisible();
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
+    await uberCard.getByRole('button', { name: 'Needs Activation' }).click();
+    await expect(uberCard.getByRole('button', { name: 'Activated' })).toBeVisible();
   });
 });
 
@@ -121,21 +135,21 @@ test.describe('Card Filtering', () => {
   });
 
   test('Amex filter shows only Amex benefits', async ({ page }) => {
-    await page.locator('button:has-text("Amex")').click();
-    await expect(page.locator('text=Uber Cash')).toBeVisible();
-    await expect(page.locator('text=Travel Credit')).toBeHidden();
+    await page.getByRole('button', { name: 'American' }).click();
+    await expect(page.getByText('Uber Cash')).toBeVisible();
+    await expect(page.getByText('Travel Credit')).toBeHidden();
   });
 
   test('Chase filter shows only Chase benefits', async ({ page }) => {
-    await page.locator('button:has-text("Chase")').click();
-    await expect(page.locator('text=Uber Cash')).toBeHidden();
-    await expect(page.locator('text=Travel Credit')).toBeVisible();
+    await page.getByRole('button', { name: 'Chase' }).click();
+    await expect(page.getByText('Uber Cash')).toBeHidden();
+    await expect(page.getByText('Travel Credit')).toBeVisible();
   });
 
   test('All Cards shows both', async ({ page }) => {
-    await page.locator('button:has-text("Amex")').click();
-    await page.locator('button:has-text("All Cards")').click();
-    await expect(page.locator('text=Uber Cash')).toBeVisible();
-    await expect(page.locator('text=Travel Credit')).toBeVisible();
+    await page.getByRole('button', { name: 'American' }).click();
+    await page.getByRole('button', { name: 'All Cards' }).click();
+    await expect(page.getByText('Uber Cash')).toBeVisible();
+    await expect(page.getByText('Travel Credit')).toBeVisible();
   });
 });

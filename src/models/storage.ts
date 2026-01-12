@@ -1,4 +1,4 @@
-import { BenefitsData } from '../models/types.ts';
+import type { Benefit, BenefitPeriod, BenefitsData } from '../models/types';
 import { readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -42,7 +42,7 @@ export function getBenefitById(id: string) {
   return data.benefits.find(b => b.id === id);
 }
 
-export function updateBenefit(id: string, updates: Partial<import('../models/types.ts').Benefit>) {
+export function updateBenefit(id: string, updates: Partial<Benefit>) {
   const data = readData();
   const index = data.benefits.findIndex(b => b.id === id);
   if (index === -1) {
@@ -53,7 +53,7 @@ export function updateBenefit(id: string, updates: Partial<import('../models/typ
   return data.benefits[index];
 }
 
-export function updateBenefitPeriod(benefitId: string, periodId: string, updates: Partial<import('../models/types.ts').BenefitPeriod>) {
+export function updateBenefitPeriod(benefitId: string, periodId: string, updates: Partial<BenefitPeriod>) {
   const data = readData();
   const benefit = data.benefits.find(b => b.id === benefitId);
   if (!benefit) {

@@ -8,7 +8,7 @@ import {
   getRemindersHandler,
   getStatsHandler,
   corsMiddleware
-} from './handlers.ts';
+} from './handlers';
 
 const app = new Hono();
 

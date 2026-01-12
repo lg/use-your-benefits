@@ -6,6 +6,9 @@ import {
   calculatePeriodStatus,
   getProgressPercentage 
 } from './dates'
+import type { Benefit } from '../models/types'
+
+type PeriodInput = { usedAmount: number; creditAmount: number; endDate: string }
 
 describe('formatDate', () => {
   it('formats ISO date to readable string', () => {
@@ -49,79 +52,79 @@ describe('getDaysUntilExpiry', () => {
 
 describe('calculateBenefitStatus', () => {
   it('returns completed when fully used', () => {
-    const benefit = { currentUsed: 200, creditAmount: 200, endDate: '2026-12-31' }
+    const benefit = { currentUsed: 200, creditAmount: 200, endDate: '2026-12-31' } as Benefit
     expect(calculateBenefitStatus(benefit)).toBe('completed')
   })
   
   it('returns completed for over-use', () => {
-    const benefit = { currentUsed: 250, creditAmount: 200, endDate: '2026-12-31' }
+    const benefit = { currentUsed: 250, creditAmount: 200, endDate: '2026-12-31' } as Benefit
     expect(calculateBenefitStatus(benefit)).toBe('completed')
   })
   
   it('returns missed when expired and not fully used', () => {
-    const benefit = { currentUsed: 50, creditAmount: 200, endDate: '2020-01-01' }
+    const benefit = { currentUsed: 50, creditAmount: 200, endDate: '2020-01-01' } as Benefit
     expect(calculateBenefitStatus(benefit)).toBe('missed')
   })
   
   it('returns pending when active and not fully used', () => {
     const futureDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-    const benefit = { currentUsed: 50, creditAmount: 200, endDate: futureDate }
+    const benefit = { currentUsed: 50, creditAmount: 200, endDate: futureDate } as Benefit
     expect(calculateBenefitStatus(benefit)).toBe('pending')
   })
   
   it('returns pending when just started with no usage', () => {
     const futureDate = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
-    const benefit = { currentUsed: 0, creditAmount: 200, endDate: futureDate }
+    const benefit = { currentUsed: 0, creditAmount: 200, endDate: futureDate } as Benefit
     expect(calculateBenefitStatus(benefit)).toBe('pending')
   })
 })
 
 describe('calculatePeriodStatus', () => {
   it('returns completed when period fully used', () => {
-    const period = { usedAmount: 50, creditAmount: 50, endDate: '2026-06-30' }
+    const period = { usedAmount: 50, creditAmount: 50, endDate: '2026-06-30' } as PeriodInput
     expect(calculatePeriodStatus(period)).toBe('completed')
   })
   
   it('returns pending when period active', () => {
     const futureDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
-    const period = { usedAmount: 25, creditAmount: 50, endDate: futureDate }
+    const period = { usedAmount: 25, creditAmount: 50, endDate: futureDate } as PeriodInput
     expect(calculatePeriodStatus(period)).toBe('pending')
   })
   
   it('returns missed when period expired', () => {
-    const period = { usedAmount: 25, creditAmount: 50, endDate: '2020-01-01' }
+    const period = { usedAmount: 25, creditAmount: 50, endDate: '2020-01-01' } as PeriodInput
     expect(calculatePeriodStatus(period)).toBe('missed')
   })
   
   it('returns completed when over-used', () => {
-    const period = { usedAmount: 75, creditAmount: 50, endDate: '2026-06-30' }
+    const period = { usedAmount: 75, creditAmount: 50, endDate: '2026-06-30' } as PeriodInput
     expect(calculatePeriodStatus(period)).toBe('completed')
   })
 })
 
 describe('getProgressPercentage', () => {
   it('returns 100 when fully used', () => {
-    const benefit = { currentUsed: 200, creditAmount: 200 }
+    const benefit = { currentUsed: 200, creditAmount: 200 } as Benefit
     expect(getProgressPercentage(benefit)).toBe(100)
   })
   
   it('returns 50 when half used', () => {
-    const benefit = { currentUsed: 100, creditAmount: 200 }
+    const benefit = { currentUsed: 100, creditAmount: 200 } as Benefit
     expect(getProgressPercentage(benefit)).toBe(50)
   })
   
   it('returns 0 when nothing used', () => {
-    const benefit = { currentUsed: 0, creditAmount: 200 }
+    const benefit = { currentUsed: 0, creditAmount: 200 } as Benefit
     expect(getProgressPercentage(benefit)).toBe(0)
   })
   
   it('caps at 100 when over-used', () => {
-    const benefit = { currentUsed: 250, creditAmount: 200 }
+    const benefit = { currentUsed: 250, creditAmount: 200 } as Benefit
     expect(getProgressPercentage(benefit)).toBe(100)
   })
   
   it('handles decimal values', () => {
-    const benefit = { currentUsed: 33.33, creditAmount: 100 }
+    const benefit = { currentUsed: 33.33, creditAmount: 100 } as Benefit
     const result = getProgressPercentage(benefit)
     expect(result).toBeCloseTo(33.33, 1)
   })

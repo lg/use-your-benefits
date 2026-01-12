@@ -1,4 +1,4 @@
-import { Benefit } from '../models/types.ts';
+import type { Benefit } from '../models/types';
 
 export function calculateBenefitStatus(benefit: Benefit): 'pending' | 'completed' | 'missed' {
   const now = new Date();

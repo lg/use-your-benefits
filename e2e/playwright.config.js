@@ -1,12 +1,20 @@
 import { defineConfig, devices } from '@playwright/test';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 export default defineConfig({
-  testDir: './e2e',
+  testDir: '.',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,
   workers: 1,
   reporter: 'list',
+  timeout: 5000,
+  expect: {
+    timeout: 5000,
+  },
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
@@ -18,9 +26,10 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'bun run src/index.ts',
-    url: 'http://localhost:3000/api/cards',
+    command: 'bun run dev',
+    url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
-    timeout: 30000,
+    timeout: 5000,
+    cwd: rootDir,
   },
 });

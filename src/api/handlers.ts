@@ -1,8 +1,10 @@
 import { Context, Next } from 'hono';
-import { getCards, getBenefits, getBenefitById, updateBenefit, getUpcomingExpirations } from '../models/storage.ts';
-import { updateBenefitUsage, toggleActivation, getAllBenefitsWithCards, getStats } from '../services/benefits.ts';
+import { getCards, getBenefits, getBenefitById, updateBenefit, getUpcomingExpirations } from '../models/storage';
+import { updateBenefitUsage, toggleActivation, getAllBenefitsWithCards, getStats } from '../services/benefits';
 
-function jsonResponse(c: Context, data: unknown, status: number = 200) {
+type JsonStatus = 200 | 400 | 404 | 500;
+
+function jsonResponse(c: Context, data: unknown, status: JsonStatus = 200) {
   return c.json(data, status);
 }
 

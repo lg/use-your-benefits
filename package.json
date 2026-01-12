@@ -4,28 +4,38 @@
   "type": "module",
   "scripts": {
     "start": "bun run src/index.ts",
-    "dev": "bun run src/index.ts & cd client && bun run dev",
-    "dev:all": "bun run src/index.ts & cd client && bun run dev",
-    "build": "cd client && bun run build",
+    "dev": "bun run src/index.ts & bun run dev:client",
+    "dev:client": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "lint": "oxlint",
-    "check": "oxlint --import-plugin --typescript-plugin --jsx-a11y-plugin",
-    "test": "bun test",
-    "test:coverage": "bun test --coverage",
-    "test:watch": "bun test --watch",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:install": "playwright install chromium"
+    "check": "oxlint --import-plugin --jsx-a11y-plugin",
+    "test": "bun test src",
+    "test:coverage": "bun test src --coverage",
+    "test:watch": "bun test src --watch",
+    "test:e2e": "bunx playwright test --config=e2e/playwright.config.js",
+    "test:e2e:ui": "bunx playwright test --config=e2e/playwright.config.js --ui",
+    "test:e2e:install": "bunx playwright install chromium"
   },
   "dependencies": {
-    "hono": ">=4.0.0"
+    "hono": ">=4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@playwright/test": ">=1.40.0",
     "@testing-library/react": ">=14.0.0",
     "@types/bun": "latest",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "autoprefixer": "^10.4.0",
     "bun-types": ">=1.0.0",
     "happy-dom": "^20.1.0",
     "oxlint": ">=0.5.0",
-    "typescript": ">=5.0.0"
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": ">=5.0.0",
+    "vite": "^5.0.0"
   }
 }

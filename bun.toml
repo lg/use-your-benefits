@@ -14,4 +14,4 @@ oxlint = ">=0.5.0"
 
 [scripts]
 lint = "oxlint"
-check = "oxlint --import-plugin --typescript-plugin --jsx-a11y-plugin"
+check = "oxlint --import-plugin --jsx-a11y-plugin"

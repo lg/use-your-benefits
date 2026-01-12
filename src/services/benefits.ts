@@ -1,5 +1,5 @@
-import { getCards, getBenefits, getBenefitById, updateBenefit } from '../models/storage.ts';
-import { calculateBenefitStatus } from '../utils/dates.ts';
+import { getCards, getBenefits, getBenefitById, updateBenefit } from '../models/storage';
+import { calculateBenefitStatus } from '../utils/dates';
 
 export function getCardsWithBenefits() {
   const cards = getCards();

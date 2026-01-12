@@ -1,6 +1,11 @@
 /** @type {import('vite').UserConfig} */
-export default {
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+
+export default defineConfig({
   root: './client',
+  plugins: [react()],
   build: {
     outDir: '../dist',
     emptyOutDir: true
@@ -16,7 +21,7 @@ export default {
   },
   resolve: {
     alias: {
-      '@': '/client/src'
+      '@': path.resolve(__dirname, './client/src')
     }
   }
-}
+})

@@ -9,19 +9,17 @@ This document provides instructions for AI agents working on the Credit Card Ben
 3. **JSON for storage** - Data is stored in `data/benefits.json`
 4. **UTC timezone** - All date handling assumes UTC
 5. **Calendar year for Amex, anniversary for Chase** - Reset dates vary by card
-6. **No automatic commits** - Never commit changes unless explicitly instructed by the user
-7. **Git commands require explicit permission** - Never run `git commit`, `git push`, or any git command that modifies the repository without the user explicitly asking you to do so
+6. **Single package.json** - Keep dependencies and scripts at the repo root
+7. **No automatic commits** - Never commit changes unless explicitly instructed by the user
+8. **Git commands require explicit permission** - Never run `git commit`, `git push`, or any git command that modifies the repository without the user explicitly asking you to do so
 
 ## Development Commands
 
 ### Installing Dependencies
 
 ```bash
-# Root dependencies (backend)
+# Install dependencies
 bun install
-
-# Frontend dependencies
-cd client && bun install && cd ..
 ```
 
 ### Running the Application
@@ -35,7 +33,7 @@ bun run dev
 bun run src/index.ts
 
 # Terminal 2: Frontend dev server (port 5173)
-cd client && bun run dev
+bun run dev:client
 ```
 
 The frontend proxies API requests to the backend automatically in development.
@@ -44,7 +42,7 @@ The frontend proxies API requests to the backend automatically in development.
 
 ```bash
 # Build frontend
-cd client && bun run build
+bun run build
 
 # Backend serves built files in production mode
 ```
@@ -63,13 +61,13 @@ bun run check
 
 ```bash
 # Run backend unit tests
-bun test
+bun test src
 
 # Run with coverage
-bun test --coverage
+bun test src --coverage
 
-# Run E2E tests (requires running backend)
-npx playwright test --config=e2e/playwright.config.js
+# Run E2E tests
+bun run test:e2e
 
 # Install Playwright browsers
 bun run test:e2e:install

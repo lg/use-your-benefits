@@ -54,9 +54,6 @@ dumb-benefits/
 │       └── routes.test.ts
 └── client/                      # Frontend (React)
     ├── index.html
-    ├── package.json
-    ├── vite.config.ts
-    ├── tailwind.config.js
     └── src/
         ├── main.tsx             # Entry point
         ├── App.tsx              # Main application
@@ -92,7 +89,6 @@ e2e/                             # Playwright E2E tests
 ```bash
 # Install dependencies
 bun install
-cd client && bun install && cd ..
 ```
 
 ### Running the Application
@@ -106,7 +102,7 @@ bun run dev
 bun run src/index.ts
 
 # Terminal 2: Frontend dev server (port 5173)
-cd client && bun run dev
+bun run dev:client
 ```
 
 The frontend proxies API requests to the backend automatically in development.
@@ -117,7 +113,7 @@ Then open http://localhost:5173 in your browser.
 
 ```bash
 # Build frontend
-cd client && bun run build
+bun run build
 
 # The backend serves the built files automatically in production
 ```
@@ -126,13 +122,13 @@ cd client && bun run build
 
 ```bash
 # Run backend unit tests
-bun test
+bun test src
 
 # Run with coverage
-bun test --coverage
+bun test src --coverage
 
 # Run E2E tests
-npx playwright test --config=e2e/playwright.config.js
+bun run test:e2e
 
 # Install Playwright browsers
 bun run test:e2e:install

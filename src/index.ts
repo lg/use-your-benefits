@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import api from './api/routes.ts';
+import api from './api/routes';
 
 const app = new Hono();
 

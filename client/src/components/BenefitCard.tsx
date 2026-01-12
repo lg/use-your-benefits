@@ -1,5 +1,6 @@
 import { Benefit } from '../types';
 import { ProgressBar } from './ProgressBar';
+import { Tooltip } from './Tooltip';
 import { formatDate, getDaysUntilExpiry, getTimeProgress } from '../utils/dateUtils';
 
 interface StatusBadgeProps {
@@ -64,6 +65,9 @@ export function BenefitCard({ benefit, onEdit, onToggleActivation }: BenefitCard
     status: 'pending' | 'completed' | 'missed';
     label?: string;
     timeProgress?: number;
+    startDate?: string;
+    endDate?: string;
+    daysLeft?: number;
   }
 
   const getSegments = (): ProgressSegment[] => {
@@ -73,7 +77,10 @@ export function BenefitCard({ benefit, onEdit, onToggleActivation }: BenefitCard
         id: p.id,
         status: p.status as 'pending' | 'completed' | 'missed',
         label: `${formatDate(p.startDate)} - ${formatDate(p.endDate)}`,
-        timeProgress: i === currentIndex && p.status === 'pending' ? getTimeProgress(p.startDate, p.endDate) : undefined
+        timeProgress: i === currentIndex && p.status === 'pending' ? getTimeProgress(p.startDate, p.endDate) : undefined,
+        startDate: p.startDate,
+        endDate: p.endDate,
+        daysLeft: i === currentIndex ? getDaysUntilExpiry(p.endDate) : undefined
       }));
     }
 
@@ -99,7 +106,10 @@ export function BenefitCard({ benefit, onEdit, onToggleActivation }: BenefitCard
           ? 'pending'
           : 'missed',
         label: `Segment ${i + 1}`,
-        timeProgress: isPending ? getTimeProgress(segmentStart.toISOString(), segmentEnd.toISOString()) : undefined
+        timeProgress: isPending ? getTimeProgress(segmentStart.toISOString(), segmentEnd.toISOString()) : undefined,
+        startDate: segmentStart.toISOString(),
+        endDate: segmentEnd.toISOString(),
+        daysLeft: isPending ? getDaysUntilExpiry(segmentEnd.toISOString()) : undefined
       };
     });
   };
@@ -140,7 +150,18 @@ export function BenefitCard({ benefit, onEdit, onToggleActivation }: BenefitCard
             <div
               className="absolute -top-1 -bottom-1 w-1 bg-white border border-slate-800 rounded-sm z-10"
               style={{ left: `${overallTimeProgress}%` }}
-            />
+            >
+              <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-3">
+                <Tooltip
+                  content={
+                    <div>
+                      <div>{Math.round(overallTimeProgress)}% complete</div>
+                      <div>{daysUntilExpiry} days left</div>
+                    </div>
+                  }
+                />
+              </div>
+            </div>
           )}
         </div>
       </div>

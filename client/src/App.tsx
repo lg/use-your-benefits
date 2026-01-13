@@ -16,14 +16,15 @@ function App() {
   const loadData = React.useCallback(async () => {
     try {
       setLoading(true);
-      const [cardsData, benefitsData, statsData] = await Promise.all([
+      const [cardsData, benefitsData, allBenefitsData, statsData] = await Promise.all([
         api.getCards(),
         api.getBenefits(),
+        api.getBenefits(undefined, true),
         api.getStats(),
       ]);
       setCards(cardsData);
       setBenefits(benefitsData);
-      setAllBenefits(benefitsData);
+      setAllBenefits(allBenefitsData);
       setStats(statsData);
     } catch (err) {
       setError((err as Error).message);

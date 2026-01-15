@@ -6,12 +6,14 @@ export interface CreditCard {
   color: string;
 }
 
+export type BenefitStatus = 'pending' | 'completed' | 'missed';
+
 export interface BenefitPeriod {
   id: string;
   startDate: string;
   endDate: string;
   usedAmount: number;
-  status: 'pending' | 'completed' | 'missed';
+  status: BenefitStatus;
 }
 
 export interface Benefit {
@@ -28,7 +30,7 @@ export interface Benefit {
   startDate: string;
   endDate: string;
   notes: string;
-  status: 'pending' | 'completed' | 'missed';
+  status: BenefitStatus;
   category: string;
   periods?: BenefitPeriod[];
   card?: CreditCard;
@@ -51,6 +53,6 @@ export interface Stats {
 export interface UpdateBenefitRequest {
   currentUsed?: number;
   notes?: string;
-  status?: 'pending' | 'completed' | 'missed';
+  status?: BenefitStatus;
   ignored?: boolean;
 }

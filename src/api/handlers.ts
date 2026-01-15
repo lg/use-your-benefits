@@ -1,5 +1,6 @@
 import { Context, Next } from 'hono';
 import { getCards, getBenefits, getBenefitById, updateBenefit, getUpcomingExpirations } from '../models/storage';
+import type { UpdateBenefitRequest } from '../models/types';
 import { updateBenefitUsage, toggleActivation, getStats } from '../services/benefits';
 
 type JsonStatus = 200 | 400 | 404 | 500;
@@ -45,18 +46,33 @@ export async function updateBenefitHandler(c: Context) {
   try {
     const id = c.req.param('id');
     const body = await c.req.json();
+    const updates = body as UpdateBenefitRequest;
     
     const benefit = getBenefitById(id);
     if (!benefit) {
       return jsonResponse(c, { success: false, error: 'Benefit not found' }, 404);
     }
     
-    if (body.currentUsed !== undefined) {
-      const updated = updateBenefitUsage(id, body.currentUsed, body.notes, body.ignored);
+    if (updates.currentUsed !== undefined) {
+      const updated = updateBenefitUsage(id, updates.currentUsed, updates.notes, updates.ignored);
       return jsonResponse(c, { success: true, data: updated });
     }
+
+    const filteredUpdates: UpdateBenefitRequest = {};
+
+    if (updates.notes !== undefined) {
+      filteredUpdates.notes = updates.notes;
+    }
+
+    if (updates.status !== undefined) {
+      filteredUpdates.status = updates.status;
+    }
+
+    if (updates.ignored !== undefined) {
+      filteredUpdates.ignored = updates.ignored;
+    }
     
-    const updated = updateBenefit(id, body);
+    const updated = updateBenefit(id, filteredUpdates);
     return jsonResponse(c, { success: true, data: updated });
   } catch {
     return jsonResponse(c, { success: false, error: 'Failed to update benefit' }, 500);

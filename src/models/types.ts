@@ -6,47 +6,67 @@ export interface CreditCard {
   color: string;
 }
 
-export interface BenefitPeriod {
+export type BenefitStatus = 'pending' | 'completed' | 'missed';
+
+export interface BenefitPeriodDefinition {
   id: string;
   startDate: string;
   endDate: string;
-  usedAmount: number;
-  status: 'pending' | 'completed' | 'missed';
 }
 
-export interface Benefit {
+export interface BenefitPeriodUserState {
+  usedAmount: number;
+  status: BenefitStatus;
+}
+
+export interface BenefitPeriod extends BenefitPeriodDefinition, BenefitPeriodUserState {}
+
+export interface BenefitDefinition {
   id: string;
   cardId: string;
   name: string;
   shortDescription: string;
   fullDescription: string;
   creditAmount: number;
-  currentUsed: number;
   resetFrequency: 'annual' | 'twice-yearly' | 'quarterly' | 'monthly';
   activationRequired: boolean;
-  activationAcknowledged: boolean;
   startDate: string;
   endDate: string;
-  notes: string;
-  status: 'pending' | 'completed' | 'missed';
   category: string;
-  periods?: BenefitPeriod[];
-  ignored: boolean;
+  periods?: BenefitPeriodDefinition[];
 }
 
-export interface BenefitsData {
+export interface BenefitUserState {
+  currentUsed: number;
+  activationAcknowledged: boolean;
+  notes: string;
+  status: BenefitStatus;
+  ignored: boolean;
+  periods?: Record<string, BenefitPeriodUserState>;
+}
+
+export type Benefit = Omit<BenefitDefinition, 'periods'> &
+  Omit<BenefitUserState, 'periods'> & {
+    periods?: BenefitPeriod[];
+  };
+
+export interface BenefitsStaticData {
   cards: CreditCard[];
-  benefits: Benefit[];
+  benefits: BenefitDefinition[];
+}
+
+export interface UserBenefitsData {
+  benefits: Record<string, BenefitUserState>;
 }
 
 export interface UpdateBenefitRequest {
   currentUsed?: number;
   notes?: string;
-  status?: 'pending' | 'completed' | 'missed';
+  status?: BenefitStatus;
   ignored?: boolean;
 }
 
 export interface UpdatePeriodRequest {
   usedAmount?: number;
-  status?: 'pending' | 'completed' | 'missed';
+  status?: BenefitStatus;
 }

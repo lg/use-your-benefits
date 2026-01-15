@@ -1,0 +1,25 @@
+{
+  "benefits": {
+    "chase-travel": {
+      "currentUsed": 0,
+      "activationAcknowledged": true,
+      "notes": "",
+      "status": "pending",
+      "ignored": false
+    },
+    "amex-uber": {
+      "currentUsed": 0,
+      "activationAcknowledged": true,
+      "notes": "",
+      "status": "pending",
+      "ignored": false
+    },
+    "amex-airline": {
+      "currentUsed": 0,
+      "activationAcknowledged": false,
+      "notes": "",
+      "status": "pending",
+      "ignored": false
+    }
+  }
+}

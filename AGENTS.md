@@ -222,3 +222,38 @@ No backend or server-side runtime required.
 
 - Open browser DevTools → Application → Local Storage to inspect
 - Clear with: `localStorage.clear()` in console
+
+## Taking Screenshots
+
+To update the README screenshot:
+
+1. Start the dev server in the background:
+   ```bash
+   bun run dev &
+   ```
+
+2. Wait for the server and open the page with `agent-browser`:
+   ```bash
+   sleep 3 && agent-browser open http://localhost:5173 --session screenshot
+   ```
+
+3. Take a full-page screenshot to a temp file:
+   ```bash
+   agent-browser screenshot /tmp/screenshot_full.png --session screenshot --full
+   ```
+
+4. Crop to the desired portion using ImageMagick (top third example):
+   ```bash
+   height=$(sips -g pixelHeight /tmp/screenshot_full.png | grep pixelHeight | awk '{print $2}')
+   third=$((height / 3))
+   magick /tmp/screenshot_full.png -crop 1280x${third}+0+0 screenshot.png
+   ```
+   
+   The `+0+0` offset ensures cropping from the top-left corner.
+
+5. Clean up:
+   ```bash
+   rm /tmp/screenshot_full.png
+   agent-browser close --session screenshot
+   pkill -f "vite"
+   ```

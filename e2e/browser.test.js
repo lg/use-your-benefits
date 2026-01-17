@@ -130,7 +130,7 @@ test.describe('Transaction-based Progress', () => {
           }
         }
       };
-      localStorage.setItem('user-benefits', JSON.stringify(userData));
+      localStorage.setItem('use-your-benefits', JSON.stringify(userData));
     });
     await page.reload();
 
@@ -158,7 +158,7 @@ test.describe('Transaction-based Progress', () => {
           }
         }
       };
-      localStorage.setItem('user-benefits', JSON.stringify(userData));
+      localStorage.setItem('use-your-benefits', JSON.stringify(userData));
     });
     await page.reload();
 
@@ -188,7 +188,7 @@ test.describe('Transaction-based Progress', () => {
           }
         }
       };
-      localStorage.setItem('user-benefits', JSON.stringify(userData));
+      localStorage.setItem('use-your-benefits', JSON.stringify(userData));
     });
     await page.reload();
 
@@ -215,7 +215,7 @@ test.describe('Transaction-based Progress', () => {
           }
         }
       };
-      localStorage.setItem('user-benefits', JSON.stringify(userData));
+      localStorage.setItem('use-your-benefits', JSON.stringify(userData));
     });
     await page.reload();
 
@@ -245,7 +245,7 @@ test.describe('Transaction-based Progress', () => {
           }
         }
       };
-      localStorage.setItem('user-benefits', JSON.stringify(userData));
+      localStorage.setItem('use-your-benefits', JSON.stringify(userData));
     });
     await page.reload();
 
@@ -272,7 +272,7 @@ test.describe('Transaction-based Progress', () => {
           }
         }
       };
-      localStorage.setItem('user-benefits', JSON.stringify(userData));
+      localStorage.setItem('use-your-benefits', JSON.stringify(userData));
     });
     await page.reload();
 

@@ -19,14 +19,17 @@ export function getUserBenefitsData(): UserBenefitsData {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) {
-      cachedData = { benefits: {} };
+      cachedData = { benefits: {}, importNotes: {} };
       return cachedData;
     }
     const parsed = JSON.parse(stored) as UserBenefitsData;
-    cachedData = { benefits: parsed.benefits ?? {} };
+    cachedData = {
+      benefits: parsed.benefits ?? {},
+      importNotes: parsed.importNotes ?? {},
+    };
     return cachedData;
   } catch {
-    cachedData = { benefits: {} };
+    cachedData = { benefits: {}, importNotes: {} };
     return cachedData;
   }
 }
@@ -35,6 +38,20 @@ export function saveUserBenefitsData(data: UserBenefitsData): void {
   // Update cache when saving
   cachedData = data;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+export function getImportNote(cardId: string): string {
+  const data = getUserBenefitsData();
+  return data.importNotes?.[cardId] ?? '';
+}
+
+export function saveImportNote(cardId: string, note: string): void {
+  const data = getUserBenefitsData();
+  if (!data.importNotes) {
+    data.importNotes = {};
+  }
+  data.importNotes[cardId] = note;
+  saveUserBenefitsData(data);
 }
 
 export function getDefaultUserState(benefit: BenefitDefinition): BenefitUserState {

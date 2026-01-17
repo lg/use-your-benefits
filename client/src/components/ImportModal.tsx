@@ -2,6 +2,7 @@ import {
   useState,
   useCallback,
   useMemo,
+  useEffect,
   type MouseEvent,
   type KeyboardEvent,
   type DragEvent,
@@ -11,6 +12,7 @@ import type { BenefitDefinition } from '@shared/types';
 import type { ImportResult, CardType, ParsedTransaction } from '../types/import';
 import { parseAmexCsv, extractAmexCredits } from '../services/amexParser';
 import { matchCredits, aggregateCredits } from '../services/benefitMatcher';
+import { getImportNote, saveImportNote } from '../storage/userBenefits';
 
 interface ImportModalProps {
   isOpen: boolean;
@@ -55,6 +57,7 @@ export function ImportModal({
   const [error, setError] = useState<string | null>(null);
   const [importResult, setImportResult] = useState<ImportResult | null>(null);
   const [allTransactions, setAllTransactions] = useState<ParsedTransaction[]>([]);
+  const [importNote, setImportNote] = useState('');
 
   const resetState = useCallback(() => {
     setStep('upload');
@@ -64,10 +67,22 @@ export function ImportModal({
     setIsDragging(false);
   }, []);
 
+  useEffect(() => {
+    if (isOpen && cardId) {
+      setImportNote(getImportNote(cardId));
+    }
+  }, [isOpen, cardId]);
+
+  const persistImportNote = useCallback(() => {
+    if (!cardId) return;
+    saveImportNote(cardId, importNote.trim());
+  }, [cardId, importNote]);
+
   const handleClose = useCallback(() => {
+    persistImportNote();
     resetState();
     onClose();
-  }, [onClose, resetState]);
+  }, [persistImportNote, onClose, resetState]);
 
   const processFile = useCallback(
     async (file: File) => {
@@ -153,12 +168,14 @@ export function ImportModal({
   const handleImport = useCallback(() => {
     if (!importResult) return;
 
+    persistImportNote();
+
     // Aggregate all matched credits
     const aggregated = aggregateCredits(importResult.matchedCredits, benefits);
 
     onImport(aggregated);
     handleClose();
-  }, [importResult, benefits, onImport, handleClose]);
+  }, [importResult, benefits, onImport, handleClose, persistImportNote]);
 
   const handleOverlayClick = (event: MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
@@ -195,7 +212,7 @@ export function ImportModal({
         date: credit.transaction.date,
         description: credit.transaction.extendedDetails ?? credit.transaction.description,
         benefitName: credit.benefitName,
-        amount: credit.creditAmount,
+        amount: credit.transaction.amount,
         rowType: 'matched',
       });
     }
@@ -206,7 +223,7 @@ export function ImportModal({
         date: credit.date,
         description: credit.extendedDetails ?? credit.description,
         benefitName: null,
-        amount: Math.abs(credit.amount),
+        amount: credit.amount,
         rowType: 'credit',
       });
     }
@@ -219,7 +236,7 @@ export function ImportModal({
           date: transaction.date,
           description: transaction.extendedDetails ?? transaction.description,
           benefitName: null,
-          amount: Math.abs(transaction.amount),
+          amount: transaction.amount,
           rowType: 'transaction',
         });
       }
@@ -240,11 +257,12 @@ export function ImportModal({
   };
 
   const formatAmount = (amount: number) => {
-    return `$${Math.abs(amount).toFixed(2)}`;
+    const formatted = `$${Math.abs(amount).toFixed(2)}`;
+    return amount < 0 ? `-${formatted}` : formatted;
   };
 
   const totalMatchedAmount = importResult
-    ? importResult.matchedCredits.reduce((sum, c) => sum + c.creditAmount, 0)
+    ? -importResult.matchedCredits.reduce((sum, c) => sum + c.creditAmount, 0)
     : 0;
 
   const totalCredits = importResult
@@ -260,7 +278,7 @@ export function ImportModal({
       tabIndex={0}
     >
       <div
-        className="modal-content w-[90vw] max-w-[1200px]"
+        className={`modal-content w-[90vw] ${step === 'preview' ? 'max-w-[900px]' : 'max-w-[560px]'}`}
         role="dialog"
         aria-modal="true"
       >
@@ -272,7 +290,8 @@ export function ImportModal({
           <>
             <p className="text-sm text-slate-400 mb-4">
               Upload your Amex statement CSV to automatically import your
-              benefit credits.
+              benefit credits. Nothing gets uploaded to any server; it stays in
+              your browser.
             </p>
 
             <div
@@ -320,19 +339,36 @@ export function ImportModal({
               <p className="mt-4 text-sm text-red-400">{error}</p>
             )}
 
+            <div className="mt-6">
+              <label className="block text-sm font-medium text-slate-300 mb-2" htmlFor="import-notes">
+                Download link or notes
+              </label>
+              <textarea
+                id="import-notes"
+                className="w-full rounded-md border border-slate-700 bg-slate-900/60 p-3 text-sm text-slate-200 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
+                rows={3}
+                value={importNote}
+                onChange={(event) => setImportNote(event.target.value)}
+                onBlur={persistImportNote}
+                placeholder="Paste the Amex download URL or add notes for later"
+              />
+              <p className="mt-2 text-xs text-slate-500">
+                Saved locally for this card.
+              </p>
+            </div>
+
             <div className="mt-6 text-xs text-slate-500">
               <p className="font-medium mb-1">How to export from Amex:</p>
               <ol className="list-decimal list-inside space-y-1">
-                <li>Log in to your Amex account</li>
-                <li>Go to Statements & Activity</li>
-                <li>Click "Download" and select CSV format</li>
+                <li>Go to https://global.americanexpress.com/activity?year=2026</li>
+                <li>Click Download → CSV → All details</li>
                 <li>Upload the downloaded file here</li>
               </ol>
             </div>
 
             <div className="flex gap-2 justify-end mt-6">
               <button onClick={handleClose} className="btn-secondary">
-                Cancel
+                Close
               </button>
             </div>
           </>
@@ -349,14 +385,14 @@ export function ImportModal({
               )}
             </p>
 
-            <div className="max-h-[420px] overflow-x-auto overflow-y-auto rounded-lg border border-slate-700">
-              <table className="w-full text-sm">
+            <div className="max-h-[420px] overflow-y-auto rounded-lg border border-slate-700">
+              <table className="w-full text-sm table-fixed">
                 <thead className="bg-slate-800 sticky top-0">
                     <tr>
-                      <th className="p-2 text-left whitespace-nowrap">Date</th>
+                      <th className="p-2 text-left whitespace-nowrap w-[120px]">Date</th>
                       <th className="p-2 text-left whitespace-nowrap">Description</th>
-                      <th className="p-2 text-left whitespace-nowrap">Benefit</th>
-                      <th className="p-2 text-right whitespace-nowrap">Amount</th>
+                      <th className="p-2 text-left whitespace-nowrap w-[220px]">Benefit</th>
+                      <th className="p-2 text-right whitespace-nowrap w-[120px]">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -373,7 +409,9 @@ export function ImportModal({
                         {formatDate(row.date)}
                       </td>
                       <td className={`p-2 whitespace-nowrap ${row.rowType === 'matched' ? 'text-slate-300' : ''}`}>
-                        {row.description}
+                        <div className="overflow-x-auto scrollbar-none">
+                          {row.description}
+                        </div>
                       </td>
                       <td className={`p-2 whitespace-nowrap ${row.rowType === 'matched' ? 'text-emerald-400' : ''}`}>
                         {row.benefitName ?? '—'}

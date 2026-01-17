@@ -48,14 +48,20 @@ export function extractAmexCredits(
     }
 
     const descLower = t.description.toLowerCase();
+    const detailsLower = t.extendedDetails?.toLowerCase() ?? '';
+    const combinedText = `${descLower} ${detailsLower}`.trim();
 
     // Exclude payment transactions
-    if (descLower.includes('payment') || descLower.includes('autopay')) {
+    if (combinedText.includes('payment') || combinedText.includes('autopay')) {
       return false;
     }
 
+    if (combinedText.includes('airline fee reimbursement')) {
+      return true;
+    }
+
     // Include if description contains "credit"
-    if (descLower.includes('credit')) {
+    if (combinedText.includes('credit')) {
       return true;
     }
 

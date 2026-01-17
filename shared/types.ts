@@ -67,6 +67,7 @@ export interface BenefitsStaticData {
 
 export interface UserBenefitsData {
   benefits: Record<string, BenefitUserState>;
+  importNotes?: Record<string, string>;
 }
 
 export interface UpdateBenefitRequest {

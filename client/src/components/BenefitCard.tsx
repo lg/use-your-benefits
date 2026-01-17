@@ -1,4 +1,4 @@
-import { Benefit } from '../types';
+import { Benefit, ProgressSegment } from '../types';
 import { ProgressBar } from './ProgressBar';
 import { formatDate, getDaysUntilExpiry, getTimeProgress } from '../utils/dateUtils';
 
@@ -35,17 +35,6 @@ export function BenefitCard({ benefit, onEdit }: BenefitCardProps) {
     }
     return 1;
   };
-
-  interface ProgressSegment {
-    id: string;
-    status: 'pending' | 'completed' | 'missed' | 'future';
-    label?: string;
-    timeProgress?: number;
-    startDate?: string;
-    endDate?: string;
-    daysLeft?: number;
-    isCurrent?: boolean;
-  }
 
   const getSegments = (): ProgressSegment[] => {
     if (benefit.periods && benefit.periods.length > 0) {

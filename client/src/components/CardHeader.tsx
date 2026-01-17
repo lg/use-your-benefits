@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CreditCard, Benefit } from '../types';
+import type { CreditCard, Benefit } from '../types';
 import { api } from '../api/client';
 
 interface CardHeaderProps {
@@ -18,6 +18,7 @@ interface CardHeaderProps {
 export function CardHeader({ card, stats, allBenefits, onUpdateBenefit }: CardHeaderProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [loading, setLoading] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const percentUsed = stats 
     ? Math.min((stats.usedValue / stats.totalValue) * 100, 100) 
@@ -27,11 +28,12 @@ export function CardHeader({ card, stats, allBenefits, onUpdateBenefit }: CardHe
 
   const handleToggle = async (benefit: Benefit) => {
     setLoading(benefit.id);
+    setError(null);
     try {
       const updated = await api.updateBenefit(benefit.id, { ignored: !benefit.ignored });
       onUpdateBenefit(benefit.id, { ignored: updated.ignored });
     } catch (err) {
-      console.error('Failed to toggle ignored:', err);
+      setError(`Failed to update: ${(err as Error).message}`);
     } finally {
       setLoading(null);
     }
@@ -78,6 +80,9 @@ export function CardHeader({ card, stats, allBenefits, onUpdateBenefit }: CardHe
                   >
                   <div className="p-2">
                     <p className="text-xs text-slate-500 px-2 py-1">Toggle benefits visibility</p>
+                    {error && (
+                      <p className="text-xs text-red-400 px-2 py-1">{error}</p>
+                    )}
                     {allBenefits.map(benefit => (
                       <label
                         key={benefit.id}

@@ -1,15 +1,5 @@
+import type { ProgressSegment } from '../types';
 import { Tooltip } from './Tooltip';
-
-interface ProgressSegment {
-  id: string;
-  status: 'pending' | 'completed' | 'missed' | 'future';
-  label?: string;
-  timeProgress?: number;
-  startDate?: string;
-  endDate?: string;
-  daysLeft?: number;
-  isCurrent?: boolean;
-}
 
 interface ProgressBarProps {
   segments: ProgressSegment[];
@@ -17,7 +7,7 @@ interface ProgressBarProps {
 }
 
 export function ProgressBar({ segments, segmentsCount }: ProgressBarProps) {
-  const segmentClass = (status: string) => {
+  const segmentClass = (status: ProgressSegment['status']) => {
     switch (status) {
       case 'completed':
         return 'progress-segment completed';

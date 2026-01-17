@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Benefit, Stats, CreditCard } from '../types';
+import type { Benefit, Stats, CreditCard } from '../types';
 import { BenefitCard } from '../components/BenefitCard';
 import { CardHeader } from '../components/CardHeader';
 import { EditModal } from '../components/EditModal';
@@ -9,7 +9,6 @@ interface DashboardProps {
   cards: CreditCard[];
   allBenefits: Benefit[];
   stats: Stats | null;
-  onEditBenefit: (benefit: Benefit) => void;
   onUpdateBenefit: (id: string, data: { notes: string; ignored?: boolean; activationAcknowledged?: boolean; periods?: Record<string, number> }) => void;
   onToggleIgnored: (id: string, data: { ignored: boolean }) => void;
 }
@@ -37,7 +36,7 @@ export function Dashboard({
     onUpdateBenefit(id, data);
   };
 
-  const getCardStats = (_card: CreditCard, cardBenefits: Benefit[]) => ({
+  const getCardStats = (cardBenefits: Benefit[]) => ({
     totalValue: cardBenefits.reduce((sum, b) => sum + b.creditAmount, 0),
     usedValue: cardBenefits.reduce((sum, b) => sum + b.currentUsed, 0),
     completedCount: cardBenefits.filter(b => b.status === 'completed').length,
@@ -83,7 +82,7 @@ export function Dashboard({
           <div key={card.id} className="mb-8">
             <CardHeader 
               card={card} 
-              stats={getCardStats(card, cardBenefits)}
+              stats={getCardStats(cardBenefits)}
               allBenefits={cardAllBenefits}
               onUpdateBenefit={onToggleIgnored}
             />

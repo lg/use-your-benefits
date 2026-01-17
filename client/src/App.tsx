@@ -1,19 +1,20 @@
-import React from 'react';
-import { CreditCard, Benefit, Stats } from './types';
+import { useState, useCallback, useEffect } from 'react';
+import type { CreditCard, Benefit, Stats } from './types';
 import { Dashboard } from './pages/Dashboard';
 import { CardDetail } from './pages/CardDetail';
 import { api } from './api/client';
 
 function App() {
-  const [cards, setCards] = React.useState<CreditCard[]>([]);
-  const [benefits, setBenefits] = React.useState<Benefit[]>([]);
-  const [allBenefits, setAllBenefits] = React.useState<Benefit[]>([]);
-  const [stats, setStats] = React.useState<Stats | null>(null);
-  const [selectedCardId, setSelectedCardId] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+  const [cards, setCards] = useState<CreditCard[]>([]);
+  const [benefits, setBenefits] = useState<Benefit[]>([]);
+  const [allBenefits, setAllBenefits] = useState<Benefit[]>([]);
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [updateError, setUpdateError] = useState<string | null>(null);
 
-  const loadData = React.useCallback(async () => {
+  const loadData = useCallback(async () => {
     try {
       setLoading(true);
       const [cardsData, benefitsData, allBenefitsData, statsData] = await Promise.all([
@@ -33,7 +34,7 @@ function App() {
     }
   }, []);
 
-  const loadAllBenefitsForCard = React.useCallback(async (cardId: string) => {
+  const loadAllBenefitsForCard = useCallback(async (cardId: string) => {
     const allBenefitsData = await api.getBenefits(cardId, true);
     setAllBenefits(prev => {
       const otherBenefits = prev.filter(b => b.cardId !== cardId);
@@ -41,11 +42,11 @@ function App() {
     });
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadData();
   }, [loadData]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedCardId) {
       loadAllBenefitsForCard(selectedCardId);
     }
@@ -77,8 +78,9 @@ function App() {
       }
       const statsData = await api.getStats();
       setStats(statsData);
+      setUpdateError(null);
     } catch (err) {
-      console.error('Failed to update benefit:', err);
+      setUpdateError(`Failed to update benefit: ${(err as Error).message}`);
     }
   };
 
@@ -92,8 +94,9 @@ function App() {
       ]);
       setBenefits(benefitsData);
       setStats(statsData);
+      setUpdateError(null);
     } catch (err) {
-      console.error('Failed to toggle ignored:', err);
+      setUpdateError(`Failed to toggle visibility: ${(err as Error).message}`);
     }
   };
 
@@ -131,6 +134,17 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-900">
+      {updateError && (
+        <div className="fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 flex items-center gap-2">
+          <span>{updateError}</span>
+          <button 
+            onClick={() => setUpdateError(null)}
+            className="text-white hover:text-red-200"
+          >
+            ✕
+          </button>
+        </div>
+      )}
       <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
@@ -177,7 +191,6 @@ function App() {
               benefits={selectedCardBenefits}
               allBenefits={selectedCardAllBenefits}
               onBack={() => setSelectedCardId(null)}
-              onEditBenefit={() => {}}
               onUpdateBenefit={handleUpdateBenefit}
               onToggleIgnored={handleToggleIgnored}
             />
@@ -188,7 +201,6 @@ function App() {
             cards={cards}
             allBenefits={allBenefits}
             stats={stats}
-            onEditBenefit={() => {}}
             onUpdateBenefit={handleUpdateBenefit}
             onToggleIgnored={handleToggleIgnored}
           />

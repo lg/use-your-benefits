@@ -1,78 +1,57 @@
 {
   "benefits": {
-    "chase-travel": {
-      "currentUsed": 0,
-      "activationAcknowledged": true,
-      "notes": "",
-      "status": "pending",
-      "ignored": false
-    },
-    "amex-uber": {
-      "currentUsed": 0,
-      "activationAcknowledged": true,
-      "notes": "",
-      "status": "pending",
-      "ignored": false
-    },
-    "amex-airline": {
-      "currentUsed": 0,
-      "activationAcknowledged": false,
-      "notes": "",
-      "status": "pending",
-      "ignored": false
-    },
-    "amex-uber-cash": {
-      "currentUsed": 0,
+    "csr-lyft": {
+      "currentUsed": 20,
       "activationAcknowledged": false,
       "notes": "",
       "status": "pending",
       "ignored": false,
       "periods": {
-        "amex-uber-cash-2026-01": {
+        "csr-lyft-2025-07": {
+          "usedAmount": 0,
+          "status": "missed"
+        },
+        "csr-lyft-2025-08": {
+          "usedAmount": 0,
+          "status": "missed"
+        },
+        "csr-lyft-2025-09": {
+          "usedAmount": 0,
+          "status": "missed"
+        },
+        "csr-lyft-2025-10": {
+          "usedAmount": 0,
+          "status": "missed"
+        },
+        "csr-lyft-2025-11": {
+          "usedAmount": 10,
+          "status": "completed"
+        },
+        "csr-lyft-2025-12": {
+          "usedAmount": 10,
+          "status": "completed"
+        },
+        "csr-lyft-2026-01": {
           "usedAmount": 0,
           "status": "pending"
         },
-        "amex-uber-cash-2026-02": {
+        "csr-lyft-2026-02": {
           "usedAmount": 0,
           "status": "pending"
         },
-        "amex-uber-cash-2026-03": {
+        "csr-lyft-2026-03": {
           "usedAmount": 0,
           "status": "pending"
         },
-        "amex-uber-cash-2026-04": {
+        "csr-lyft-2026-04": {
           "usedAmount": 0,
           "status": "pending"
         },
-        "amex-uber-cash-2026-05": {
+        "csr-lyft-2026-05": {
           "usedAmount": 0,
           "status": "pending"
         },
-        "amex-uber-cash-2026-06": {
-          "usedAmount": 0,
-          "status": "pending"
-        },
-        "amex-uber-cash-2026-07": {
-          "usedAmount": 0,
-          "status": "pending"
-        },
-        "amex-uber-cash-2026-08": {
-          "usedAmount": 0,
-          "status": "pending"
-        },
-        "amex-uber-cash-2026-09": {
-          "usedAmount": 0,
-          "status": "pending"
-        },
-        "amex-uber-cash-2026-10": {
-          "usedAmount": 0,
-          "status": "pending"
-        },
-        "amex-uber-cash-2026-11": {
-          "usedAmount": 0,
-          "status": "pending"
-        },
-        "amex-uber-cash-2026-12": {
+        "csr-lyft-2026-06": {
           "usedAmount": 0,
           "status": "pending"
         }

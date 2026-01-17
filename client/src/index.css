@@ -34,18 +34,6 @@ body {
   @apply border-slate-600 shadow-lg;
 }
 
-.benefit-card.activation-required {
-  @apply border-l-4 border-l-amber-400;
-}
-
-.benefit-card.activation-pending {
-  @apply border-l-4 border-l-amber-400;
-}
-
-.benefit-card.activation-complete {
-  @apply border-l-4 border-l-emerald-500;
-}
-
 .modal-overlay {
   @apply fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50;
 }

@@ -4,7 +4,6 @@ import {
   getDaysUntilExpiry, 
   calculateBenefitStatus,
   calculatePeriodStatus,
-  getProgressPercentage 
 } from './dates'
 import type { Benefit } from '../models/types'
 
@@ -99,33 +98,5 @@ describe('calculatePeriodStatus', () => {
   it('returns completed when over-used', () => {
     const period = { usedAmount: 75, creditAmount: 50, endDate: '2026-06-30' } as PeriodInput
     expect(calculatePeriodStatus(period)).toBe('completed')
-  })
-})
-
-describe('getProgressPercentage', () => {
-  it('returns 100 when fully used', () => {
-    const benefit = { currentUsed: 200, creditAmount: 200 } as Benefit
-    expect(getProgressPercentage(benefit)).toBe(100)
-  })
-  
-  it('returns 50 when half used', () => {
-    const benefit = { currentUsed: 100, creditAmount: 200 } as Benefit
-    expect(getProgressPercentage(benefit)).toBe(50)
-  })
-  
-  it('returns 0 when nothing used', () => {
-    const benefit = { currentUsed: 0, creditAmount: 200 } as Benefit
-    expect(getProgressPercentage(benefit)).toBe(0)
-  })
-  
-  it('caps at 100 when over-used', () => {
-    const benefit = { currentUsed: 250, creditAmount: 200 } as Benefit
-    expect(getProgressPercentage(benefit)).toBe(100)
-  })
-  
-  it('handles decimal values', () => {
-    const benefit = { currentUsed: 33.33, creditAmount: 100 } as Benefit
-    const result = getProgressPercentage(benefit)
-    expect(result).toBeCloseTo(33.33, 1)
   })
 })

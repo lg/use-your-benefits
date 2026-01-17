@@ -3,84 +3,22 @@ import { mkdtempSync, rmSync, writeFileSync, readFileSync } from 'fs'
 import { tmpdir } from 'os'
 import { join } from 'path'
 import { getBenefitById, updateBenefit, updateBenefitPeriod } from './storage'
+import { staticData, emptyUserData, type BenefitsStaticData, type UserBenefitsData } from '../test/fixtures'
 
-const staticData = {
-  cards: [
-    {
-      id: 'amex-platinum',
-      name: 'American Express Platinum',
-      annualFee: 695,
-      resetBasis: 'calendar-year',
-      color: '#006fcf'
-    },
-    {
-      id: 'chase-sapphire-reserve',
-      name: 'Chase Sapphire Reserve',
-      annualFee: 550,
-      resetBasis: 'anniversary',
-      color: '#117aca'
-    }
-  ],
-  benefits: [
-    {
-      id: 'amex-uber',
-      cardId: 'amex-platinum',
-      name: 'Uber Cash',
-      shortDescription: '$200 annually for Uber rides and Eats',
-      fullDescription: 'Receive up to $200 in statement credits annually for Uber rides and Uber Eats orders. The $15 monthly credits plus $35 December bonus are combined into a single annual credit for simplified tracking.',
-      creditAmount: 200,
-      resetFrequency: 'annual',
-      activationRequired: true,
-      startDate: '2026-01-01T00:00:00Z',
-      endDate: '2026-12-31T23:59:59Z',
-      category: 'Transportation'
-    },
-    {
-      id: 'amex-airline',
-      cardId: 'amex-platinum',
-      name: 'Airline Fee Credit',
-      shortDescription: '$200 annually for one airline',
-      fullDescription: 'Select one qualifying airline each year and receive up to $200 in statement credits for incidental charges such as checked bags, seat assignments, and inflight purchases. Does not cover airline tickets or upgrades.',
-      creditAmount: 200,
-      resetFrequency: 'annual',
-      activationRequired: true,
-      startDate: '2026-01-01T00:00:00Z',
-      endDate: '2026-12-31T23:59:59Z',
-      category: 'Travel'
-    },
-    {
-      id: 'chase-global-entry',
-      cardId: 'chase-sapphire-reserve',
-      name: 'Global Entry/TSA PreCheck',
-      shortDescription: '$120 every 4 years',
-      fullDescription: 'Statement credit up to $120 every 4 years for Global Entry application fee, or up to $85 for TSA PreCheck. Provides expedited security screening at participating airports and expedited customs processing when entering the US.',
-      creditAmount: 120,
-      resetFrequency: 'quarterly',
-      activationRequired: false,
-      startDate: '2025-07-01T00:00:00Z',
-      endDate: '2026-06-30T23:59:59Z',
-      category: 'Travel',
-      periods: [
-        {
-          id: 'chase-ge-p1',
-          startDate: '2025-07-01T00:00:00Z',
-          endDate: '2025-09-30T23:59:59Z'
-        }
-      ]
-    }
-  ]
-}
-
-const defaultUserData = {
-  benefits: {}
-}
+// Storage tests use a subset of static data
+const storageStaticData: BenefitsStaticData = {
+  cards: staticData.cards,
+  benefits: staticData.benefits.filter(b => 
+    ['amex-uber', 'amex-airline', 'chase-global-entry'].includes(b.id)
+  )
+};
 
 let tempDir = ''
 let staticPath = ''
 let userPath = ''
 
-function writeFixtures(userData = defaultUserData) {
-  writeFileSync(staticPath, JSON.stringify(staticData, null, 2))
+function writeFixtures(userData: UserBenefitsData = emptyUserData) {
+  writeFileSync(staticPath, JSON.stringify(storageStaticData, null, 2))
   writeFileSync(userPath, JSON.stringify(userData, null, 2))
 }
 

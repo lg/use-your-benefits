@@ -1,5 +1,5 @@
-import React from 'react';
-import { Benefit, CreditCard } from '../types';
+import { useState } from 'react';
+import type { Benefit, CreditCard } from '../types';
 import { BenefitCard } from '../components/BenefitCard';
 import { CardHeader } from '../components/CardHeader';
 import { EditModal } from '../components/EditModal';
@@ -9,7 +9,6 @@ interface CardDetailProps {
   benefits: Benefit[];
   allBenefits: Benefit[];
   onBack: () => void;
-  onEditBenefit: (benefit: Benefit) => void;
   onUpdateBenefit: (id: string, data: { notes: string; ignored?: boolean; activationAcknowledged?: boolean; periods?: Record<string, number> }) => void;
   onToggleIgnored: (id: string, data: { ignored: boolean }) => void;
 }
@@ -22,8 +21,8 @@ export function CardDetail ({
   onUpdateBenefit,
   onToggleIgnored
 }: CardDetailProps) {
-  const [editingBenefit, setEditingBenefit] = React.useState<Benefit | null>(null);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [editingBenefit, setEditingBenefit] = useState<Benefit | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const stats = {
     totalValue: benefits.reduce((sum, b) => sum + b.creditAmount, 0),

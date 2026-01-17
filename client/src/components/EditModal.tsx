@@ -1,5 +1,5 @@
-import React from 'react';
-import { Benefit } from '../types';
+import { useState, useEffect, useRef, type MouseEvent, type KeyboardEvent } from 'react';
+import type { Benefit } from '../types';
 
 interface EditModalProps {
   benefit: Benefit | null;
@@ -9,14 +9,14 @@ interface EditModalProps {
 }
 
 export function EditModal({ benefit, isOpen, onClose, onSave }: EditModalProps) {
-  const [notes, setNotes] = React.useState('');
-  const [ignored, setIgnored] = React.useState(false);
-  const [activationAcknowledged, setActivationAcknowledged] = React.useState(false);
-  const [periodUsed, setPeriodUsed] = React.useState<Record<string, string>>({});
-  const [selectedPeriodId, setSelectedPeriodId] = React.useState<string>('');
-  const periodTabsRef = React.useRef<HTMLDivElement | null>(null);
+  const [notes, setNotes] = useState('');
+  const [ignored, setIgnored] = useState(false);
+  const [activationAcknowledged, setActivationAcknowledged] = useState(false);
+  const [periodUsed, setPeriodUsed] = useState<Record<string, string>>({});
+  const [selectedPeriodId, setSelectedPeriodId] = useState<string>('');
+  const periodTabsRef = useRef<HTMLDivElement | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (benefit) {
       setNotes(benefit.notes);
       setIgnored(benefit.ignored);
@@ -47,13 +47,13 @@ export function EditModal({ benefit, isOpen, onClose, onSave }: EditModalProps) 
 
   const notesInputId = `benefit-notes-${benefit.id}`;
 
-  const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleOverlayClick = (event: MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onClose();
     }
   };
 
-  const handleOverlayKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleOverlayKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       onClose();

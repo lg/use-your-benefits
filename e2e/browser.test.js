@@ -8,7 +8,7 @@ test.describe('Dashboard', () => {
   });
 
   test('loads successfully', async ({ page }) => {
-    await expect(page.locator('text=Credit Card Benefits')).toBeVisible();
+    await expect(page.locator('text=Keep Your Benefits')).toBeVisible();
   });
 
   test('shows all cards', async ({ page }) => {

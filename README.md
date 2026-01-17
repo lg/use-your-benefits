@@ -1,4 +1,4 @@
-# Credit Card Benefits Tracker
+# Keep Your Benefits
 
 ![Screenshot](screenshot.png)
 

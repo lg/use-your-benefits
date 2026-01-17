@@ -168,7 +168,7 @@ function App() {
                 onClick={() => setSelectedCardId(null)}
                 className={`font-bold text-xl ${!selectedCardId ? 'text-white' : 'text-slate-400 hover:text-white'}`}
               >
-                Credit Card Benefits
+                Keep Your Benefits
               </button>
             </div>
             <nav className="flex gap-2">

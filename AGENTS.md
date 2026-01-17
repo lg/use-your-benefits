@@ -1,6 +1,6 @@
-# Agent Instructions for Credit Card Benefits Tracker
+# Agent Instructions for Keep Your Benefits
 
-This document provides instructions for AI agents working on the Credit Card Benefits Tracker project.
+This document provides instructions for AI agents working on the Keep Your Benefits project.
 
 ## Core Principles
 

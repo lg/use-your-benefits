@@ -1,4 +1,4 @@
-# Keep Your Benefits
+# Use Your Benefits
 
 ![Screenshot](screenshot.png)
 
@@ -30,7 +30,7 @@ A fully static web application to track credit card benefits for Amex Platinum a
 ## Project Structure
 
 ```
-keep-your-benefits/
+use-your-benefits/
 ├── client/                      # Frontend (React + Vite)
 │   ├── public/
 │   │   └── benefits.json        # Static benefit definitions

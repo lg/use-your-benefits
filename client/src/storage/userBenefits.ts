@@ -5,7 +5,7 @@ import type {
   UserBenefitsData,
 } from '../../../shared/types';
 
-const STORAGE_KEY = 'user-benefits';
+const STORAGE_KEY = 'use-your-benefits';
 
 // Module-level cache for localStorage reads
 let cachedData: UserBenefitsData | null = null;

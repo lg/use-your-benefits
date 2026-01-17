@@ -1,6 +1,6 @@
-# Agent Instructions for Keep Your Benefits
+# Agent Instructions for Use Your Benefits
 
-This document provides instructions for AI agents working on the Keep Your Benefits project.
+This document provides instructions for AI agents working on the Use Your Benefits project.
 
 ## Core Principles
 
@@ -19,7 +19,7 @@ This document provides instructions for AI agents working on the Keep Your Benef
 This is a **fully static app** with no backend server:
 
 - **Benefit definitions**: Loaded from `/benefits.json` (static file)
-- **User data**: Stored in browser `localStorage` under key `user-benefits`
+- **User data**: Stored in browser `localStorage` under key `use-your-benefits`
 - **Build output**: Static files in `dist/` that can be deployed anywhere
 
 ## Development Commands
@@ -81,7 +81,7 @@ bun run test:e2e:install
 ### File Structure
 
 ```
-keep-your-benefits/
+use-your-benefits/
 ├── client/                  # Frontend (React + Vite)
 │   ├── public/
 │   │   └── benefits.json    # Static benefit definitions

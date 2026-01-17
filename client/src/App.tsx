@@ -221,7 +221,7 @@ function App() {
                 className={`font-bold text-xl ${!selectedCardId ? 'text-white' : 'text-slate-400 hover:text-white'}`}
                 type="button"
               >
-                Keep Your Benefits
+                Use Your Benefits
               </button>
             </div>
             <nav className="flex gap-2">

@@ -5,7 +5,7 @@ import path from 'path'
 
 export default defineConfig(({ command }) => ({
   root: './client',
-  base: command === 'build' ? '/keep-your-benefits/' : '/',
+  base: command === 'build' ? '/use-your-benefits/' : '/',
   plugins: [react()],
   clearScreen: false,
   build: {

@@ -250,7 +250,11 @@ export function TransactionsModal({
           </div>
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded bg-slate-700 hover:bg-slate-600 text-white transition-colors"
+            className={`px-4 py-2 rounded text-white transition-colors ${
+              selectedHasData
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-slate-700 hover:bg-slate-600'
+            }`}
           >
             Close
           </button>

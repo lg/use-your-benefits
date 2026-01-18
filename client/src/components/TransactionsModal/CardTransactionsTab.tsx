@@ -7,7 +7,6 @@ import {
 import type { StoredTransaction, BenefitDefinition, CreditCard } from '@shared/types';
 import type { ParsedTransaction } from '../../types/import';
 import { parseAmexCsv, extractAmexCredits } from '../../services/amexParser';
-import { getImportNote, saveImportNote } from '../../storage/userBenefits';
 import { TransactionTable } from './TransactionTable';
 
 interface CardTransactionsTabProps {
@@ -25,7 +24,6 @@ export function CardTransactionsTab({
 }: CardTransactionsTabProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [importNote, setImportNote] = useState(() => getImportNote(card.id));
 
   const hasTransactions = transactions.length > 0;
 
@@ -108,9 +106,7 @@ export function CardTransactionsTab({
     [processFile]
   );
 
-  const persistImportNote = useCallback(() => {
-    saveImportNote(card.id, importNote.trim());
-  }, [card.id, importNote]);
+
 
   // Show upload UI when no transactions
   if (!hasTransactions) {
@@ -118,8 +114,7 @@ export function CardTransactionsTab({
       <div className="py-4">
         <p className="text-sm text-slate-400 mb-4">
           Upload your Amex statement CSV to automatically import your
-          benefit credits. Nothing gets uploaded to any server; it stays in
-          your browser.
+          benefit credits.
         </p>
 
         <div
@@ -139,13 +134,15 @@ export function CardTransactionsTab({
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-              />
+              {/* Database cylinder */}
+              <ellipse cx="12" cy="14" rx="9" ry="3" />
+              <path d="M3 14v4c0 1.66 4.03 3 9 3s9-1.34 9-3v-4" />
+              {/* Down arrow */}
+              <path d="M12 1v10m0 0l-4-4M12 11l4-4" strokeWidth="2.5" />
             </svg>
           </div>
           <p className="text-slate-300 mb-2">
@@ -167,32 +164,38 @@ export function CardTransactionsTab({
           <p className="mt-4 text-sm text-red-400">{error}</p>
         )}
 
-        <div className="mt-6">
-          <label className="block text-sm font-medium text-slate-300 mb-2" htmlFor="import-notes">
-            Download link or notes
-          </label>
-          <textarea
-            id="import-notes"
-            className="w-full rounded-md border border-slate-700 bg-slate-900/60 p-3 text-sm text-slate-200 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
-            rows={3}
-            value={importNote}
-            onChange={(event) => setImportNote(event.target.value)}
-            onBlur={persistImportNote}
-            placeholder="Paste the Amex download URL or add notes for later"
-          />
-          <p className="mt-2 text-xs text-slate-500">
-            Saved locally for this card.
-          </p>
-        </div>
-
         <div className="mt-6 text-xs text-slate-500">
           <p className="font-medium mb-1">How to export from Amex:</p>
           <ol className="list-decimal list-inside space-y-1">
-            <li>Go to https://global.americanexpress.com/activity?year=2026</li>
-            <li>Click Download -&gt; CSV -&gt; All details</li>
-            <li>Upload the downloaded file here</li>
+            <li>
+              Go to transaction activity as far back as possible:{' '}
+              <a
+                href={`https://global.americanexpress.com/activity?endDate=${new Date().toISOString().split('T')[0]}&startDate=2024-01-01`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 underline"
+              >
+                global.americanexpress.com/activity
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="inline-block ml-0.5 h-3 w-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </li>
+            <li>Click Download → CSV (Include all additional transaction details) → Download</li>
+            <li>Drag/upload the CSV above.</li>
           </ol>
         </div>
+
+        <p className="mt-4 text-center text-sm text-white">
+          Everything is done client-side and never uploaded anywhere!
+        </p>
       </div>
     );
   }

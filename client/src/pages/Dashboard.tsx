@@ -14,7 +14,7 @@ interface DashboardProps {
   definitions: BenefitDefinition[];
   stats: Stats | null;
   selectedYear: number;
-  onToggleActivation: (id: string) => void;
+  onToggleEnrollment: (id: string) => void;
   onToggleVisibility: (id: string) => void;
   onImport: (cardId: string, aggregated: Map<string, {
     currentUsed: number;
@@ -30,7 +30,7 @@ export function Dashboard({
   definitions,
   stats,
   selectedYear,
-  onToggleActivation,
+  onToggleEnrollment,
   onToggleVisibility,
   onImport
 }: DashboardProps) {
@@ -139,7 +139,7 @@ export function Dashboard({
         benefit={viewingBenefit}
         isOpen={isModalOpen}
         onClose={handleClose}
-        onToggleActivation={onToggleActivation}
+        onToggleEnrollment={onToggleEnrollment}
         onToggleVisibility={onToggleVisibility}
         initialPeriodId={initialPeriodId}
       />

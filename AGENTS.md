@@ -7,7 +7,7 @@ This document provides instructions for AI agents working on the Use Your Benefi
 1. **Use Bun exclusively** - All commands must use `bun` (not `npm`, `yarn`, or `pnpm`)
 2. **TypeScript everywhere** - All code must be written in TypeScript
 3. **Static JSON for definitions** - Benefit definitions stored in `client/public/benefits.json`
-4. **localStorage for user data** - User state (usage, activation, ignored) stored in browser localStorage
+4. **localStorage for user data** - User state (usage, enrollment, ignored) stored in browser localStorage
 5. **UTC timezone** - All date handling assumes UTC
 6. **Calendar year resets** - All benefits reset on a calendar year basis
 7. **Single package.json** - Keep dependencies and scripts at the repo root
@@ -145,7 +145,7 @@ User data is stored under the key `user-benefits`:
   benefits: {
     [benefitId: string]: {
       currentUsed: number;
-      activationAcknowledged: boolean;
+      enrolled: boolean;
       status: 'pending' | 'completed' | 'missed';
       ignored: boolean;
       periods?: Record<string, { usedAmount: number; status: string }>;
@@ -165,7 +165,7 @@ User data is stored under the key `user-benefits`:
 
 1. Add to `client/public/benefits.json` `benefits` array
 2. Define all required fields (id, cardId, name, amounts, dates, etc.)
-3. If benefit has activation, set `activationRequired: true`
+3. If benefit requires enrollment, set `enrollmentRequired: true`
 4. If benefit has multiple periods, add `periods` array
 
 ### Modifying Data Model

@@ -51,8 +51,8 @@ function BenefitCardComponent({ benefit, selectedYear, onViewDetails, onViewPeri
     return Math.ceil(diff / (1000 * 60 * 60 * 24));
   }, [benefit.endDate]);
 
-  const activationClass = benefit.activationRequired
-    ? (benefit.activationAcknowledged ? 'border-l-emerald-500' : 'border-l-amber-400')
+  const enrollmentClass = benefit.enrollmentRequired
+    ? (benefit.enrolled ? 'border-l-emerald-500' : 'border-l-amber-400')
     : 'border-l-emerald-500';
 
   const handleSegmentClick = useCallback((segment: ProgressSegment) => {
@@ -64,7 +64,7 @@ function BenefitCardComponent({ benefit, selectedYear, onViewDetails, onViewPeri
   }, [benefit, onViewDetails, onViewPeriod]);
 
   return (
-    <div className={`benefit-card ${activationClass}`}>
+    <div className={`benefit-card ${enrollmentClass}`}>
       <div className="flex justify-between items-start mb-2">
         <div>
           <h3 className="font-semibold text-lg">{benefit.name}</h3>
@@ -95,15 +95,15 @@ function BenefitCardComponent({ benefit, selectedYear, onViewDetails, onViewPeri
           ) : null}
         </div>
         <div className="flex gap-2">
-          {benefit.activationRequired ? (
+          {benefit.enrollmentRequired ? (
             <span
               className={`inline-flex items-center text-[11px] px-2 py-0.5 rounded border leading-tight ${
-                benefit.activationAcknowledged
+                benefit.enrolled
                   ? 'border-emerald-400/50 text-emerald-400 bg-emerald-500/10'
                   : 'border-amber-400/60 text-amber-400 bg-amber-400/10'
               }`}
             >
-              {benefit.activationAcknowledged ? 'Activated' : 'Needs Activation'}
+              {benefit.enrolled ? 'Enrolled' : 'Needs Enrollment'}
             </span>
           ) : null}
            <button

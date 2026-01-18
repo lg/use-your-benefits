@@ -22,11 +22,11 @@ function createBenefit(overrides: Partial<Benefit> = {}): Benefit {
     fullDescription: 'Full test description',
     creditAmount: 100,
     resetFrequency: 'annual',
-    activationRequired: false,
+    enrollmentRequired: false,
     startDate: lastMonth.toISOString(),
     endDate: twoMonthsLater.toISOString(),
     category: 'test',
-    activationAcknowledged: true,
+    enrolled: true,
     ignored: false,
     currentUsed: derivedUsed,
     status: derivedStatus,
@@ -49,7 +49,7 @@ function createDefinition(overrides: Partial<BenefitDefinition> = {}): BenefitDe
     fullDescription: 'Full test description',
     creditAmount: 100,
     resetFrequency: 'annual',
-    activationRequired: false,
+    enrollmentRequired: false,
     startDate: yearStart.toISOString(),
     endDate: yearEnd.toISOString(),
     category: 'test',
@@ -59,7 +59,7 @@ function createDefinition(overrides: Partial<BenefitDefinition> = {}): BenefitDe
 
 function createUserState(overrides: Partial<BenefitUserState> = {}): BenefitUserState {
   return {
-    activationAcknowledged: false,
+    enrolled: false,
     ignored: false,
     ...overrides,
   };

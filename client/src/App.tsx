@@ -77,14 +77,14 @@ function App() {
     }
   }, [selectedCardId, loadAllBenefitsForCard, selectedYear]);
 
-  const handleToggleActivation = useCallback((id: string) => {
+  const handleToggleEnrollment = useCallback((id: string) => {
     const definition = definitions.find(d => d.id === id);
     if (!definition) {
       setUpdateError('Benefit not found');
       return;
     }
 
-    const updated = benefitsService.toggleActivation(id, definition, selectedYear);
+    const updated = benefitsService.toggleEnrollment(id, definition, selectedYear);
 
     setAllBenefits(prev => prev.map(b => b.id === id ? updated : b));
     setBenefits(prev => prev.map(b => b.id === id ? updated : b));
@@ -279,7 +279,7 @@ function App() {
                 definitions={definitions.filter(d => d.cardId === selectedCardId)}
                 selectedYear={selectedYear}
                 onBack={handleBack}
-                onToggleActivation={handleToggleActivation}
+                onToggleEnrollment={handleToggleEnrollment}
                 onToggleVisibility={handleToggleVisibility}
                 onImport={handleImport}
               />
@@ -292,7 +292,7 @@ function App() {
               definitions={definitions}
               stats={stats}
               selectedYear={selectedYear}
-              onToggleActivation={handleToggleActivation}
+              onToggleEnrollment={handleToggleEnrollment}
               onToggleVisibility={handleToggleVisibility}
               onImport={handleImport}
             />

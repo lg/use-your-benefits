@@ -21,7 +21,7 @@
       "fullDescription": "Receive up to $600 in statement credits annually for prepaid Fine Hotels + Resorts or The Hotel Collection bookings made through Amex Travel, split as $300 for January-June and $300 for July-December.",
       "creditAmount": 600,
       "resetFrequency": "twice-yearly",
-      "activationRequired": false,
+      "enrollmentRequired": false,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2026-12-31T23:59:59Z",
       "category": "Travel",
@@ -40,7 +40,7 @@
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     },
     {
       "id": "amex-uber-cash",
@@ -50,7 +50,7 @@
       "fullDescription": "Add your Platinum Card to Uber to receive $15 in Uber Cash each month plus a $20 bonus in December for rides and Uber Eats in the U.S.",
       "creditAmount": 200,
       "resetFrequency": "monthly",
-      "activationRequired": true,
+      "enrollmentRequired": false,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2026-12-31T23:59:59Z",
       "category": "Transportation",
@@ -119,7 +119,7 @@
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     },
     {
       "id": "amex-uber-one",
@@ -129,14 +129,14 @@
       "fullDescription": "Receive up to $120 in statement credits each calendar year after paying for an auto-renewing Uber One membership with the Platinum Card.",
       "creditAmount": 120,
       "resetFrequency": "annual",
-      "activationRequired": true,
+      "enrollmentRequired": false,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2026-12-31T23:59:59Z",
       "category": "Transportation",
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     },
     {
       "id": "amex-airline-fee",
@@ -146,14 +146,14 @@
       "fullDescription": "Select one qualifying airline and receive up to $200 in statement credits each calendar year for incidental fees such as checked bags, seat assignments, and inflight purchases.",
       "creditAmount": 200,
       "resetFrequency": "annual",
-      "activationRequired": true,
+      "enrollmentRequired": true,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2026-12-31T23:59:59Z",
       "category": "Travel",
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     },
     {
       "id": "amex-clear-plus",
@@ -163,14 +163,14 @@
       "fullDescription": "Receive up to $209 in statement credits each calendar year after paying for a CLEAR Plus membership with the Platinum Card.",
       "creditAmount": 209,
       "resetFrequency": "annual",
-      "activationRequired": true,
+      "enrollmentRequired": false,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2026-12-31T23:59:59Z",
       "category": "Travel",
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     },
     {
       "id": "amex-resy-credit",
@@ -180,7 +180,7 @@
       "fullDescription": "Receive up to $100 in statement credits each quarter for eligible Resy dining purchases when enrolled and using the Platinum Card.",
       "creditAmount": 400,
       "resetFrequency": "quarterly",
-      "activationRequired": true,
+      "enrollmentRequired": true,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2026-12-31T23:59:59Z",
       "category": "Dining",
@@ -209,7 +209,7 @@
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     },
     {
       "id": "amex-digital-entertainment",
@@ -219,7 +219,7 @@
       "fullDescription": "Receive up to $25 in statement credits each month for eligible digital entertainment subscriptions when enrolled.",
       "creditAmount": 300,
       "resetFrequency": "monthly",
-      "activationRequired": true,
+      "enrollmentRequired": true,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2026-12-31T23:59:59Z",
       "category": "Entertainment",
@@ -288,7 +288,7 @@
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     },
     {
       "id": "amex-lululemon",
@@ -298,7 +298,7 @@
       "fullDescription": "Receive up to $75 in statement credits each quarter for eligible lululemon purchases when enrolled.",
       "creditAmount": 300,
       "resetFrequency": "quarterly",
-      "activationRequired": true,
+      "enrollmentRequired": true,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2026-12-31T23:59:59Z",
       "category": "Shopping",
@@ -327,7 +327,7 @@
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     },
     {
       "id": "amex-walmart-plus",
@@ -337,7 +337,7 @@
       "fullDescription": "Receive up to $12.95 in statement credits each month after paying for a Walmart+ monthly membership with the Platinum Card.",
       "creditAmount": 155,
       "resetFrequency": "monthly",
-      "activationRequired": true,
+      "enrollmentRequired": false,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2026-12-31T23:59:59Z",
       "category": "Shopping",
@@ -406,7 +406,7 @@
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     },
     {
       "id": "amex-saks",
@@ -416,7 +416,7 @@
       "fullDescription": "Receive up to $100 in statement credits annually at Saks Fifth Avenue, split as $50 for the first half of the year and $50 for the second half when enrolled.",
       "creditAmount": 100,
       "resetFrequency": "twice-yearly",
-      "activationRequired": true,
+      "enrollmentRequired": true,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2026-12-31T23:59:59Z",
       "category": "Shopping",
@@ -435,7 +435,7 @@
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     },
     {
       "id": "amex-oura",
@@ -445,14 +445,14 @@
       "fullDescription": "Receive up to $200 in statement credits each calendar year for an Oura Ring purchase at Ouraring.com when enrolled.",
       "creditAmount": 200,
       "resetFrequency": "annual",
-      "activationRequired": true,
+      "enrollmentRequired": true,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2026-12-31T23:59:59Z",
       "category": "Wellness",
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     },
     {
       "id": "amex-equinox",
@@ -462,14 +462,14 @@
       "fullDescription": "Receive up to $300 in statement credits each calendar year for eligible Equinox memberships or Equinox+ subscriptions when enrolled.",
       "creditAmount": 300,
       "resetFrequency": "annual",
-      "activationRequired": true,
+      "enrollmentRequired": true,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2026-12-31T23:59:59Z",
       "category": "Wellness",
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     },
     {
       "id": "amex-global-entry",
@@ -479,14 +479,14 @@
       "fullDescription": "Receive one statement credit up to $120 for a Global Entry, TSA PreCheck, or NEXUS application fee once every 4 years.",
       "creditAmount": 120,
       "resetFrequency": "annual",
-      "activationRequired": false,
+      "enrollmentRequired": false,
       "startDate": "2026-01-01T00:00:00Z",
       "endDate": "2029-12-31T23:59:59Z",
       "category": "Travel",
       "ignored": false,
       "currentUsed": 0,
       "status": "pending",
-      "activationAcknowledged": false
+      "enrolled": false
     }
   ]
 }

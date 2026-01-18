@@ -7,12 +7,12 @@ interface DetailsModalProps {
   benefit: Benefit | null;
   isOpen: boolean;
   onClose: () => void;
-  onToggleActivation: (id: string) => void;
+  onToggleEnrollment: (id: string) => void;
   onToggleVisibility: (id: string) => void;
   initialPeriodId?: string;
 }
 
-function DetailsModalComponent({ benefit, isOpen, onClose, onToggleActivation, onToggleVisibility, initialPeriodId }: DetailsModalProps) {
+function DetailsModalComponent({ benefit, isOpen, onClose, onToggleEnrollment, onToggleVisibility, initialPeriodId }: DetailsModalProps) {
   const periodTabsRef = useRef<HTMLDivElement>(null);
   const [targetPeriodId, setTargetPeriodId] = useState<string>('');
   const [selectedPeriodId, setSelectedPeriodId] = useState<string>('');
@@ -249,16 +249,16 @@ function DetailsModalComponent({ benefit, isOpen, onClose, onToggleActivation, o
           </div>
         )}
 
-        {benefit.activationRequired && (
+        {benefit.enrollmentRequired && (
           <div className="mb-4">
             <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                checked={benefit.activationAcknowledged}
-                onChange={() => onToggleActivation(benefit.id)}
+                checked={benefit.enrolled}
+                onChange={() => onToggleEnrollment(benefit.id)}
                 className="rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500"
               />
-              <span className="text-sm">Enrolled/activated benefit</span>
+              <span className="text-sm">Enrolled in benefit</span>
             </label>
           </div>
         )}

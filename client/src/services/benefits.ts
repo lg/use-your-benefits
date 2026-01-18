@@ -67,17 +67,17 @@ export function updateBenefit(
   return mergeBenefit(definition, updatedState, year);
 }
 
-export function toggleActivation(
+export function toggleEnrollment(
   id: string,
   definition: BenefitDefinition,
   year?: number
 ): Benefit {
   const userData = getUserBenefitsData();
   const existing = userData.benefits[id];
-  const currentValue = existing?.activationAcknowledged ?? false;
+  const currentValue = existing?.enrolled ?? false;
 
   const updatedState = updateUserState(id, {
-    activationAcknowledged: !currentValue,
+    enrolled: !currentValue,
   });
 
   return mergeBenefit(definition, updatedState, year);

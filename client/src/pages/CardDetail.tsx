@@ -14,7 +14,7 @@ interface CardDetailProps {
   definitions: BenefitDefinition[];
   selectedYear: number;
   onBack: () => void;
-  onToggleActivation: (id: string) => void;
+  onToggleEnrollment: (id: string) => void;
   onToggleVisibility: (id: string) => void;
   onImport: (cardId: string, aggregated: Map<string, {
     currentUsed: number;
@@ -30,7 +30,7 @@ export function CardDetail({
   definitions,
   selectedYear,
   onBack,
-  onToggleActivation,
+  onToggleEnrollment,
   onToggleVisibility,
   onImport
 }: CardDetailProps) {
@@ -93,7 +93,7 @@ export function CardDetail({
         benefit={viewingBenefit}
         isOpen={isModalOpen}
         onClose={handleClose}
-        onToggleActivation={onToggleActivation}
+        onToggleEnrollment={onToggleEnrollment}
         onToggleVisibility={onToggleVisibility}
         initialPeriodId={initialPeriodId}
       />

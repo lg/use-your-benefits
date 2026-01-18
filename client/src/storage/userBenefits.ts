@@ -64,7 +64,7 @@ export function getDefaultUserState(benefit: BenefitDefinition): BenefitUserStat
   );
 
   return {
-    activationAcknowledged: !benefit.activationRequired,
+    enrolled: !benefit.enrollmentRequired,
     ignored: false,
     periods: periodStates,
   };
@@ -76,7 +76,7 @@ export function updateUserState(
 ): BenefitUserState {
   const data = getUserBenefitsData();
   const existing = data.benefits[benefitId] ?? {
-    activationAcknowledged: false,
+    enrolled: false,
     ignored: false,
   };
 

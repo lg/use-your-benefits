@@ -2,7 +2,7 @@
 
 ![Screenshot](screenshot.png)
 
-A fully static web application to track credit card benefits for Amex Platinum and Chase Sapphire Reserve, with usage tracking, progress visualization, and activation reminders.
+A fully static web application to track credit card benefits for Amex Platinum and Chase Sapphire Reserve, with usage tracking, progress visualization, and enrollment reminders.
 
 ## Features
 
@@ -12,7 +12,7 @@ A fully static web application to track credit card benefits for Amex Platinum a
   - Yellow: Pending
   - Red: Missed/Expired
 - **Multiple Reset Frequencies**: Annual, twice-yearly, quarterly, and monthly tracking
-- **Activation Tracking**: Highlight benefits requiring activation with acknowledgment toggle
+- **Enrollment Tracking**: Highlight benefits requiring enrollment with acknowledgment toggle
 - **Expiration Reminders**: See when benefits expire and how many days remain
 - **Multi-Card Support**: Mix Amex Platinum and Chase Sapphire Reserve benefits
 - **Offline-Ready**: All user data stored locally in your browser
@@ -147,7 +147,7 @@ This is a fully static app - no server required. To deploy:
 - **Benefit definitions**: Stored in `client/public/benefits.json` (static, version-controlled)
 - **User data**: Stored in browser `localStorage` under key `user-benefits`
   - Usage amounts
-  - Activation acknowledgments
+  - Enrollment acknowledgments
   - Ignored/hidden benefits
   - Period-specific tracking
 
@@ -174,7 +174,7 @@ This is a fully static app - no server required. To deploy:
   fullDescription: string;
   creditAmount: number;
   resetFrequency: 'annual' | 'twice-yearly' | 'quarterly' | 'monthly';
-  activationRequired: boolean;
+  enrollmentRequired: boolean;
   startDate: string;
   endDate: string;
   category: string;
@@ -188,7 +188,7 @@ This is a fully static app - no server required. To deploy:
   benefits: {
     [benefitId: string]: {
       currentUsed: number;
-      activationAcknowledged: boolean;
+      enrolled: boolean;
       status: 'pending' | 'completed' | 'missed';
       ignored: boolean;
       periods?: Record<string, { usedAmount: number; status: string }>;

@@ -35,7 +35,7 @@ export interface BenefitPeriod extends BenefitPeriodDefinition {
 }
 
 export interface BenefitUserState {
-  activationAcknowledged: boolean;
+  enrolled: boolean;
   ignored: boolean;
   periods?: Record<string, BenefitPeriodUserState>;
   transactions?: StoredTransaction[];
@@ -54,7 +54,7 @@ export interface BenefitDefinition {
   fullDescription: string;
   creditAmount: number;
   resetFrequency: 'annual' | 'twice-yearly' | 'quarterly' | 'monthly';
-  activationRequired: boolean;
+  enrollmentRequired: boolean;
   startDate: string;
   endDate: string;
   category: string;

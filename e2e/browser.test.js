@@ -74,18 +74,18 @@ test.describe('Details Modal', () => {
     await expect(page.getByText('No transactions imported yet. Import your statement to track usage.')).toBeVisible();
   });
 
-  test('activation toggle saves immediately', async ({ page }) => {
+  test('enrollment toggle saves immediately', async ({ page }) => {
     const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
     await uberCard.getByRole('button', { name: 'Details' }).click();
     const dialog = page.getByRole('dialog');
-    const activationCheckbox = dialog.getByLabel('Enrolled/activated benefit');
+    const enrollmentCheckbox = dialog.getByLabel('Enrolled in benefit');
 
-    await activationCheckbox.check();
-    await expect(uberCard.getByText('Activated')).toBeVisible();
+    await enrollmentCheckbox.check();
+    await expect(uberCard.getByText('Enrolled')).toBeVisible();
 
     await page.reload();
     const reloadedCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
-    await expect(reloadedCard.getByText('Activated')).toBeVisible();
+    await expect(reloadedCard.getByText('Enrolled')).toBeVisible();
   });
 
   test('visibility toggle saves and hides benefit on reload', async ({ page }) => {
@@ -114,7 +114,7 @@ test.describe('Transaction-based Progress', () => {
       const userData = {
         benefits: {
           'amex-uber-one': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false
           }
         }
@@ -133,7 +133,7 @@ test.describe('Transaction-based Progress', () => {
       const userData = {
         benefits: {
           'amex-uber-one': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false,
             transactions: [
               { date: '2026-01-15', description: 'Uber One membership', amount: 120 }
@@ -154,7 +154,7 @@ test.describe('Transaction-based Progress', () => {
       const userData = {
         benefits: {
           'amex-uber-one': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false
           }
         }
@@ -173,7 +173,7 @@ test.describe('Transaction-based Progress', () => {
       const userData = {
         benefits: {
           'amex-uber-cash': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false,
             transactions: [
               { date: '2026-01-15', description: 'Uber Eats', amount: 17 }
@@ -194,7 +194,7 @@ test.describe('Transaction-based Progress', () => {
       const userData = {
         benefits: {
           'amex-uber-cash': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false,
             transactions: []
           }
@@ -243,7 +243,7 @@ test.describe('Past Year Segments', () => {
       const userData = {
         benefits: {
           'amex-resy-credit': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false,
             transactions: [
               { date: '2025-02-15', description: 'Resy reservation', amount: 100 },
@@ -253,7 +253,7 @@ test.describe('Past Year Segments', () => {
             ]
           },
           'amex-saks': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false,
             transactions: [
               { date: '2025-02-14', description: 'Shop Saks with Platinum Credit', amount: 50 },
@@ -261,14 +261,14 @@ test.describe('Past Year Segments', () => {
             ]
           },
           'amex-uber-one': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false,
             transactions: [
               { date: '2025-06-15', description: 'Uber One membership', amount: 120 }
             ]
           },
           'amex-hotel-credit': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false,
             transactions: [
               { date: '2025-01-20', description: 'Hotel booking', amount: 300 },
@@ -276,7 +276,7 @@ test.describe('Past Year Segments', () => {
             ]
           },
           'amex-global-entry': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false,
             transactions: [
               { date: '2025-01-10', description: 'Global Entry fee', amount: 120 }
@@ -308,7 +308,7 @@ test.describe('Past Year Segments', () => {
       const userData = {
         benefits: {
           'amex-saks': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false,
             transactions: [
               { date: '2025-02-14', description: 'Shop Saks with Platinum Credit', amount: 50 },
@@ -335,7 +335,7 @@ test.describe('Past Year Segments', () => {
       const userData = {
         benefits: {
           'amex-digital-entertainment': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false,
             transactions: [
               { date: '2025-01-15', description: 'Platinum Digital Entertainment Credit', amount: 25 },
@@ -371,7 +371,7 @@ test.describe('Past Year Segments', () => {
       const userData = {
         benefits: {
           'amex-lululemon': {
-            activationAcknowledged: true,
+            enrolled: true,
             ignored: false,
             transactions: [
               { date: '2026-01-11', description: 'Platinum Lululemon Credit', amount: 75 }

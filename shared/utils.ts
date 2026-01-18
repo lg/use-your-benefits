@@ -235,9 +235,10 @@ export function buildBenefitUsageSnapshot(
   if (claimedElsewhereYear) {
     overallStatus = 'completed';
   } else if (isPastYearView) {
-    // Past year: all completed = completed, otherwise missed
-    const allComplete = periods.every(p => p.status === 'completed');
-    overallStatus = allComplete ? 'completed' : 'missed';
+    // Past year: at least 50% of segments completed = completed, otherwise missed
+    const completedCount = periods.filter(p => p.status === 'completed').length;
+    const halfOrMore = completedCount >= periods.length / 2;
+    overallStatus = halfOrMore ? 'completed' : 'missed';
   } else {
     // Current year: use the current segment's status
     const currentPeriod = periods.find(p => p.isCurrent);

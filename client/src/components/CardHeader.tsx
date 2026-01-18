@@ -2,16 +2,32 @@ import { useState, useCallback, memo } from 'react';
 import type { CreditCard, Benefit, CardStats } from '../types';
 import { getAnnualFee } from '@shared/utils';
 
+interface TransactionStatus {
+  hasData: boolean;
+  dateRange: { min: Date; max: Date } | null;
+}
+
 interface CardHeaderProps {
   card: CreditCard;
   stats?: CardStats;
   allBenefits: Benefit[];
   selectedYear: number;
   onUpdateBenefit: (id: string) => void;
-  onImportClick?: (cardId: string) => void;
+  transactionStatus?: TransactionStatus;
+  onOpenTransactions?: () => void;
 }
 
-function CardHeaderComponent({ card, stats, allBenefits, selectedYear, onUpdateBenefit, onImportClick }: CardHeaderProps) {
+function formatDateRange(min: Date, max: Date): string {
+  const formatMonth = (d: Date) =>
+    d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+  
+  const minStr = formatMonth(min);
+  const maxStr = formatMonth(max);
+  
+  return minStr === maxStr ? minStr : `${minStr} - ${maxStr}`;
+}
+
+function CardHeaderComponent({ card, stats, allBenefits, selectedYear, onUpdateBenefit, transactionStatus, onOpenTransactions }: CardHeaderProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const percentUsed = stats 
@@ -24,6 +40,23 @@ function CardHeaderComponent({ card, stats, allBenefits, selectedYear, onUpdateB
     onUpdateBenefit(benefit.id);
   }, [onUpdateBenefit]);
 
+  // Transaction status pill (clickable to open data manager)
+  const transactionPill = (
+    <button
+      onClick={onOpenTransactions}
+      className={`px-2 py-0.5 text-xs font-medium rounded-full transition-colors cursor-pointer ${
+        transactionStatus?.hasData && transactionStatus.dateRange
+          ? 'border border-slate-500 text-slate-400 hover:border-slate-400 hover:text-slate-300'
+          : 'bg-red-500 text-white hover:bg-red-600'
+      }`}
+      title="Manage transaction data"
+    >
+      {transactionStatus?.hasData && transactionStatus.dateRange
+        ? `Imported: ${formatDateRange(transactionStatus.dateRange.min, transactionStatus.dateRange.max)}`
+        : 'No transaction data'}
+    </button>
+  );
+
   return (
     <div 
       className="rounded-lg p-6 mb-6 relative"
@@ -31,23 +64,13 @@ function CardHeaderComponent({ card, stats, allBenefits, selectedYear, onUpdateB
     >
       <div className="flex justify-between items-start">
         <div>
-          <h2 className="text-2xl font-bold">{card.name}</h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl font-bold">{card.name}</h2>
+            {transactionPill}
+          </div>
           <p className="text-slate-400">${getAnnualFee(card, selectedYear)}/year annual fee in {selectedYear}</p>
         </div>
         <div className="flex items-center gap-2">
-          {onImportClick && (
-            <button
-              onClick={() => onImportClick(card.id)}
-              className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-white transition-colors"
-              title="Import statement"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-            </button>
-          )}
           {ignoredCount > 0 && (
             <span className="text-xs text-amber-400">
               {ignoredCount} ignored

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react';
 import type { CreditCard, Benefit, BenefitDefinition, Stats } from './types';
 import { Dashboard } from './pages/Dashboard';
 import { CardDetail } from './pages/CardDetail';
@@ -6,7 +6,10 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { BenefitsProvider } from './context/BenefitsContext';
 import * as benefitsService from './services/benefits';
 import { api } from './api/client';
-import { importBenefitUsage } from './storage/userBenefits';
+import { saveCardTransactions, getCardTransactionDateRange } from './storage/userBenefits';
+import type { StoredTransaction } from '@shared/types';
+
+const TransactionsModal = lazy(() => import('./components/TransactionsModal/TransactionsModal').then(m => ({ default: m.TransactionsModal })));
 
 function App() {
   const [cards, setCards] = useState<CreditCard[]>([]);
@@ -18,6 +21,8 @@ function App() {
   const [selectedYear, setSelectedYear] = useState(2026);
   const [error, setError] = useState<string | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
+  const [transactionsModalOpen, setTransactionsModalOpen] = useState(false);
+  const [transactionVersion, setTransactionVersion] = useState(0);
 
   const loadData = useCallback(async (signal?: AbortSignal, year?: number) => {
     try {
@@ -78,14 +83,14 @@ function App() {
     }
   }, [selectedCardId, loadAllBenefitsForCard, selectedYear]);
 
-  const handleToggleEnrollment = useCallback((id: string) => {
+  const handleToggleEnrollment = useCallback(async (id: string) => {
     const definition = definitions.find(d => d.id === id);
     if (!definition) {
       setUpdateError('Benefit not found');
       return;
     }
 
-    const updated = benefitsService.toggleEnrollment(id, definition, selectedYear);
+    const updated = await benefitsService.toggleEnrollment(id, definition, selectedYear);
 
     setAllBenefits(prev => prev.map(b => b.id === id ? updated : b));
     setBenefits(prev => prev.map(b => b.id === id ? updated : b));
@@ -102,7 +107,7 @@ function App() {
     const currentBenefit = allBenefits.find(b => b.id === id);
     const newIgnored = !currentBenefit?.ignored;
 
-    const updated = benefitsService.updateBenefit(id, definition, newIgnored, selectedYear);
+    const updated = await benefitsService.updateBenefit(id, definition, newIgnored, selectedYear);
 
     setAllBenefits(prev => prev.map(b => b.id === id ? updated : b));
     if (newIgnored) {
@@ -122,20 +127,17 @@ function App() {
     setUpdateError(null);
   }, [definitions, allBenefits, selectedYear]);
 
-  const handleImport = useCallback(async (
+  const handleTransactionsUpdate = useCallback(async (
     cardId: string,
-    aggregated: Map<string, {
-      periods?: Record<string, { usedAmount: number; transactions?: { date: string; description: string; amount: number }[] }>;
-      transactions?: { date: string; description: string; amount: number }[];
-    }>
+    transactions: StoredTransaction[]
   ) => {
-    // Get definitions for this card
-    const cardDefinitions = definitions.filter(d => d.cardId === cardId);
+    // Save all transactions to card-level storage
+    saveCardTransactions(cardId, transactions);
     
-    // Import to localStorage
-    importBenefitUsage(aggregated, cardDefinitions);
+    // Bump version to trigger cardTransactionStatus recomputation
+    setTransactionVersion(v => v + 1);
     
-    // Refresh benefits from storage
+    // Refresh benefits from storage (transactions are now derived via matcher)
     const allBenefitsData = await benefitsService.getBenefits(undefined, true, selectedYear);
     const benefitsData = allBenefitsData.filter(b => !b.ignored);
     const statsData = await benefitsService.getStats(selectedYear);
@@ -144,7 +146,22 @@ function App() {
     setBenefits(benefitsData);
     setStats(statsData);
     setUpdateError(null);
-  }, [definitions, selectedYear]);
+  }, [selectedYear]);
+
+  // Build card transaction status for UI
+  // transactionVersion triggers recomputation when transactions change
+  const cardTransactionStatus = useMemo(() => {
+    void transactionVersion; // Used to trigger recomputation
+    const status: Record<string, { hasData: boolean; dateRange: { min: Date; max: Date } | null }> = {};
+    for (const card of cards) {
+      const dateRange = getCardTransactionDateRange(card.id);
+      status[card.id] = {
+        hasData: dateRange !== null,
+        dateRange,
+      };
+    }
+    return status;
+  }, [cards, transactionVersion]);
 
   const handleClearError = useCallback(() => {
     setUpdateError(null);
@@ -244,6 +261,31 @@ function App() {
                     </button>
                   ))}
                 </div>
+                <button
+                  onClick={() => setTransactionsModalOpen(true)}
+                  className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 hover:text-white transition-colors"
+                  title="Transactions"
+                  type="button"
+                >
+                  {/* Database with down arrow icon */}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    {/* Database cylinder - pushed down, drawn first so arrow is on top */}
+                    <ellipse cx="12" cy="14" rx="9" ry="3" />
+                    <path d="M3 14v4c0 1.66 4.03 3 9 3s9-1.34 9-3v-4" />
+                    {/* Big down arrow on top - drawn last so it's in front */}
+                    <path d="M12 1v10m0 0l-4-4M12 11l4-4" strokeWidth="2.5" />
+                  </svg>
+                </button>
               </div>
             </div>
             <nav className="flex flex-wrap gap-2">
@@ -287,7 +329,8 @@ function App() {
                 benefits={selectedCardBenefits}
                 allBenefits={selectedCardAllBenefits}
                 onBack={handleBack}
-                onImport={handleImport}
+                cardTransactionStatus={cardTransactionStatus[selectedCard.id]}
+                onOpenTransactions={() => setTransactionsModalOpen(true)}
               />
             ) : (
               <Dashboard
@@ -295,12 +338,23 @@ function App() {
                 cards={cards}
                 allBenefits={allBenefits}
                 stats={stats}
-                onImport={handleImport}
+                cardTransactionStatus={cardTransactionStatus}
+                onOpenTransactions={() => setTransactionsModalOpen(true)}
               />
             )}
           </ErrorBoundary>
         </BenefitsProvider>
       </main>
+
+      <Suspense fallback={null}>
+        <TransactionsModal
+          isOpen={transactionsModalOpen}
+          cards={cards}
+          definitions={definitions}
+          onClose={() => setTransactionsModalOpen(false)}
+          onTransactionsUpdate={handleTransactionsUpdate}
+        />
+      </Suspense>
     </div>
   );
 }

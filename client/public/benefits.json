@@ -16,7 +16,7 @@
     {
       "id": "amex-hotel-credit",
       "cardId": "amex-platinum",
-      "name": "Hotel Credit",
+      "name": "Hotel",
       "shortDescription": "$600 annually ($300 twice per year)",
       "fullDescription": "Receive up to $600 in statement credits annually for prepaid Fine Hotels + Resorts or The Hotel Collection bookings made through Amex Travel, split as $300 for January-June and $300 for July-December.",
       "creditAmount": 600,
@@ -124,7 +124,7 @@
     {
       "id": "amex-uber-one",
       "cardId": "amex-platinum",
-      "name": "Uber One Credit",
+      "name": "Uber One",
       "shortDescription": "$120 annually for Uber One",
       "fullDescription": "Receive up to $120 in statement credits each calendar year after paying for an auto-renewing Uber One membership with the Platinum Card.",
       "creditAmount": 120,
@@ -141,7 +141,7 @@
     {
       "id": "amex-airline-fee",
       "cardId": "amex-platinum",
-      "name": "Airline Fee Credit",
+      "name": "Airline Fee",
       "shortDescription": "$200 annually for one airline",
       "fullDescription": "Select one qualifying airline and receive up to $200 in statement credits each calendar year for incidental fees such as checked bags, seat assignments, and inflight purchases.",
       "creditAmount": 200,
@@ -158,7 +158,7 @@
     {
       "id": "amex-clear-plus",
       "cardId": "amex-platinum",
-      "name": "CLEAR Plus Credit",
+      "name": "CLEAR Plus",
       "shortDescription": "$209 annually for CLEAR Plus",
       "fullDescription": "Receive up to $209 in statement credits each calendar year after paying for a CLEAR Plus membership with the Platinum Card.",
       "creditAmount": 209,
@@ -175,7 +175,7 @@
     {
       "id": "amex-resy-credit",
       "cardId": "amex-platinum",
-      "name": "Resy Credit",
+      "name": "Resy",
       "shortDescription": "$400 annually ($100 per quarter)",
       "fullDescription": "Receive up to $100 in statement credits each quarter for eligible Resy dining purchases when enrolled and using the Platinum Card.",
       "creditAmount": 400,
@@ -214,7 +214,7 @@
     {
       "id": "amex-digital-entertainment",
       "cardId": "amex-platinum",
-      "name": "Digital Entertainment Credit",
+      "name": "Digital Entertainment",
       "shortDescription": "$300 annually ($25 monthly)",
       "fullDescription": "Receive up to $25 in statement credits each month for eligible digital entertainment subscriptions when enrolled.",
       "creditAmount": 300,
@@ -293,7 +293,7 @@
     {
       "id": "amex-lululemon",
       "cardId": "amex-platinum",
-      "name": "lululemon Credit",
+      "name": "lululemon",
       "shortDescription": "$300 annually ($75 per quarter)",
       "fullDescription": "Receive up to $75 in statement credits each quarter for eligible lululemon purchases when enrolled.",
       "creditAmount": 300,
@@ -332,7 +332,7 @@
     {
       "id": "amex-walmart-plus",
       "cardId": "amex-platinum",
-      "name": "Walmart+ Credit",
+      "name": "Walmart+",
       "shortDescription": "$155 annually ($12.95 monthly)",
       "fullDescription": "Receive up to $12.95 in statement credits each month after paying for a Walmart+ monthly membership with the Platinum Card.",
       "creditAmount": 155,
@@ -440,7 +440,7 @@
     {
       "id": "amex-oura",
       "cardId": "amex-platinum",
-      "name": "Oura Ring Credit",
+      "name": "Oura Ring",
       "shortDescription": "$200 annually for Oura Ring",
       "fullDescription": "Receive up to $200 in statement credits each calendar year for an Oura Ring purchase at Ouraring.com when enrolled.",
       "creditAmount": 200,
@@ -457,7 +457,7 @@
     {
       "id": "amex-equinox",
       "cardId": "amex-platinum",
-      "name": "Equinox Credit",
+      "name": "Equinox",
       "shortDescription": "$300 annually for Equinox",
       "fullDescription": "Receive up to $300 in statement credits each calendar year for eligible Equinox memberships or Equinox+ subscriptions when enrolled.",
       "creditAmount": 300,

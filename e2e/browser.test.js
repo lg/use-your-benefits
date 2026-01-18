@@ -22,7 +22,7 @@ test.describe('Dashboard', () => {
   test('shows all benefits', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Uber Cash' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Saks Fifth Avenue' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Airline Fee Credit' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Airline Fee' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Global Entry/TSA PreCheck' }).first()).toBeVisible();
   });
 });
@@ -63,7 +63,7 @@ test.describe('Enrollment Toggle', () => {
 
   test('enrollment button toggles and persists on reload', async ({ page }) => {
     // Find a benefit that requires enrollment (Airline Fee Credit does)
-    const benefitCard = page.locator('.benefit-card', { hasText: 'Airline Fee Credit' });
+    const benefitCard = page.locator('.benefit-card', { hasText: 'Airline Fee' });
     
     // Initially should show "Needs Enrollment" button
     const enrollButton = benefitCard.getByRole('button', { name: 'Needs Enrollment' });
@@ -77,7 +77,7 @@ test.describe('Enrollment Toggle', () => {
     
     // Reload and verify it persisted
     await page.reload();
-    const reloadedCard = page.locator('.benefit-card', { hasText: 'Airline Fee Credit' });
+    const reloadedCard = page.locator('.benefit-card', { hasText: 'Airline Fee' });
     await expect(reloadedCard.getByRole('button', { name: 'Enrolled' })).toBeVisible();
   });
 });
@@ -103,7 +103,7 @@ test.describe('Transaction-based Progress', () => {
     });
     await page.reload();
 
-    const uberCard = page.locator('.benefit-card', { hasText: 'Uber One Credit' });
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber One' });
     // Current period without transactions shows as 'current' class
     await expect(uberCard.locator('.progress-segment.current')).toHaveCount(1);
     await expect(uberCard.locator('.progress-segment.completed')).toHaveCount(0);
@@ -115,10 +115,15 @@ test.describe('Transaction-based Progress', () => {
         benefits: {
           'amex-uber-one': {
             enrolled: true,
-            ignored: false,
+            ignored: false
+          }
+        },
+        cardTransactions: {
+          'amex-platinum': {
             transactions: [
-              { date: '2026-01-15', description: 'Uber One membership', amount: 120 }
-            ]
+              { date: '2026-01-15T00:00:00.000Z', description: 'Platinum Uber One Credit', amount: -120 }
+            ],
+            importedAt: new Date().toISOString()
           }
         }
       };
@@ -126,7 +131,7 @@ test.describe('Transaction-based Progress', () => {
     });
     await page.reload();
 
-    const uberCard = page.locator('.benefit-card', { hasText: 'Uber One Credit' });
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber One' });
     await expect(uberCard.locator('.progress-segment.completed')).toHaveCount(1);
   });
 
@@ -144,7 +149,7 @@ test.describe('Transaction-based Progress', () => {
     });
     await page.reload();
 
-    const uberCard = page.locator('.benefit-card', { hasText: 'Uber One Credit' });
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber One' });
     await expect(uberCard.locator('.progress-segment.completed')).toHaveCount(0);
     // Current period shows as 'current' class, not 'pending'
     await expect(uberCard.locator('.progress-segment.current')).toHaveCount(1);
@@ -156,10 +161,15 @@ test.describe('Transaction-based Progress', () => {
         benefits: {
           'amex-uber-cash': {
             enrolled: true,
-            ignored: false,
+            ignored: false
+          }
+        },
+        cardTransactions: {
+          'amex-platinum': {
             transactions: [
-              { date: '2026-01-15', description: 'Uber Eats', amount: 17 }
-            ]
+              { date: '2026-01-15T00:00:00.000Z', description: 'Platinum Uber Cash Credit', amount: -17 }
+            ],
+            importedAt: new Date().toISOString()
           }
         }
       };
@@ -224,45 +234,17 @@ test.describe('Past Year Segments', () => {
     await page.evaluate(() => {
       const userData = {
         benefits: {
-          'amex-resy-credit': {
-            enrolled: true,
-            ignored: false,
-            transactions: [
-              { date: '2025-02-15', description: 'Resy reservation', amount: 100 },
-              { date: '2025-05-20', description: 'Resy reservation', amount: 100 },
-              { date: '2025-08-10', description: 'Resy reservation', amount: 100 },
-              { date: '2025-11-15', description: 'Resy reservation', amount: 100 }
-            ]
-          },
-          'amex-saks': {
-            enrolled: true,
-            ignored: false,
-            transactions: [
-              { date: '2025-02-14', description: 'Shop Saks with Platinum Credit', amount: 50 },
-              { date: '2025-08-08', description: 'Platinum Saks Credit', amount: 50 }
-            ]
-          },
-          'amex-uber-one': {
-            enrolled: true,
-            ignored: false,
-            transactions: [
-              { date: '2025-06-15', description: 'Uber One membership', amount: 120 }
-            ]
-          },
-          'amex-hotel-credit': {
-            enrolled: true,
-            ignored: false,
-            transactions: [
-              { date: '2025-01-20', description: 'Hotel booking', amount: 300 },
-              { date: '2025-07-10', description: 'Hotel booking', amount: 300 }
-            ]
-          },
           'amex-global-entry': {
             enrolled: true,
-            ignored: false,
+            ignored: false
+          }
+        },
+        cardTransactions: {
+          'amex-platinum': {
             transactions: [
-              { date: '2025-01-10', description: 'Global Entry fee', amount: 120 }
-            ]
+              { date: '2025-01-10T00:00:00.000Z', description: 'Platinum Global Entry Credit', amount: -120 }
+            ],
+            importedAt: new Date().toISOString()
           }
         }
       };
@@ -291,11 +273,16 @@ test.describe('Past Year Segments', () => {
         benefits: {
           'amex-saks': {
             enrolled: true,
-            ignored: false,
+            ignored: false
+          }
+        },
+        cardTransactions: {
+          'amex-platinum': {
             transactions: [
-              { date: '2025-02-14', description: 'Shop Saks with Platinum Credit', amount: 50 },
-              { date: '2025-08-08', description: 'Platinum Saks Credit', amount: 50 }
-            ]
+              { date: '2025-02-14T00:00:00.000Z', description: 'Shop Saks with Platinum Credit', amount: -50 },
+              { date: '2025-08-08T00:00:00.000Z', description: 'Platinum Saks Credit', amount: -50 }
+            ],
+            importedAt: new Date().toISOString()
           }
         }
       };
@@ -318,20 +305,25 @@ test.describe('Past Year Segments', () => {
         benefits: {
           'amex-digital-entertainment': {
             enrolled: true,
-            ignored: false,
+            ignored: false
+          }
+        },
+        cardTransactions: {
+          'amex-platinum': {
             transactions: [
-              { date: '2025-01-15', description: 'Platinum Digital Entertainment Credit', amount: 25 },
-              { date: '2025-02-15', description: 'Platinum Digital Entertainment Credit', amount: 25 },
-              { date: '2025-03-15', description: 'Platinum Digital Entertainment Credit', amount: 25 },
-              { date: '2025-04-15', description: 'Platinum Digital Entertainment Credit', amount: 25 },
-              { date: '2025-05-15', description: 'Platinum Digital Entertainment Credit', amount: 25 },
-              { date: '2025-06-15', description: 'Platinum Digital Entertainment Credit', amount: 25 },
-              { date: '2025-07-15', description: 'Platinum Digital Entertainment Credit', amount: 25 },
-              { date: '2025-08-15', description: 'Platinum Digital Entertainment Credit', amount: 25 },
-              { date: '2025-09-15', description: 'Platinum Digital Entertainment Credit', amount: 25 },
-              { date: '2025-10-15', description: 'Platinum Digital Entertainment Credit', amount: 25 },
-              { date: '2025-12-15', description: 'Platinum Digital Entertainment Credit', amount: 25 }
-            ]
+              { date: '2025-01-15T00:00:00.000Z', description: 'Platinum Digital Entertainment Credit', amount: -25 },
+              { date: '2025-02-15T00:00:00.000Z', description: 'Platinum Digital Entertainment Credit', amount: -25 },
+              { date: '2025-03-15T00:00:00.000Z', description: 'Platinum Digital Entertainment Credit', amount: -25 },
+              { date: '2025-04-15T00:00:00.000Z', description: 'Platinum Digital Entertainment Credit', amount: -25 },
+              { date: '2025-05-15T00:00:00.000Z', description: 'Platinum Digital Entertainment Credit', amount: -25 },
+              { date: '2025-06-15T00:00:00.000Z', description: 'Platinum Digital Entertainment Credit', amount: -25 },
+              { date: '2025-07-15T00:00:00.000Z', description: 'Platinum Digital Entertainment Credit', amount: -25 },
+              { date: '2025-08-15T00:00:00.000Z', description: 'Platinum Digital Entertainment Credit', amount: -25 },
+              { date: '2025-09-15T00:00:00.000Z', description: 'Platinum Digital Entertainment Credit', amount: -25 },
+              { date: '2025-10-15T00:00:00.000Z', description: 'Platinum Digital Entertainment Credit', amount: -25 },
+              { date: '2025-12-15T00:00:00.000Z', description: 'Platinum Digital Entertainment Credit', amount: -25 }
+            ],
+            importedAt: new Date().toISOString()
           }
         }
       };
@@ -354,12 +346,16 @@ test.describe('Past Year Segments', () => {
         benefits: {
           'amex-lululemon': {
             enrolled: true,
-            ignored: false,
-            transactions: [
-              { date: '2026-01-11', description: 'Platinum Lululemon Credit', amount: 75 }
-            ]
+            ignored: false
           }
-
+        },
+        cardTransactions: {
+          'amex-platinum': {
+            transactions: [
+              { date: '2026-01-11T00:00:00.000Z', description: 'Platinum Lululemon Credit', amount: -75 }
+            ],
+            importedAt: new Date().toISOString()
+          }
         }
       };
       localStorage.setItem('use-your-benefits', JSON.stringify(userData));
@@ -369,7 +365,7 @@ test.describe('Past Year Segments', () => {
     await page.getByRole('button', { name: '2026', exact: true }).click();
     await page.waitForLoadState('domcontentloaded');
 
-    const lululemonCard = page.locator('.benefit-card', { hasText: 'lululemon Credit' });
+    const lululemonCard = page.locator('.benefit-card', { hasText: 'lululemon' });
     await expect(lululemonCard.locator('.progress-segment.completed')).toHaveCount(1);
     await expect(lululemonCard.locator('.progress-segment.missed')).toHaveCount(0);
     await expect(lululemonCard.locator('.progress-segment.pending')).toHaveCount(3);

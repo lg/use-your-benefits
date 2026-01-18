@@ -8,16 +8,35 @@ let cachedData: UserBenefitsData | null = null;
 const listeners = new Set<() => void>();
 
 function getDefaultData(): UserBenefitsData {
-  return { benefits: {}, importNotes: {} };
+  return { benefits: {}, importNotes: {}, cardTransactions: {} };
 }
 
 function parseStoredData(stored: string | null): UserBenefitsData {
   if (!stored) return getDefaultData();
   try {
     const parsed = JSON.parse(stored) as UserBenefitsData;
+    
+    // Migration: strip old transaction data from benefit states
+    // Users must re-upload CSV to populate cardTransactions
+    const migratedBenefits: Record<string, typeof parsed.benefits[string]> = {};
+    for (const [id, state] of Object.entries(parsed.benefits ?? {})) {
+      const { transactions: _transactions, periods, ...rest } = state;
+      // Strip transactions from periods too
+      const cleanedPeriods = periods
+        ? Object.fromEntries(
+            Object.entries(periods).map(([pid, pstate]) => {
+              const { transactions: _ptx, ...prest } = pstate;
+              return [pid, prest];
+            })
+          )
+        : undefined;
+      migratedBenefits[id] = { ...rest, periods: cleanedPeriods };
+    }
+    
     return {
-      benefits: parsed.benefits ?? {},
+      benefits: migratedBenefits,
       importNotes: parsed.importNotes ?? {},
+      cardTransactions: parsed.cardTransactions ?? {},
     };
   } catch {
     return getDefaultData();

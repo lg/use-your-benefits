@@ -2,6 +2,8 @@ import type {
   BenefitDefinition,
   BenefitPeriodUserState,
   BenefitUserState,
+  CardTransactionStore,
+  StoredTransaction,
 } from '../../../shared/types';
 import {
   getUserBenefitsData,
@@ -64,46 +66,38 @@ export function updateUserState(
   return updated;
 }
 
-export function importBenefitUsage(
-  imports: Map<string, { periods?: Record<string, { usedAmount: number; transactions?: { date: string; description: string; amount: number }[] }>; transactions?: { date: string; description: string; amount: number }[] }>,
-  benefitDefinitions: BenefitDefinition[]
-): void {
+// Card transaction storage functions
+
+export function getCardTransactions(cardId: string): CardTransactionStore | null {
   const data = getUserBenefitsData();
+  return data.cardTransactions?.[cardId] ?? null;
+}
 
-  // Create lookup for benefit definitions
-  const benefitDefMap = new Map<string, BenefitDefinition>();
-  for (const def of benefitDefinitions) {
-    benefitDefMap.set(def.id, def);
-  }
-
-  for (const [benefitId, usage] of imports) {
-    const benefitDef = benefitDefMap.get(benefitId);
-    if (!benefitDef) continue;
-
-    // Get existing state or create default
-    const existing = data.benefits[benefitId] ?? getDefaultUserState(benefitDef);
-
-    const periodTransactions = usage.periods
-      ? Object.values(usage.periods).flatMap((period) => period.transactions ?? [])
-      : [];
-
-    const mergedTransactions = [...(usage.transactions ?? []), ...periodTransactions];
-
-    if (mergedTransactions.length > 0) {
-      existing.transactions = mergedTransactions;
-    }
-
-    if (usage.periods) {
-      existing.periods = Object.fromEntries(
-        Object.entries(usage.periods).map(([periodId, periodUsage]) => [
-          periodId,
-          { transactions: periodUsage.transactions ?? [] },
-        ])
-      );
-    }
-
-    data.benefits[benefitId] = existing;
-  }
-
+export function saveCardTransactions(cardId: string, transactions: StoredTransaction[]): void {
+  const data = getUserBenefitsData();
+  if (!data.cardTransactions) data.cardTransactions = {};
+  data.cardTransactions[cardId] = {
+    transactions,
+    importedAt: new Date().toISOString(),
+  };
   saveUserBenefitsData(data);
+}
+
+export function clearCardTransactions(cardId: string): void {
+  const data = getUserBenefitsData();
+  if (data.cardTransactions?.[cardId]) {
+    delete data.cardTransactions[cardId];
+    saveUserBenefitsData(data);
+  }
+}
+
+export function getCardTransactionDateRange(cardId: string): { min: Date; max: Date } | null {
+  const store = getCardTransactions(cardId);
+  if (!store || store.transactions.length === 0) return null;
+  
+  const dates = store.transactions.map(t => new Date(t.date));
+  return {
+    min: new Date(Math.min(...dates.map(d => d.getTime()))),
+    max: new Date(Math.max(...dates.map(d => d.getTime()))),
+  };
 }

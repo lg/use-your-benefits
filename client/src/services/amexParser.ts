@@ -19,8 +19,8 @@ export function parseAmexCsv(csvContent: string): ParsedTransaction[] {
     }
 
     const description = row['Description'] ?? '';
-    const rawAmount = parseAmount(row['Amount'] ?? '0');
-    const amount = rawAmount < 0 ? Math.abs(rawAmount) : rawAmount;
+    const amount = parseAmount(row['Amount'] ?? '0');
+    // Keep the original sign - negative amounts are credits in Amex CSVs
 
     transactions.push({
       date,
@@ -37,34 +37,29 @@ export function parseAmexCsv(csvContent: string): ParsedTransaction[] {
 
 /**
  * Extract only credit transactions from Amex statement
- * Credits are:
- * - Negative amounts (reduce balance)
- * - Description contains "Credit" (to distinguish from payments)
- * - NOT payment transactions
+ * Credits in Amex CSVs have negative amounts (they reduce your balance)
+ * We exclude payments which are also negative
  */
 export function extractAmexCredits(
   transactions: ParsedTransaction[]
 ): ParsedTransaction[] {
   return transactions.filter((t) => {
+    // Credits are negative amounts
+    if (t.amount >= 0) {
+      return false;
+    }
+
     const descLower = t.description.toLowerCase();
     const detailsLower = t.extendedDetails?.toLowerCase() ?? '';
     const combinedText = `${descLower} ${detailsLower}`.trim();
 
-    // Exclude payment transactions
+    // Exclude payment transactions (they're also negative but not credits)
     if (combinedText.includes('payment') || combinedText.includes('autopay')) {
       return false;
     }
 
-    if (combinedText.includes('airline fee reimbursement')) {
-      return true;
-    }
-
-    // Include if description contains "credit"
-    if (combinedText.includes('credit')) {
-      return true;
-    }
-
-    return false;
+    // It's a negative amount and not a payment, so it's a credit
+    return true;
   });
 }
 

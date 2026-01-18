@@ -72,16 +72,16 @@ function ProgressBarComponent({ segments, segmentsCount }: ProgressBarProps) {
                 className="absolute -top-1 -bottom-1 w-1 bg-white border border-slate-800 rounded-sm z-10"
                 style={{ left: `${segment.timeProgress}%` }}
               >
-                <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-3">
-                  <Tooltip
-                    content={
-                      <div>
-                        <div>{Math.round(segment.timeProgress)}% complete</div>
-                        <div>{segment.daysLeft} days left</div>
-                      </div>
-                    }
-                  />
-                </div>
+                <Tooltip
+                  content={
+                    <div>
+                      <div>{Math.round(segment.timeProgress)}% complete</div>
+                      <div>{segment.daysLeft} days left</div>
+                    </div>
+                  }
+                >
+                  <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-3" />
+                </Tooltip>
               </div>
             ) : null}
           </div>

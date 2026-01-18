@@ -15,27 +15,24 @@ interface BenefitPattern {
 }
 
 // Amex Platinum credit patterns
+// Amex benefit credit patterns
+// The matchBenefitId function checks for Amex identifier (Platinum/Plat/AMEX/Amex) first
+// These patterns match the benefit-specific keywords
 const AMEX_PLATINUM_PATTERNS: BenefitPattern[] = [
   // Order matters - more specific patterns first
   { pattern: /uber.*one/i, benefitId: 'amex-uber-one' },
   { pattern: /uber/i, benefitId: 'amex-uber-cash' },
   { pattern: /lululemon/i, benefitId: 'amex-lululemon' },
   { pattern: /saks/i, benefitId: 'amex-saks' },
-  { pattern: /clear\s*plus|clear.*credit/i, benefitId: 'amex-clear-plus' },
+  { pattern: /clear/i, benefitId: 'amex-clear-plus' },
   { pattern: /airline/i, benefitId: 'amex-airline-fee' },
   { pattern: /resy/i, benefitId: 'amex-resy-credit' },
-  {
-    pattern: /digital.*entertainment|entertainment.*credit/i,
-    benefitId: 'amex-digital-entertainment',
-  },
+  { pattern: /digital.*ent|entertainment/i, benefitId: 'amex-digital-entertainment' },
   { pattern: /walmart/i, benefitId: 'amex-walmart-plus' },
   { pattern: /hotel/i, benefitId: 'amex-hotel-credit' },
   { pattern: /oura/i, benefitId: 'amex-oura' },
   { pattern: /equinox/i, benefitId: 'amex-equinox' },
-  {
-    pattern: /global.*entry|tsa.*precheck|nexus/i,
-    benefitId: 'amex-global-entry',
-  },
+  { pattern: /global.*entry|tsa.*precheck|nexus/i, benefitId: 'amex-global-entry' },
 ];
 
 // Map card types to their patterns
@@ -45,6 +42,8 @@ const CARD_PATTERNS: Record<CardType, BenefitPattern[]> = {
 
 /**
  * Find which benefit a credit matches based on its description
+ * For Amex cards, requires an Amex identifier to distinguish from regular refunds
+ * Amex credits can contain: "Platinum", "Plat", "AMEX", or "Amex"
  */
 function matchBenefitId(
   description: string,
@@ -52,6 +51,11 @@ function matchBenefitId(
 ): { benefitId: string; confidence: 'high' | 'low' } | null {
   const patterns = CARD_PATTERNS[cardId];
   if (!patterns) {
+    return null;
+  }
+
+  // For Amex cards, description must contain an Amex identifier to be a real Amex credit
+  if (cardId.startsWith('amex') && !/platinum|plat\b|amex/i.test(description)) {
     return null;
   }
 

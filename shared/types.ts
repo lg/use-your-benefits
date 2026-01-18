@@ -75,9 +75,15 @@ export interface BenefitsStaticData {
   benefits: BenefitDefinition[];
 }
 
+export interface CardTransactionStore {
+  transactions: StoredTransaction[];
+  importedAt: string; // ISO date of last import
+}
+
 export interface UserBenefitsData {
   benefits: Record<string, BenefitUserState>;
   importNotes?: Record<string, string>;
+  cardTransactions?: Record<string, CardTransactionStore>;
 }
 
 

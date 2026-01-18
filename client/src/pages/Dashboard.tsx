@@ -1,21 +1,22 @@
-import { useMemo, useState, useCallback, lazy, Suspense } from 'react';
+import { useMemo } from 'react';
 import type { Benefit, Stats, CreditCard } from '../types';
 import { BenefitCard } from '../components/BenefitCard';
 import { CardHeader } from '../components/CardHeader';
 import { useBenefits } from '../context/BenefitsContext';
 import { calculateStats, getTotalAnnualFee } from '@shared/utils';
 
-const ImportModal = lazy(() => import('../components/ImportModal'));
+interface CardTransactionStatus {
+  hasData: boolean;
+  dateRange: { min: Date; max: Date } | null;
+}
 
 interface DashboardProps {
   benefits: Benefit[];
   cards: CreditCard[];
   allBenefits: Benefit[];
   stats: Stats | null;
-  onImport: (cardId: string, aggregated: Map<string, {
-    periods?: Record<string, { usedAmount: number; transactions?: { date: string; description: string; amount: number }[] }>;
-    transactions?: { date: string; description: string; amount: number }[];
-  }>) => void;
+  cardTransactionStatus: Record<string, CardTransactionStatus>;
+  onOpenTransactions: () => void;
 }
 
 export function Dashboard({
@@ -23,35 +24,10 @@ export function Dashboard({
   cards,
   allBenefits,
   stats,
-  onImport
+  cardTransactionStatus,
+  onOpenTransactions,
 }: DashboardProps) {
-  const { definitions, selectedYear, onToggleEnrollment, onToggleVisibility } = useBenefits();
-  
-  // Import modal state
-  const [importCardId, setImportCardId] = useState<string | null>(null);
-  
-  const importCard = importCardId ? cards.find(c => c.id === importCardId) : null;
-  const importCardDefinitions = importCardId 
-    ? definitions.filter(d => d.cardId === importCardId) 
-    : [];
-
-  const handleImportClick = useCallback((cardId: string) => {
-    setImportCardId(cardId);
-  }, []);
-
-  const handleImportClose = useCallback(() => {
-    setImportCardId(null);
-  }, []);
-
-  const handleImportConfirm = useCallback((aggregated: Map<string, {
-    periods?: Record<string, { usedAmount: number; transactions?: { date: string; description: string; amount: number }[] }>;
-    transactions?: { date: string; description: string; amount: number }[];
-  }>) => {
-    if (importCardId) {
-      onImport(importCardId, aggregated);
-    }
-    setImportCardId(null);
-  }, [importCardId, onImport]);
+  const { selectedYear, onToggleEnrollment, onToggleVisibility } = useBenefits();
 
   const benefitsByCard = useMemo(() => 
     cards.map(card => ({
@@ -104,7 +80,8 @@ export function Dashboard({
               allBenefits={cardAllBenefits}
               selectedYear={selectedYear}
               onUpdateBenefit={onToggleVisibility}
-              onImportClick={handleImportClick}
+              transactionStatus={cardTransactionStatus[card.id]}
+              onOpenTransactions={onOpenTransactions}
             />
             <div className="grid gap-4 md:grid-cols-2">
               {cardBenefits.map(benefit => (
@@ -118,17 +95,6 @@ export function Dashboard({
           </div>
         )
       ))}
-
-      <Suspense fallback={null}>
-        <ImportModal
-          isOpen={importCardId !== null}
-          cardId={importCardId ?? ''}
-          cardName={importCard?.name ?? ''}
-          benefits={importCardDefinitions}
-          onClose={handleImportClose}
-          onImport={handleImportConfirm}
-        />
-      </Suspense>
     </div>
   );
 }

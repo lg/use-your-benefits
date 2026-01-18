@@ -69,7 +69,7 @@ function ProgressBarComponent({ segments, segmentsCount }: ProgressBarProps) {
             </Tooltip>
             {segment && segment.isCurrent && segment.timeProgress !== undefined && segment.daysLeft !== undefined ? (
               <div
-                className="absolute -top-1 -bottom-1 w-1 bg-white border border-slate-800 rounded-sm z-10"
+                className="absolute -top-1 -bottom-1 w-1 bg-white border border-slate-800 rounded-sm"
                 style={{ left: `${segment.timeProgress}%` }}
               >
                 <Tooltip

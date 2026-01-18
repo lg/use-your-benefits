@@ -96,7 +96,7 @@ function CardHeaderComponent({ card, stats, allBenefits, selectedYear, onUpdateB
                      aria-label="Close dropdown"
                    />
                    <div 
-                     className="absolute right-0 top-full mt-2 w-64 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-20 max-h-80 overflow-y-auto"
+                     className="absolute right-0 top-full mt-2 w-64 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-20 max-h-80 overflow-y-auto scrollbar-dark"
                      role="menu"
                    >
                    <div className="p-2">

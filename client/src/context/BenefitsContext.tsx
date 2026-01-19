@@ -1,5 +1,5 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import type { BenefitDefinition } from '../types';
+import type { BenefitDefinition } from '@shared/types';
 
 interface BenefitsContextValue {
   definitions: BenefitDefinition[];

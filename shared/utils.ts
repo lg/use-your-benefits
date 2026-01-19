@@ -12,6 +12,32 @@ export function formatDate(dateString: string): string {
   });
 }
 
+export function formatDateRange(min: Date, max: Date): string {
+  const formatMonth = (d: Date) =>
+    d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+
+  const minStr = formatMonth(min);
+  const maxStr = formatMonth(max);
+
+  return minStr === maxStr ? minStr : `${minStr} - ${maxStr}`;
+}
+
+export function isBenefitCredit(amount: number, description: string, cardId: string, type?: string): boolean {
+  const descLower = description.toLowerCase();
+
+  if (cardId.startsWith('amex')) {
+    if (amount >= 0) return false;
+    if (descLower.includes('payment') || descLower.includes('autopay')) return false;
+    return /platinum|plat\b|amex/i.test(description);
+  }
+
+  if (cardId.startsWith('chase')) {
+    return type?.toLowerCase() === 'adjustment';
+  }
+
+  return false;
+}
+
 export function getDaysUntilExpiry(endDate: string): number {
   const now = new Date();
   const expiry = new Date(endDate);

@@ -1,6 +1,6 @@
 import { useState, useCallback, memo } from 'react';
-import type { CreditCard, Benefit, CardStats } from '../types';
-import { getAnnualFee } from '@shared/utils';
+import type { CreditCard, Benefit, CardStats } from '@shared/types';
+import { getAnnualFee, formatDateRange } from '@shared/utils';
 
 interface TransactionStatus {
   hasData: boolean;
@@ -15,16 +15,6 @@ interface CardHeaderProps {
   onUpdateBenefit: (id: string) => void;
   transactionStatus?: TransactionStatus;
   onOpenTransactions?: () => void;
-}
-
-function formatDateRange(min: Date, max: Date): string {
-  const formatMonth = (d: Date) =>
-    d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
-  
-  const minStr = formatMonth(min);
-  const maxStr = formatMonth(max);
-  
-  return minStr === maxStr ? minStr : `${minStr} - ${maxStr}`;
 }
 
 function CardHeaderComponent({ card, stats, allBenefits, selectedYear, onUpdateBenefit, transactionStatus, onOpenTransactions }: CardHeaderProps) {

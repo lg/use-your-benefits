@@ -7,6 +7,7 @@ import {
 } from 'react';
 import type { CreditCard, BenefitDefinition, StoredTransaction } from '@shared/types';
 import { getCardTransactions, clearCardTransactions } from '../../storage/userBenefits';
+import { formatDateRange } from '@shared/utils';
 import { CardTransactionsTab } from './CardTransactionsTab';
 
 type ConfirmState = 'none' | 'confirming';
@@ -17,16 +18,6 @@ interface TransactionsModalProps {
   definitions: BenefitDefinition[];
   onClose: () => void;
   onTransactionsUpdate: (cardId: string, transactions: StoredTransaction[]) => void;
-}
-
-function formatDateRange(min: Date, max: Date): string {
-  const formatMonth = (d: Date) =>
-    d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
-  
-  const minStr = formatMonth(min);
-  const maxStr = formatMonth(max);
-  
-  return minStr === maxStr ? minStr : `${minStr} - ${maxStr}`;
 }
 
 export function TransactionsModal({

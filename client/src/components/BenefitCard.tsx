@@ -1,5 +1,5 @@
 import { useMemo, memo } from 'react';
-import { Benefit } from '../types';
+import type { Benefit } from '@shared/types';
 import { ProgressBar } from './ProgressBar';
 import { Tooltip } from './Tooltip';
 import { useBenefits } from '../context/BenefitsContext';

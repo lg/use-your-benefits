@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { Benefit, Stats, CreditCard } from '../types';
+import type { Benefit, Stats, CreditCard } from '@shared/types';
 import { BenefitCard } from '../components/BenefitCard';
 import { CardHeader } from '../components/CardHeader';
 import { useBenefits } from '../context/BenefitsContext';

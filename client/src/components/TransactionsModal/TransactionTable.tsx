@@ -1,31 +1,9 @@
 import { memo, useMemo } from 'react';
 import type { StoredTransaction, BenefitDefinition } from '@shared/types';
 import type { CardType, ParsedTransaction } from '../../types/import';
+import { isBenefitCredit } from '@shared/utils';
 import { matchCredits } from '../../services/benefitMatcher';
 import { Tooltip } from '../Tooltip';
-
-/**
- * Check if a transaction is a benefit credit based on card type
- * Amex: credits are negative amounts with Amex identifier
- * Chase: credits are transactions with type "Adjustment"
- */
-function isBenefitCredit(amount: number, description: string, cardId: string, type?: string): boolean {
-  const descLower = description.toLowerCase();
-  
-  if (cardId.startsWith('amex')) {
-    // Amex: credits are negative, must have Amex identifier
-    if (amount >= 0) return false;
-    if (descLower.includes('payment') || descLower.includes('autopay')) return false;
-    return /platinum|plat\b|amex/i.test(description);
-  }
-  
-  if (cardId.startsWith('chase')) {
-    // Chase: credits are "Adjustment" type transactions
-    return type?.toLowerCase() === 'adjustment';
-  }
-  
-  return false;
-}
 
 interface TransactionTableProps {
   transactions: StoredTransaction[];

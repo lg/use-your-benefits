@@ -1,5 +1,5 @@
 import { memo, type ReactNode } from 'react';
-import type { ProgressSegment } from '../types';
+import type { ProgressSegment } from '@shared/types';
 import { Tooltip } from './Tooltip';
 
 interface ProgressBarProps {

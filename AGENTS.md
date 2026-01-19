@@ -225,6 +225,8 @@ No backend or server-side runtime required.
 
 ## Taking Screenshots
 
+The screenshot lives at `client/public/screenshot.png` (served by Vite).
+
 To update the README screenshot:
 
 1. Start the dev server in the background:
@@ -246,7 +248,7 @@ To update the README screenshot:
    ```bash
    height=$(sips -g pixelHeight /tmp/screenshot_full.png | grep pixelHeight | awk '{print $2}')
    third=$((height / 3))
-   magick /tmp/screenshot_full.png -crop 1280x${third}+0+0 screenshot.png
+   magick /tmp/screenshot_full.png -crop 1280x${third}+0+0 client/public/screenshot.png
    ```
    
    The `+0+0` offset ensures cropping from the top-left corner.
@@ -257,3 +259,49 @@ To update the README screenshot:
    agent-browser close --session screenshot
    pkill -f "vite"
    ```
+
+## README and readme.html
+
+The project has two README views:
+
+1. **README.md** - Source markdown file at repo root, rendered by GitHub
+2. **readme.html** - Auto-generated GitHub-styled HTML preview
+
+### Auto-generation via Vite Plugin
+
+A custom Vite plugin in `vite.config.ts` automatically generates `readme.html` from `README.md`:
+
+- **Dev mode**: Serves `/readme.html` via middleware with hot-reload on README changes
+- **Build mode**: Emits `readme.html` to `dist/`
+- **Transformations applied**:
+  - Image paths: `client/public/favicon.svg` → `favicon.svg`
+  - Image paths: `client/public/screenshot.png` → `screenshot.png`
+  - Centers the h1 title
+  - Centers the shields.io badge
+  - Wraps in GitHub-styled HTML template
+
+### Editing the README
+
+1. Edit `README.md` directly
+2. View changes at http://localhost:5173/readme.html (auto-refreshes in dev mode)
+3. The generated `readme.html` will be included in production builds
+
+### Image Paths
+
+In `README.md`, reference images with their actual paths:
+- `![Screenshot](client/public/screenshot.png)`
+- `<img src="client/public/favicon.svg" ...>`
+
+The Vite plugin transforms these to relative paths for the generated HTML.
+
+### Links in the App
+
+The app header includes two icon links (top-right):
+- **Book icon**: Links to `readme.html`
+- **GitHub icon**: Links to `https://github.com/lg/use-your-benefits`
+
+## Live URLs
+
+- **App**: https://lg.github.io/use-your-benefits
+- **README**: https://lg.github.io/use-your-benefits/readme.html
+- **GitHub**: https://github.com/lg/use-your-benefits

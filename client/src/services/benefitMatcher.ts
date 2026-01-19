@@ -7,6 +7,7 @@ import type {
   ImportResult,
   CardType,
 } from '../types/import';
+import { findPeriodId } from '@shared/utils';
 
 // Pattern definitions for matching credits to benefits
 interface BenefitPattern {
@@ -83,29 +84,6 @@ function matchBenefitId(
 }
 
 /**
- * Find which period a transaction date falls into
- */
-function findPeriodId(
-  transactionDate: Date,
-  benefit: BenefitDefinition
-): string | null {
-  if (!benefit.periods || benefit.periods.length === 0) {
-    return null;
-  }
-
-  for (const period of benefit.periods) {
-    const start = new Date(period.startDate);
-    const end = new Date(period.endDate);
-
-    if (transactionDate >= start && transactionDate <= end) {
-      return period.id;
-    }
-  }
-
-  return null;
-}
-
-/**
  * Match credits to benefits and aggregate results
  */
 export function matchCredits(
@@ -130,8 +108,8 @@ export function matchCredits(
       continue;
     }
 
-    const benefit = benefitMap.get(match.benefitId);
-    const periodId = benefit ? findPeriodId(credit.date, benefit) : null;
+const benefit = benefitMap.get(match.benefitId);
+const periodId = benefit?.periods ? findPeriodId(credit.date, benefit.periods) : null;
 
     matchedCredits.push({
       transaction: credit,
@@ -149,94 +127,4 @@ export function matchCredits(
     totalMatched: matchedCredits.length,
     totalUnmatched: unmatchedCredits.length,
   };
-}
-
-/**
- * Aggregate matched credits into usage amounts per benefit and period
- * Returns a map of benefitId -> { periods?, transactions? }
- */
-export function aggregateCredits(
-  matchedCredits: MatchedCredit[],
-  benefits: BenefitDefinition[]
-): Map<string, { periods?: Record<string, { usedAmount: number; transactions?: { date: string; description: string; amount: number }[] }>; transactions?: { date: string; description: string; amount: number }[] }> {
-  const result = new Map<
-    string,
-    { periods?: Record<string, { usedAmount: number; transactions?: { date: string; description: string; amount: number }[] }>; transactions?: { date: string; description: string; amount: number }[] }
-  >();
-
-  // Create benefit lookup for max amounts
-  const benefitMap = new Map<string, BenefitDefinition>();
-  for (const benefit of benefits) {
-    benefitMap.set(benefit.id, benefit);
-  }
-
-  for (const credit of matchedCredits) {
-    if (!credit.benefitId) continue;
-
-    const benefit = benefitMap.get(credit.benefitId);
-    const existing = result.get(credit.benefitId) ?? {
-      periods: undefined,
-      transactions: undefined,
-    };
-
-    const storedTransaction = {
-      date: credit.transaction.date.toISOString(),
-      description: credit.transaction.description,
-      amount: credit.creditAmount,
-    };
-
-    if (credit.periodId && benefit?.periods) {
-      // Period-based benefit
-      existing.periods = existing.periods ?? {};
-      existing.periods[credit.periodId] = existing.periods[credit.periodId] ?? {
-        usedAmount: 0,
-        transactions: [],
-      };
-      existing.periods[credit.periodId].usedAmount += credit.creditAmount;
-      existing.periods[credit.periodId].transactions?.push(storedTransaction);
-
-    } else {
-      // Non-period benefit or no period matched
-      existing.transactions = existing.transactions ?? [];
-      existing.transactions.push(storedTransaction);
-    }
-
-    result.set(credit.benefitId, existing);
-  }
-
-  // Cap amounts at benefit maximums
-  for (const [benefitId, usage] of result) {
-    const benefit = benefitMap.get(benefitId);
-    if (!benefit) continue;
-
-    // Cap per-period amounts
-    if (usage.periods && benefit.periods) {
-      const periodCount = benefit.periods.length;
-      const maxPerPeriod = benefit.creditAmount / periodCount;
-
-      for (const periodId of Object.keys(usage.periods)) {
-        const periodUsage: { usedAmount: number; transactions?: { date: string; description: string; amount: number }[] } = usage.periods[periodId];
-        periodUsage.usedAmount = Math.min(periodUsage.usedAmount, maxPerPeriod);
-
-        // Cap transactions in this period proportionally if needed
-        if (periodUsage.transactions && periodUsage.transactions.length > 0) {
-          let runningTotal = 0;
-          const maxIndex = periodUsage.transactions.findIndex((t: { amount: number }) => {
-            runningTotal += t.amount;
-            return runningTotal > maxPerPeriod;
-          });
-          if (maxIndex >= 0) {
-            // Trim transactions that exceed the cap
-            const excess = runningTotal - maxPerPeriod;
-            periodUsage.transactions[maxIndex] = {
-              ...periodUsage.transactions[maxIndex],
-              amount: periodUsage.transactions[maxIndex].amount - excess,
-            };
-          }
-        }
-      }
-    }
-  }
-
-  return result;
 }

@@ -96,7 +96,7 @@ export function getReferenceDate(selectedYear?: number): Date {
   return now;
 }
 
-function findPeriodId(transactionDate: Date, periods: BenefitPeriodDefinition[]): string | null {
+export function findPeriodId(transactionDate: Date, periods: BenefitPeriodDefinition[]): string | null {
   for (const period of periods) {
     const start = new Date(period.startDate);
     const end = new Date(period.endDate);

@@ -6,8 +6,7 @@ import {
 } from 'react';
 import type { StoredTransaction, BenefitDefinition, CreditCard } from '@shared/types';
 import type { ParsedTransaction } from '../../types/import';
-import { parseAmexCsv, extractAmexCredits } from '../../services/amexParser';
-import { parseChaseCsv, extractChaseCredits } from '../../services/chaseParser';
+import { parseStatement, extractCredits, AMEX_CONFIG, CHASE_CONFIG } from '../../services/statementParser';
 import { TransactionTable } from './TransactionTable';
 
 interface CardTransactionsTabProps {
@@ -43,9 +42,8 @@ export function CardTransactionsTab({
         // Parse based on card type
         let parsedTransactions: ParsedTransaction[] = [];
         if (card.id.startsWith('amex')) {
-          parsedTransactions = parseAmexCsv(content);
-          // Verify we got credits
-          const credits = extractAmexCredits(parsedTransactions);
+          parsedTransactions = parseStatement(content, AMEX_CONFIG);
+          const credits = extractCredits(parsedTransactions, AMEX_CONFIG);
           if (credits.length === 0) {
             setError(
               'No statement credits found in the CSV. Make sure you exported the correct file.'
@@ -53,9 +51,8 @@ export function CardTransactionsTab({
             return;
           }
         } else if (card.id.startsWith('chase')) {
-          parsedTransactions = parseChaseCsv(content);
-          // Verify we got credits
-          const credits = extractChaseCredits(parsedTransactions);
+          parsedTransactions = parseStatement(content, CHASE_CONFIG);
+          const credits = extractCredits(parsedTransactions, CHASE_CONFIG);
           if (credits.length === 0) {
             setError(
               'No statement credits found in the CSV. Make sure you exported the correct file.'

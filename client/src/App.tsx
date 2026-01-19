@@ -118,7 +118,13 @@ function App() {
         if (exists) {
           return prev.map(b => b.id === id ? updated : b);
         }
-        return [...prev, updated];
+        // Add and sort by definition order to maintain original position
+        const newBenefits = [...prev, updated];
+        return newBenefits.sort((a, b) => {
+          const indexA = definitions.findIndex(d => d.id === a.id);
+          const indexB = definitions.findIndex(d => d.id === b.id);
+          return indexA - indexB;
+        });
       });
     }
 

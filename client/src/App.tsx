@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react';
 import type { CreditCard, Benefit, BenefitDefinition, Stats } from './types';
 import { Dashboard } from './pages/Dashboard';
-import { CardDetail } from './pages/CardDetail';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { BenefitsProvider } from './context/BenefitsContext';
 import * as benefitsService from './services/benefits';
@@ -17,7 +16,6 @@ function App() {
   const [benefits, setBenefits] = useState<Benefit[]>([]);
   const [allBenefits, setAllBenefits] = useState<Benefit[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
-  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [selectedYear, setSelectedYear] = useState(2026);
   const [error, setError] = useState<string | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
@@ -56,15 +54,6 @@ function App() {
     }
   }, []);
 
-  const loadAllBenefitsForCard = useCallback(async (cardId: string, signal?: AbortSignal, year?: number) => {
-    const allBenefitsData = await benefitsService.getBenefits(cardId, true, year);
-    if (signal?.aborted) return;
-    setAllBenefits(prev => {
-      const otherBenefits = prev.filter(b => b.cardId !== cardId);
-      return [...otherBenefits, ...allBenefitsData];
-    });
-  }, []);
-
   useEffect(() => {
     const controller = new AbortController();
     loadData(controller.signal, selectedYear);
@@ -72,16 +61,6 @@ function App() {
       controller.abort();
     };
   }, [loadData, selectedYear]);
-  
-  useEffect(() => {
-    if (selectedCardId) {
-      const controller = new AbortController();
-      loadAllBenefitsForCard(selectedCardId, controller.signal, selectedYear);
-      return () => {
-        controller.abort();
-      };
-    }
-  }, [selectedCardId, loadAllBenefitsForCard, selectedYear]);
 
   const handleToggleEnrollment = useCallback(async (id: string) => {
     const definition = definitions.find(d => d.id === id);
@@ -174,23 +153,14 @@ function App() {
     setUpdateError(null);
   }, []);
 
-  const handleBack = useCallback(() => {
-    setSelectedCardId(null);
-  }, []);
-
   const handleRetry = useCallback(() => {
     loadData(undefined, selectedYear);
   }, [loadData, selectedYear]);
-
-  const handleCardSelect = useCallback((cardId: string) => {
-    setSelectedCardId(cardId);
-  }, []);
 
   const handleYearSelect = useCallback((year: number) => {
     if (year === selectedYear) return;
     const update = () => {
       setSelectedYear(year);
-      setSelectedCardId(null);
     };
     if (document.startViewTransition) {
       document.startViewTransition(update);
@@ -210,14 +180,6 @@ function App() {
       </div>
     );
   }
-
-  const selectedCard = selectedCardId ? cards.find(c => c.id === selectedCardId) : null;
-  const selectedCardBenefits = selectedCardId 
-    ? benefits.filter(b => b.cardId === selectedCardId)
-    : [];
-  const selectedCardAllBenefits = selectedCardId
-    ? allBenefits.filter(b => b.cardId === selectedCardId)
-    : [];
 
   const benefitsContextValue = useMemo(() => ({
     definitions,
@@ -244,13 +206,9 @@ function App() {
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center">
             <div className="flex flex-wrap items-center gap-4">
-              <button
-                onClick={handleBack}
-                className={`font-bold text-xl ${!selectedCardId ? 'text-white' : 'text-slate-400 hover:text-white'}`}
-                type="button"
-              >
+              <h1 className="font-bold text-xl text-white">
                 Use Your Benefits
-              </button>
+              </h1>
               <div className="flex items-center gap-2">
                 <div className="flex rounded-lg border border-slate-700 overflow-hidden">
                   {[2024, 2025, 2026].map(year => (
@@ -295,32 +253,6 @@ function App() {
                 </button>
               </div>
             </div>
-            <nav className="flex flex-wrap gap-2">
-              <button
-                onClick={handleBack}
-                className={`px-3 py-1 rounded ${
-                  !selectedCardId ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
-                }`}
-                type="button"
-              >
-                All Cards
-              </button>
-              {cards.map(card => (
-                <button
-                  key={card.id}
-                  onClick={() => handleCardSelect(card.id)}
-                  className={`px-4 py-2 rounded text-sm font-medium ${
-                    selectedCardId === card.id ? 'text-white' : 'text-slate-400 hover:text-white'
-                  }`}
-                  style={{ 
-                    backgroundColor: selectedCardId === card.id ? card.color : undefined 
-                  }}
-                  type="button"
-                >
-                  {card.name}
-                </button>
-              ))}
-            </nav>
           </div>
         </div>
       </header>
@@ -330,25 +262,14 @@ function App() {
           value={benefitsContextValue}
         >
           <ErrorBoundary>
-            {selectedCard ? (
-              <CardDetail
-                card={selectedCard}
-                benefits={selectedCardBenefits}
-                allBenefits={selectedCardAllBenefits}
-                onBack={handleBack}
-                cardTransactionStatus={cardTransactionStatus[selectedCard.id]}
-                onOpenTransactions={() => setTransactionsModalOpen(true)}
-              />
-            ) : (
-              <Dashboard
-                benefits={benefits}
-                cards={cards}
-                allBenefits={allBenefits}
-                stats={stats}
-                cardTransactionStatus={cardTransactionStatus}
-                onOpenTransactions={() => setTransactionsModalOpen(true)}
-              />
-            )}
+            <Dashboard
+              benefits={benefits}
+              cards={cards}
+              allBenefits={allBenefits}
+              stats={stats}
+              cardTransactionStatus={cardTransactionStatus}
+              onOpenTransactions={() => setTransactionsModalOpen(true)}
+            />
           </ErrorBoundary>
         </BenefitsProvider>
       </main>

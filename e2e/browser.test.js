@@ -12,7 +12,7 @@ test.describe('Dashboard', () => {
   });
 
   test('shows all cards', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'American Express Platinum' })).toBeVisible();
+    await expect(page.getByText('American Express Platinum')).toBeVisible();
   });
 
   test('shows summary stats', async ({ page }) => {
@@ -200,26 +200,6 @@ test.describe('Transaction-based Progress', () => {
     await expect(uberCard.locator('.progress-segment.completed')).toHaveCount(0);
     await expect(uberCard.locator('.progress-segment.missed')).toHaveCount(0);
     await expect(uberCard.locator('.progress-segment.partial')).toHaveCount(0);
-  });
-});
-
-test.describe('Card Filtering', () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto('/');
-    await page.evaluate(() => localStorage.clear());
-    await page.reload();
-  });
-
-  test('Amex filter shows only Amex benefits', async ({ page }) => {
-    await page.getByRole('button', { name: 'American' }).click();
-    await expect(page.getByText('Uber Cash')).toBeVisible();
-    await expect(page.getByText('Travel Credit')).toBeHidden();
-  });
-
-  test('All Cards shows all benefits', async ({ page }) => {
-    await page.getByRole('button', { name: 'American' }).click();
-    await page.getByRole('button', { name: 'All Cards' }).click();
-    await expect(page.getByText('Uber Cash')).toBeVisible();
   });
 });
 

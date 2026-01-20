@@ -141,7 +141,7 @@
     {
       "id": "csr-travel-credit",
       "cardId": "chase-sapphire-reserve",
-      "name": "Travel Credit",
+      "name": "Travel",
       "shortDescription": "$300 annually for travel purchases",
       "creditAmount": 300,
       "resetFrequency": "annual",
@@ -159,7 +159,7 @@
     {
       "id": "csr-edit-hotel",
       "cardId": "chase-sapphire-reserve",
-      "name": "The Edit Hotel Credit",
+      "name": "The Edit Hotel",
       "shortDescription": "$500 annually for The Edit bookings",
       "creditAmount": 500,
       "resetFrequency": "annual",
@@ -177,7 +177,7 @@
     {
       "id": "csr-doordash",
       "cardId": "chase-sapphire-reserve",
-      "name": "DoorDash Credit",
+      "name": "DoorDash",
       "shortDescription": "$300 annually ($25 monthly)",
       "creditAmount": 300,
       "resetFrequency": "monthly",
@@ -186,7 +186,7 @@
     {
       "id": "csr-lyft",
       "cardId": "chase-sapphire-reserve",
-      "name": "Lyft Credit",
+      "name": "Lyft",
       "shortDescription": "$120 annually ($10 monthly)",
       "creditAmount": 120,
       "resetFrequency": "monthly",
@@ -195,7 +195,7 @@
     {
       "id": "csr-peloton",
       "cardId": "chase-sapphire-reserve",
-      "name": "Peloton Credit",
+      "name": "Peloton",
       "shortDescription": "$120 annually for Peloton",
       "creditAmount": 120,
       "resetFrequency": "annual",
@@ -204,7 +204,7 @@
     {
       "id": "csr-stubhub",
       "cardId": "chase-sapphire-reserve",
-      "name": "StubHub/viagogo Credit",
+      "name": "StubHub/viagogo",
       "shortDescription": "$300 annually ($150 twice per year)",
       "creditAmount": 300,
       "resetFrequency": "twice-yearly",

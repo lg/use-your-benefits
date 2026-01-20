@@ -59,12 +59,12 @@ Import your credit card statements to automatically track benefit credits. All p
 
 | Benefit | Annual Value | Reset Frequency | Enrollment Required |
 |---------|--------------|-----------------|---------------------|
-| Travel Credit | $300 | Annual | No |
-| The Edit Hotel Credit | $500 | Annual | No |
+| Travel | $300 | Annual | No |
+| The Edit Hotel | $500 | Annual | No |
 | Exclusive Tables Dining | $300 | Twice-yearly ($150 each) | No |
-| DoorDash Credit | $300 | Monthly ($25/mo) | Yes |
-| Lyft Credit | $120 | Monthly ($10/mo) | Yes |
-| Peloton Credit | $120 | Annual | Yes |
+| DoorDash | $300 | Monthly ($25/mo) | Yes |
+| Lyft | $120 | Monthly ($10/mo) | Yes |
+| Peloton | $120 | Annual | Yes |
 | StubHub/viagogo | $300 | Twice-yearly ($150 each) | Yes |
 
 ### Limitations

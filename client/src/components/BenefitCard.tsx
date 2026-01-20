@@ -3,7 +3,7 @@ import type { Benefit } from '@shared/types';
 import { ProgressBar } from './ProgressBar';
 import { Tooltip } from './Tooltip';
 import { useBenefits } from '../context/BenefitsContext';
-import { buildBenefitUsageSnapshot, buildProgressSegments, formatDate, getDaysUntilExpiry } from '../utils/dateUtils';
+import { buildProgressSegments, formatDate } from '@shared/utils';
 
 const STATUS_COLORS = {
   pending: 'bg-amber-400 text-slate-900',
@@ -25,22 +25,9 @@ interface BenefitCardProps {
 function BenefitCardComponent({ benefit, onToggleEnrollment }: BenefitCardProps) {
   const { selectedYear } = useBenefits();
 
-  const snapshot = useMemo(() => 
-    buildBenefitUsageSnapshot(benefit, benefit, selectedYear),
-    [benefit, selectedYear]
-  );
-
-  const segments = useMemo(() => 
-    buildProgressSegments(benefit, snapshot),
-    [benefit, snapshot]
-  );
-
-  const segmentsCount = useMemo(() => 
-    snapshot.periods.length > 0 ? snapshot.periods.length : 1,
-    [snapshot.periods]
-  );
-
-  const daysUntilExpiry = useMemo(() => getDaysUntilExpiry(benefit.endDate), [benefit.endDate]);
+  // Use pre-computed values from benefit object
+  const segments = useMemo(() => buildProgressSegments(benefit), [benefit]);
+  const segmentsCount = benefit.periods?.length ?? 1;
 
   const currentYear = new Date().getFullYear();
   const isCurrentYear = selectedYear === currentYear;
@@ -57,30 +44,6 @@ function BenefitCardComponent({ benefit, onToggleEnrollment }: BenefitCardProps)
           <p className="text-slate-400 text-sm">{benefit.shortDescription}</p>
         </div>
         <div className="flex items-center gap-2">
-          <StatusBadge status={snapshot.status} />
-        </div>
-      </div>
-
-      <div className="mb-3">
-        <div className="flex justify-between text-sm mb-1">
-          <span className="text-slate-400">Progress</span>
-          <span className="text-slate-300">
-            ${snapshot.currentUsed.toFixed(0)} / ${benefit.creditAmount}
-          </span>
-        </div>
-        <ProgressBar segments={segments} segmentsCount={segmentsCount} />
-      </div>
-
-      <div className="flex justify-between items-center text-sm">
-        <div className="text-slate-500">
-          Expires: {formatDate(benefit.endDate)}
-          {daysUntilExpiry > 0 && daysUntilExpiry <= 30 ? (
-            <span className="text-amber-400 ml-1">
-              ({daysUntilExpiry} days left)
-            </span>
-          ) : null}
-        </div>
-        <div className="flex gap-2">
           {benefit.enrollmentRequired && isCurrentYear ? (
             benefit.autoEnrolledAt ? (
               // Auto-enrolled: non-clickable badge with tooltip
@@ -106,7 +69,18 @@ function BenefitCardComponent({ benefit, onToggleEnrollment }: BenefitCardProps)
               </button>
             )
           ) : null}
+          <StatusBadge status={benefit.status} />
         </div>
+      </div>
+
+      <div>
+        <div className="flex justify-between text-sm mb-1">
+          <span className="text-slate-400">Progress</span>
+          <span className="text-slate-300">
+            ${benefit.currentUsed.toFixed(0)} / ${benefit.creditAmount}
+          </span>
+        </div>
+        <ProgressBar segments={segments} segmentsCount={segmentsCount} />
       </div>
     </div>
   );

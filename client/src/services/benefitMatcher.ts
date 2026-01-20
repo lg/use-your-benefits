@@ -7,7 +7,7 @@ import type {
   ImportResult,
   CardType,
 } from '../types/import';
-import { findPeriodId } from '@shared/utils';
+
 
 // Pattern definitions for matching credits to benefits
 interface BenefitPattern {
@@ -109,13 +109,12 @@ export function matchCredits(
     }
 
 const benefit = benefitMap.get(match.benefitId);
-const periodId = benefit?.periods ? findPeriodId(credit.date, benefit.periods) : null;
 
     matchedCredits.push({
       transaction: credit,
       benefitId: match.benefitId,
       benefitName: benefit?.name ?? null,
-      periodId,
+      periodId: null, // Period is determined later by buildBenefitUsageSnapshot
       creditAmount: Math.abs(credit.amount),
       confidence: match.confidence,
     });

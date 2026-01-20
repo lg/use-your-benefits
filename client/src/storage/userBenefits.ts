@@ -1,46 +1,104 @@
+import { useSyncExternalStore } from 'react';
 import type {
   BenefitDefinition,
-  BenefitPeriodUserState,
   BenefitUserState,
   CardTransactionStore,
   StoredTransaction,
-} from '../../../shared/types';
-import {
-  getUserBenefitsData,
-  saveUserBenefitsData,
-} from '../hooks/useUserBenefitsStore';
+  UserBenefitsData,
+} from '@shared/types';
 
-// Re-export for convenience
-export { getUserBenefitsData, saveUserBenefitsData } from '../hooks/useUserBenefitsStore';
-export { useUserBenefitsStore } from '../hooks/useUserBenefitsStore';
+const STORAGE_KEY = 'use-your-benefits';
 
-export function getImportNote(cardId: string): string {
-  const data = getUserBenefitsData();
-  return data.importNotes?.[cardId] ?? '';
+// Module-level cache and listener management
+let cachedData: UserBenefitsData | null = null;
+const listeners = new Set<() => void>();
+
+function getDefaultData(): UserBenefitsData {
+  return { benefits: {}, importNotes: {}, cardTransactions: {} };
 }
 
-export function saveImportNote(cardId: string, note: string): void {
-  const data = getUserBenefitsData();
-  if (!data.importNotes) {
-    data.importNotes = {};
+function parseStoredData(stored: string | null): UserBenefitsData {
+  if (!stored) return getDefaultData();
+  try {
+    const parsed = JSON.parse(stored) as UserBenefitsData & {
+      benefits?: Record<string, { enrolled?: boolean; ignored?: boolean }>;
+    };
+    
+    // Migration: keep only enrolled/ignored, strip legacy fields
+    const migratedBenefits: Record<string, { enrolled: boolean; ignored: boolean }> = {};
+    for (const [id, state] of Object.entries(parsed.benefits ?? {})) {
+      migratedBenefits[id] = {
+        enrolled: state?.enrolled ?? false,
+        ignored: state?.ignored ?? false,
+      };
+    }
+    
+    return {
+      benefits: migratedBenefits,
+      importNotes: parsed.importNotes ?? {},
+      cardTransactions: parsed.cardTransactions ?? {},
+    };
+  } catch {
+    return getDefaultData();
   }
-  data.importNotes[cardId] = note;
-  saveUserBenefitsData(data);
 }
+
+function getSnapshot(): UserBenefitsData {
+  if (cachedData === null) {
+    cachedData = parseStoredData(localStorage.getItem(STORAGE_KEY));
+  }
+  return cachedData;
+}
+
+function subscribe(callback: () => void): () => void {
+  listeners.add(callback);
+
+  const handleStorageEvent = (event: StorageEvent) => {
+    if (event.key === STORAGE_KEY) {
+      cachedData = null;
+      callback();
+    }
+  };
+
+  window.addEventListener('storage', handleStorageEvent);
+
+  return () => {
+    listeners.delete(callback);
+    window.removeEventListener('storage', handleStorageEvent);
+  };
+}
+
+function emitChange(): void {
+  cachedData = null;
+  for (const listener of listeners) {
+    listener();
+  }
+}
+
+// ===== Public API =====
+
+/** React hook that subscribes to localStorage changes */
+export function useUserBenefitsStore(): UserBenefitsData {
+  return useSyncExternalStore(subscribe, getSnapshot);
+}
+
+/** Save data to localStorage and notify subscribers */
+export function saveUserBenefitsData(data: UserBenefitsData): void {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  emitChange();
+}
+
+/** Get current data (non-reactive) */
+export function getUserBenefitsData(): UserBenefitsData {
+  return getSnapshot();
+}
+
+// ===== Benefit State =====
 
 export function getDefaultUserState(benefit: BenefitDefinition): BenefitUserState {
-  const periodStates = benefit.periods?.reduce<Record<string, BenefitPeriodUserState>>(
-    (acc, period) => {
-      acc[period.id] = {};
-      return acc;
-    },
-    {}
-  );
-
   return {
     enrolled: !benefit.enrollmentRequired,
     ignored: false,
-    periods: periodStates,
   };
 }
 
@@ -49,28 +107,32 @@ export function updateUserState(
   updates: Partial<BenefitUserState>
 ): BenefitUserState {
   const data = getUserBenefitsData();
-  const existing = data.benefits[benefitId] ?? {
-    enrolled: false,
-    ignored: false,
-  };
+  const existing = data.benefits[benefitId] ?? { enrolled: false, ignored: false };
 
-  const updated: BenefitUserState = {
-    ...existing,
-    ...updates,
-    periods: updates.periods ?? existing.periods,
-  };
-
+  const updated: BenefitUserState = { ...existing, ...updates };
   data.benefits[benefitId] = updated;
   saveUserBenefitsData(data);
 
   return updated;
 }
 
-// Card transaction storage functions
+// ===== Import Notes =====
+
+export function getImportNote(cardId: string): string {
+  return getUserBenefitsData().importNotes?.[cardId] ?? '';
+}
+
+export function saveImportNote(cardId: string, note: string): void {
+  const data = getUserBenefitsData();
+  if (!data.importNotes) data.importNotes = {};
+  data.importNotes[cardId] = note;
+  saveUserBenefitsData(data);
+}
+
+// ===== Card Transactions =====
 
 export function getCardTransactions(cardId: string): CardTransactionStore | null {
-  const data = getUserBenefitsData();
-  return data.cardTransactions?.[cardId] ?? null;
+  return getUserBenefitsData().cardTransactions?.[cardId] ?? null;
 }
 
 export function saveCardTransactions(cardId: string, transactions: StoredTransaction[]): void {

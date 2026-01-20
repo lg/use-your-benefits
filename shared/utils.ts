@@ -1,6 +1,6 @@
 // Shared utility functions used by both backend and frontend
 
-import type { Benefit, CardStats, CreditCard, ProgressSegment, BenefitDefinition, BenefitPeriodDefinition, StoredTransaction } from './types';
+import type { Benefit, Stats, CreditCard, ProgressSegment, BenefitDefinition, BenefitPeriodDefinition, StoredTransaction, ResetFrequency } from './types';
 
 export function formatDate(input: string | Date, options?: { includeYear?: boolean }): string {
   const date = typeof input === 'string' ? new Date(input) : input;
@@ -58,6 +58,56 @@ export function getTimeProgress(startDate: string, endDate: string): number {
   const elapsed = now.getTime() - start.getTime();
   return (elapsed / totalDuration) * 100;
 }
+
+// ===== Multi-year benefit helpers =====
+
+export function isMultiYearBenefit(resetFrequency: ResetFrequency): boolean {
+  return resetFrequency === '4-year';
+}
+
+/** Get the number of periods per year for a reset frequency */
+export function getPeriodCount(resetFrequency: ResetFrequency): number {
+  const counts: Record<ResetFrequency, number> = {
+    'annual': 1,
+    'twice-yearly': 2,
+    'quarterly': 4,
+    'monthly': 12,
+    '4-year': 1,
+  };
+  return counts[resetFrequency] ?? 1;
+}
+
+/** Compute benefit date range based on resetFrequency and year */
+export function getBenefitDateRange(
+  resetFrequency: ResetFrequency,
+  year: number
+): { startDate: string; endDate: string } {
+  const startDate = new Date(Date.UTC(year, 0, 1)).toISOString();
+  const endYear = resetFrequency === '4-year' ? year + 3 : year;
+  const endDate = new Date(Date.UTC(endYear, 11, 31, 23, 59, 59)).toISOString();
+  return { startDate, endDate };
+}
+
+/** Calculate 4-year validity period from a transaction date */
+export function get4YearValidityPeriod(transactionDate: Date): { start: Date; end: Date } {
+  const start = new Date(transactionDate);
+  const end = new Date(start);
+  end.setUTCFullYear(end.getUTCFullYear() + 4);
+  end.setUTCDate(end.getUTCDate() - 1); // 4 years minus 1 day
+  return { start, end };
+}
+
+/** Get the most recent transaction from a list */
+function getMostRecentTransaction(transactions: StoredTransaction[]): StoredTransaction | null {
+  if (transactions.length === 0) return null;
+  return transactions.reduce((latest, tx) => {
+    const latestDate = new Date(latest.date);
+    const txDate = new Date(tx.date);
+    return txDate > latestDate ? tx : latest;
+  });
+}
+
+// ===== Snapshot types =====
 
 export interface BenefitUsageSnapshot {
   periods: BenefitPeriodWithUsage[];
@@ -152,6 +202,114 @@ interface UserStateLike {
   transactions?: StoredTransaction[];
 }
 
+/** Build snapshot for 4-year multi-year benefits */
+function build4YearBenefitSnapshot(
+  definition: BenefitDefinition,
+  allTransactions: StoredTransaction[],
+  selectedYear: number,
+  currentYear: number
+): BenefitUsageSnapshot {
+  const now = new Date();
+  const isPastYearView = selectedYear < currentYear;
+  const isFutureYear = selectedYear > currentYear;
+  
+  const mostRecentTx = getMostRecentTransaction(allTransactions);
+  
+  let effectiveStartDate: string;
+  let effectiveEndDate: string;
+  let status: 'pending' | 'completed' | 'missed';
+  let claimedElsewhereYear: number | undefined;
+  let periodTransactions: StoredTransaction[] = [];
+  
+  if (mostRecentTx) {
+    // Calculate validity period from transaction date
+    const txDate = new Date(mostRecentTx.date);
+    const { start, end } = get4YearValidityPeriod(txDate);
+    effectiveStartDate = start.toISOString();
+    effectiveEndDate = end.toISOString();
+    
+    const expiryYear = end.getUTCFullYear();
+    const txYear = txDate.getUTCFullYear();
+    
+    // Check if the selected year is within the validity period
+    const yearStart = new Date(Date.UTC(selectedYear, 0, 1));
+    const yearEnd = new Date(Date.UTC(selectedYear, 11, 31, 23, 59, 59));
+    
+    // Is the selected year covered by this transaction's validity?
+    const isYearCovered = yearStart <= end && yearEnd >= start;
+    
+    if (isYearCovered) {
+      if (selectedYear === expiryYear) {
+        // Last year of validity - check if there's a renewal
+        const hasRenewalThisYear = allTransactions.some(tx => 
+          new Date(tx.date).getUTCFullYear() === selectedYear
+        );
+        
+        if (hasRenewalThisYear) {
+          status = 'completed';
+          periodTransactions = allTransactions.filter(tx =>
+            new Date(tx.date).getUTCFullYear() === selectedYear
+          );
+        } else if (isPastYearView || now > end) {
+          status = 'missed';
+        } else {
+          status = 'pending';
+        }
+      } else {
+        // Year is fully within validity (not the last year)
+        status = 'completed';
+        // Show transaction from the year it was purchased
+        if (txYear !== selectedYear) {
+          claimedElsewhereYear = txYear;
+        }
+        periodTransactions = [mostRecentTx];
+      }
+    } else if (yearEnd < start) {
+      // Year is before the validity period
+      status = isPastYearView ? 'missed' : 'pending';
+    } else {
+      // Year is after validity period
+      status = isPastYearView ? 'missed' : 'pending';
+    }
+  } else {
+    // No transactions - use calendar year placeholder
+    const dateRange = getBenefitDateRange('4-year', selectedYear);
+    effectiveStartDate = dateRange.startDate;
+    effectiveEndDate = dateRange.endDate;
+    status = isPastYearView ? 'missed' : (isFutureYear ? 'pending' : 'pending');
+  }
+  
+  // Current year boundaries for time progress (same as annual benefits)
+  const yearStartDate = new Date(Date.UTC(selectedYear, 0, 1)).toISOString();
+  const yearEndDate = new Date(Date.UTC(selectedYear, 11, 31, 23, 59, 59)).toISOString();
+
+  // Build the single period for this 4-year benefit
+  const period: BenefitPeriodWithUsage = {
+    id: `${definition.id}-4year`,
+    startDate: effectiveStartDate,
+    endDate: effectiveEndDate,
+    usedAmount: periodTransactions.reduce((sum, tx) => sum + tx.amount, 0),
+    transactions: periodTransactions,
+    status,
+    isCurrent: !isPastYearView && !isFutureYear,
+    timeProgress: getTimeProgress(yearStartDate, yearEndDate),
+    daysLeft: getDaysUntilExpiry(yearEndDate),
+  };
+  
+  return {
+    periods: [period],
+    currentUsed: period.usedAmount,
+    status,
+    yearTransactions: periodTransactions,
+    claimedElsewhereYear,
+    effectiveStartDate,
+    effectiveEndDate,
+    segmentValue: definition.creditAmount,
+    referenceDate: now,
+    isPastYear: isPastYearView,
+  };
+}
+
 export function buildBenefitUsageSnapshot(
   definition: BenefitDefinition,
   userState: UserStateLike,
@@ -159,66 +317,49 @@ export function buildBenefitUsageSnapshot(
 ): BenefitUsageSnapshot {
   const now = new Date();
   const currentYear = now.getUTCFullYear();
-  const yearStart = new Date(Date.UTC(selectedYear ?? currentYear, 0, 1));
-  const yearEnd = new Date(Date.UTC((selectedYear ?? currentYear) + 1, 0, 1));
-
-  const segmentValue = definition.periods && definition.periods.length > 0
-    ? definition.creditAmount / definition.periods.length
-    : definition.creditAmount;
-
+  const year = selectedYear ?? currentYear;
   const allTransactions = userState.transactions ?? [];
+  
+  // Handle 4-year benefits specially
+  if (isMultiYearBenefit(definition.resetFrequency)) {
+    return build4YearBenefitSnapshot(definition, allTransactions, year, currentYear);
+  }
+  
+  // Regular annual/periodic benefits
+  const yearStart = new Date(Date.UTC(year, 0, 1));
+  const yearEnd = new Date(Date.UTC(year + 1, 0, 1));
+
+  const periodCount = getPeriodCount(definition.resetFrequency);
+  const segmentValue = definition.creditAmount / periodCount;
+
   const yearTransactions = allTransactions.filter(tx => {
     const date = new Date(tx.date);
-    return selectedYear ? date >= yearStart && date < yearEnd : true;
+    return date >= yearStart && date < yearEnd;
   });
 
-  const claimYears = Array.from(new Set(
-    allTransactions
-      .map(tx => new Date(tx.date).getUTCFullYear())
-      .filter(year => year < (selectedYear ?? currentYear))
-  )).sort((a, b) => b - a);
-
-  const hasYearTransactions = yearTransactions.length > 0;
-  const isFutureYear = selectedYear !== undefined && selectedYear > currentYear;
-  const claimedElsewhereYear = !isFutureYear && selectedYear && !hasYearTransactions && claimYears.length > 0
-    ? claimYears[0]
-    : undefined;
-
-  const isPastYearView = selectedYear !== undefined && selectedYear < currentYear;
+  const isPastYearView = year < currentYear;
   const yearStartIso = yearStart.toISOString();
-  const yearEndIso = new Date(Date.UTC((selectedYear ?? currentYear), 11, 31, 23, 59, 59)).toISOString();
+  const yearEndIso = new Date(Date.UTC(year, 11, 31, 23, 59, 59)).toISOString();
   const referenceDate = isPastYearView
     ? new Date(Date.UTC(2099, 0, 1))
     : now;
 
-  let periods: BenefitPeriodWithUsage[] = [];
-  let effectiveStartDate = definition.startDate;
-  let effectiveEndDate = definition.endDate;
+  // Generate periods from resetFrequency
+  const spanPerPeriod = Math.round(12 / periodCount);
+  
+  const periodsToUse: BenefitPeriodDefinition[] = Array.from({ length: periodCount }, (_, index) => {
+    const startMonth = index * spanPerPeriod;
+    const startDate = new Date(Date.UTC(year, startMonth, 1));
+    const endDate = new Date(Date.UTC(year, startMonth + spanPerPeriod, 0, 23, 59, 59));
+    return {
+      id: `${definition.id}-${year}-${index + 1}`,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    };
+  });
 
-  const periodDefinitions = definition.periods && definition.periods.length > 0
-    ? definition.periods
-    : [{
-        id: 'overall',
-        startDate: definition.startDate,
-        endDate: definition.endDate,
-      }];
-
-  const spanPerPeriod = Math.round(12 / periodDefinitions.length);
-  const periodsToUse = selectedYear
-    ? periodDefinitions.map((period, index) => {
-        const startMonth = index * spanPerPeriod;
-        const startDate = new Date(Date.UTC(selectedYear, startMonth, 1));
-        const endDate = new Date(Date.UTC(selectedYear, startMonth + spanPerPeriod, 0, 23, 59, 59));
-        return {
-          ...period,
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
-        };
-      })
-    : periodDefinitions;
-
-  effectiveStartDate = periodsToUse[0]?.startDate ?? yearStartIso;
-  effectiveEndDate = periodsToUse[periodsToUse.length - 1]?.endDate ?? yearEndIso;
+  const effectiveStartDate = periodsToUse[0]?.startDate ?? yearStartIso;
+  const effectiveEndDate = periodsToUse[periodsToUse.length - 1]?.endDate ?? yearEndIso;
 
   const periodTransactions = new Map<string, StoredTransaction[]>();
 
@@ -231,19 +372,18 @@ export function buildBenefitUsageSnapshot(
     }
   }
 
-    periods = periodsToUse.map(period => {
-      const periodTxs = periodTransactions.get(period.id) ?? [];
-      const usedAmount = periodTxs.reduce((sum, tx) => sum + tx.amount, 0);
-      const { status, isCurrent, timeProgress, daysLeft } = deriveSegmentStatus(
-        usedAmount,
-        segmentValue,
-        period.startDate,
-        period.endDate,
-        referenceDate,
-        isPastYearView,
-        isPastYearView
-      );
-
+  const periods = periodsToUse.map(period => {
+    const periodTxs = periodTransactions.get(period.id) ?? [];
+    const usedAmount = periodTxs.reduce((sum, tx) => sum + tx.amount, 0);
+    const { status, isCurrent, timeProgress, daysLeft } = deriveSegmentStatus(
+      usedAmount,
+      segmentValue,
+      period.startDate,
+      period.endDate,
+      referenceDate,
+      isPastYearView,
+      isPastYearView
+    );
 
     return {
       ...period,
@@ -259,9 +399,7 @@ export function buildBenefitUsageSnapshot(
   const currentUsed = periods.reduce((sum, p) => sum + p.usedAmount, 0);
 
   let overallStatus: 'pending' | 'completed' | 'missed';
-  if (claimedElsewhereYear) {
-    overallStatus = 'completed';
-  } else if (isPastYearView) {
+  if (isPastYearView) {
     // Past year: at least 50% of segments completed = completed, otherwise missed
     const completedCount = periods.filter(p => p.status === 'completed').length;
     const halfOrMore = completedCount >= periods.length / 2;
@@ -272,7 +410,7 @@ export function buildBenefitUsageSnapshot(
     overallStatus = currentPeriod?.status ?? 'pending';
   }
 
-  if (!definition.periods || definition.periods.length === 0) {
+  if (definition.resetFrequency === 'annual') {
     // For single-period benefits, use 50% threshold
     const threshold = definition.creditAmount * 0.5;
     if (currentUsed >= threshold) {
@@ -285,7 +423,7 @@ export function buildBenefitUsageSnapshot(
     currentUsed,
     status: overallStatus,
     yearTransactions,
-    claimedElsewhereYear,
+    claimedElsewhereYear: undefined, // Only used for multi-year benefits
     effectiveStartDate,
     effectiveEndDate,
     segmentValue,
@@ -294,11 +432,15 @@ export function buildBenefitUsageSnapshot(
   };
 }
 
-export function buildProgressSegments(
-  definition: BenefitDefinition,
-  snapshot: BenefitUsageSnapshot
-): ProgressSegment[] {
-  return snapshot.periods.map(period => ({
+export function buildProgressSegments(benefit: Benefit): ProgressSegment[] {
+  const periods = benefit.periods ?? [];
+  const segmentValue = periods.length > 0
+    ? benefit.creditAmount / periods.length
+    : benefit.creditAmount;
+  
+  const isMultiYear = isMultiYearBenefit(benefit.resetFrequency);
+  
+  return periods.map(period => ({
     id: period.id,
     status: period.status,
     label: `${formatDate(period.startDate)} - ${formatDate(period.endDate)}`,
@@ -309,7 +451,8 @@ export function buildProgressSegments(
     isCurrent: period.isCurrent,
     transactions: period.transactions,
     usedAmount: period.usedAmount,
-    segmentValue: snapshot.segmentValue
+    segmentValue,
+    isMultiYear, // Pass this to the progress bar for tooltip formatting
   }));
 }
 
@@ -321,7 +464,7 @@ export function getTotalAnnualFee(cards: CreditCard[], year: number): number {
   return cards.reduce((sum, card) => sum + getAnnualFee(card, year), 0);
 }
 
-export function calculateStats(benefits: Benefit[], year?: number): CardStats {
+export function calculateStats(benefits: Benefit[], year?: number): Stats {
   const totalBenefits = benefits.length;
   const referenceDate = getReferenceDate(year);
 

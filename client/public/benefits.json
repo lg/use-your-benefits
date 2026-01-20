@@ -8,7 +8,6 @@
         "2025": 695,
         "2026": 895
       },
-      "resetBasis": "calendar-year",
       "color": "#006fcf"
     },
     {
@@ -18,7 +17,6 @@
         "2025": 550,
         "2026": 695
       },
-      "resetBasis": "calendar-year",
       "color": "#117aca"
     }
   ],
@@ -28,759 +26,189 @@
       "cardId": "amex-platinum",
       "name": "Hotel",
       "shortDescription": "$600 annually ($300 twice per year)",
-      "fullDescription": "Receive up to $600 in statement credits annually for prepaid Fine Hotels + Resorts or The Hotel Collection bookings made through Amex Travel, split as $300 for January-June and $300 for July-December.",
       "creditAmount": 600,
       "resetFrequency": "twice-yearly",
-      "enrollmentRequired": false,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Travel",
-      "periods": [
-        {
-          "id": "amex-hotel-credit-h1-2026",
-          "startDate": "2026-01-01T00:00:00Z",
-          "endDate": "2026-06-30T23:59:59Z"
-        },
-        {
-          "id": "amex-hotel-credit-h2-2026",
-          "startDate": "2026-07-01T00:00:00Z",
-          "endDate": "2026-12-31T23:59:59Z"
-        }
-      ],
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": false
     },
     {
       "id": "amex-uber-cash",
       "cardId": "amex-platinum",
       "name": "Uber Cash",
       "shortDescription": "$200 annually ($15 monthly + $20 in December)",
-      "fullDescription": "Add your Platinum Card to Uber to receive $15 in Uber Cash each month plus a $20 bonus in December for rides and Uber Eats in the U.S.",
       "creditAmount": 200,
       "resetFrequency": "monthly",
-      "enrollmentRequired": false,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Transportation",
-      "periods": [
-        {
-          "id": "amex-uber-cash-2026-01",
-          "startDate": "2026-01-01T00:00:00Z",
-          "endDate": "2026-01-31T23:59:59Z"
-        },
-        {
-          "id": "amex-uber-cash-2026-02",
-          "startDate": "2026-02-01T00:00:00Z",
-          "endDate": "2026-02-28T23:59:59Z"
-        },
-        {
-          "id": "amex-uber-cash-2026-03",
-          "startDate": "2026-03-01T00:00:00Z",
-          "endDate": "2026-03-31T23:59:59Z"
-        },
-        {
-          "id": "amex-uber-cash-2026-04",
-          "startDate": "2026-04-01T00:00:00Z",
-          "endDate": "2026-04-30T23:59:59Z"
-        },
-        {
-          "id": "amex-uber-cash-2026-05",
-          "startDate": "2026-05-01T00:00:00Z",
-          "endDate": "2026-05-31T23:59:59Z"
-        },
-        {
-          "id": "amex-uber-cash-2026-06",
-          "startDate": "2026-06-01T00:00:00Z",
-          "endDate": "2026-06-30T23:59:59Z"
-        },
-        {
-          "id": "amex-uber-cash-2026-07",
-          "startDate": "2026-07-01T00:00:00Z",
-          "endDate": "2026-07-31T23:59:59Z"
-        },
-        {
-          "id": "amex-uber-cash-2026-08",
-          "startDate": "2026-08-01T00:00:00Z",
-          "endDate": "2026-08-31T23:59:59Z"
-        },
-        {
-          "id": "amex-uber-cash-2026-09",
-          "startDate": "2026-09-01T00:00:00Z",
-          "endDate": "2026-09-30T23:59:59Z"
-        },
-        {
-          "id": "amex-uber-cash-2026-10",
-          "startDate": "2026-10-01T00:00:00Z",
-          "endDate": "2026-10-31T23:59:59Z"
-        },
-        {
-          "id": "amex-uber-cash-2026-11",
-          "startDate": "2026-11-01T00:00:00Z",
-          "endDate": "2026-11-30T23:59:59Z"
-        },
-        {
-          "id": "amex-uber-cash-2026-12",
-          "startDate": "2026-12-01T00:00:00Z",
-          "endDate": "2026-12-31T23:59:59Z"
-        }
-      ],
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": false
     },
     {
       "id": "amex-uber-one",
       "cardId": "amex-platinum",
       "name": "Uber One",
       "shortDescription": "$120 annually for Uber One",
-      "fullDescription": "Receive up to $120 in statement credits each calendar year after paying for an auto-renewing Uber One membership with the Platinum Card.",
       "creditAmount": 120,
       "resetFrequency": "annual",
-      "enrollmentRequired": false,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Transportation",
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": false
     },
     {
       "id": "amex-airline-fee",
       "cardId": "amex-platinum",
       "name": "Airline Fee",
       "shortDescription": "$200 annually for one airline",
-      "fullDescription": "Select one qualifying airline and receive up to $200 in statement credits each calendar year for incidental fees such as checked bags, seat assignments, and inflight purchases.",
       "creditAmount": 200,
       "resetFrequency": "annual",
-      "enrollmentRequired": true,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Travel",
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": true
     },
     {
       "id": "amex-clear-plus",
       "cardId": "amex-platinum",
       "name": "CLEAR Plus",
       "shortDescription": "$209 annually for CLEAR Plus",
-      "fullDescription": "Receive up to $209 in statement credits each calendar year after paying for a CLEAR Plus membership with the Platinum Card.",
       "creditAmount": 209,
       "resetFrequency": "annual",
-      "enrollmentRequired": false,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Travel",
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": false
     },
     {
       "id": "amex-resy-credit",
       "cardId": "amex-platinum",
       "name": "Resy",
       "shortDescription": "$400 annually ($100 per quarter)",
-      "fullDescription": "Receive up to $100 in statement credits each quarter for eligible Resy dining purchases when enrolled and using the Platinum Card.",
       "creditAmount": 400,
       "resetFrequency": "quarterly",
-      "enrollmentRequired": true,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Dining",
-      "periods": [
-        {
-          "id": "amex-resy-2026-q1",
-          "startDate": "2026-01-01T00:00:00Z",
-          "endDate": "2026-03-31T23:59:59Z"
-        },
-        {
-          "id": "amex-resy-2026-q2",
-          "startDate": "2026-04-01T00:00:00Z",
-          "endDate": "2026-06-30T23:59:59Z"
-        },
-        {
-          "id": "amex-resy-2026-q3",
-          "startDate": "2026-07-01T00:00:00Z",
-          "endDate": "2026-09-30T23:59:59Z"
-        },
-        {
-          "id": "amex-resy-2026-q4",
-          "startDate": "2026-10-01T00:00:00Z",
-          "endDate": "2026-12-31T23:59:59Z"
-        }
-      ],
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": true
     },
     {
       "id": "amex-digital-entertainment",
       "cardId": "amex-platinum",
       "name": "Digital Entertainment",
       "shortDescription": "$300 annually ($25 monthly)",
-      "fullDescription": "Receive up to $25 in statement credits each month for eligible digital entertainment subscriptions when enrolled.",
       "creditAmount": 300,
       "resetFrequency": "monthly",
-      "enrollmentRequired": true,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Entertainment",
-      "periods": [
-        {
-          "id": "amex-digital-entertainment-2026-01",
-          "startDate": "2026-01-01T00:00:00Z",
-          "endDate": "2026-01-31T23:59:59Z"
-        },
-        {
-          "id": "amex-digital-entertainment-2026-02",
-          "startDate": "2026-02-01T00:00:00Z",
-          "endDate": "2026-02-28T23:59:59Z"
-        },
-        {
-          "id": "amex-digital-entertainment-2026-03",
-          "startDate": "2026-03-01T00:00:00Z",
-          "endDate": "2026-03-31T23:59:59Z"
-        },
-        {
-          "id": "amex-digital-entertainment-2026-04",
-          "startDate": "2026-04-01T00:00:00Z",
-          "endDate": "2026-04-30T23:59:59Z"
-        },
-        {
-          "id": "amex-digital-entertainment-2026-05",
-          "startDate": "2026-05-01T00:00:00Z",
-          "endDate": "2026-05-31T23:59:59Z"
-        },
-        {
-          "id": "amex-digital-entertainment-2026-06",
-          "startDate": "2026-06-01T00:00:00Z",
-          "endDate": "2026-06-30T23:59:59Z"
-        },
-        {
-          "id": "amex-digital-entertainment-2026-07",
-          "startDate": "2026-07-01T00:00:00Z",
-          "endDate": "2026-07-31T23:59:59Z"
-        },
-        {
-          "id": "amex-digital-entertainment-2026-08",
-          "startDate": "2026-08-01T00:00:00Z",
-          "endDate": "2026-08-31T23:59:59Z"
-        },
-        {
-          "id": "amex-digital-entertainment-2026-09",
-          "startDate": "2026-09-01T00:00:00Z",
-          "endDate": "2026-09-30T23:59:59Z"
-        },
-        {
-          "id": "amex-digital-entertainment-2026-10",
-          "startDate": "2026-10-01T00:00:00Z",
-          "endDate": "2026-10-31T23:59:59Z"
-        },
-        {
-          "id": "amex-digital-entertainment-2026-11",
-          "startDate": "2026-11-01T00:00:00Z",
-          "endDate": "2026-11-30T23:59:59Z"
-        },
-        {
-          "id": "amex-digital-entertainment-2026-12",
-          "startDate": "2026-12-01T00:00:00Z",
-          "endDate": "2026-12-31T23:59:59Z"
-        }
-      ],
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": true
     },
     {
       "id": "amex-lululemon",
       "cardId": "amex-platinum",
       "name": "lululemon",
       "shortDescription": "$300 annually ($75 per quarter)",
-      "fullDescription": "Receive up to $75 in statement credits each quarter for eligible lululemon purchases when enrolled.",
       "creditAmount": 300,
       "resetFrequency": "quarterly",
-      "enrollmentRequired": true,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Shopping",
-      "periods": [
-        {
-          "id": "amex-lululemon-2026-q1",
-          "startDate": "2026-01-01T00:00:00Z",
-          "endDate": "2026-03-31T23:59:59Z"
-        },
-        {
-          "id": "amex-lululemon-2026-q2",
-          "startDate": "2026-04-01T00:00:00Z",
-          "endDate": "2026-06-30T23:59:59Z"
-        },
-        {
-          "id": "amex-lululemon-2026-q3",
-          "startDate": "2026-07-01T00:00:00Z",
-          "endDate": "2026-09-30T23:59:59Z"
-        },
-        {
-          "id": "amex-lululemon-2026-q4",
-          "startDate": "2026-10-01T00:00:00Z",
-          "endDate": "2026-12-31T23:59:59Z"
-        }
-      ],
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": true
     },
     {
       "id": "amex-walmart-plus",
       "cardId": "amex-platinum",
       "name": "Walmart+",
       "shortDescription": "$155 annually ($12.95 monthly)",
-      "fullDescription": "Receive up to $12.95 in statement credits each month after paying for a Walmart+ monthly membership with the Platinum Card.",
       "creditAmount": 155,
       "resetFrequency": "monthly",
-      "enrollmentRequired": false,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Shopping",
-      "periods": [
-        {
-          "id": "amex-walmart-plus-2026-01",
-          "startDate": "2026-01-01T00:00:00Z",
-          "endDate": "2026-01-31T23:59:59Z"
-        },
-        {
-          "id": "amex-walmart-plus-2026-02",
-          "startDate": "2026-02-01T00:00:00Z",
-          "endDate": "2026-02-28T23:59:59Z"
-        },
-        {
-          "id": "amex-walmart-plus-2026-03",
-          "startDate": "2026-03-01T00:00:00Z",
-          "endDate": "2026-03-31T23:59:59Z"
-        },
-        {
-          "id": "amex-walmart-plus-2026-04",
-          "startDate": "2026-04-01T00:00:00Z",
-          "endDate": "2026-04-30T23:59:59Z"
-        },
-        {
-          "id": "amex-walmart-plus-2026-05",
-          "startDate": "2026-05-01T00:00:00Z",
-          "endDate": "2026-05-31T23:59:59Z"
-        },
-        {
-          "id": "amex-walmart-plus-2026-06",
-          "startDate": "2026-06-01T00:00:00Z",
-          "endDate": "2026-06-30T23:59:59Z"
-        },
-        {
-          "id": "amex-walmart-plus-2026-07",
-          "startDate": "2026-07-01T00:00:00Z",
-          "endDate": "2026-07-31T23:59:59Z"
-        },
-        {
-          "id": "amex-walmart-plus-2026-08",
-          "startDate": "2026-08-01T00:00:00Z",
-          "endDate": "2026-08-31T23:59:59Z"
-        },
-        {
-          "id": "amex-walmart-plus-2026-09",
-          "startDate": "2026-09-01T00:00:00Z",
-          "endDate": "2026-09-30T23:59:59Z"
-        },
-        {
-          "id": "amex-walmart-plus-2026-10",
-          "startDate": "2026-10-01T00:00:00Z",
-          "endDate": "2026-10-31T23:59:59Z"
-        },
-        {
-          "id": "amex-walmart-plus-2026-11",
-          "startDate": "2026-11-01T00:00:00Z",
-          "endDate": "2026-11-30T23:59:59Z"
-        },
-        {
-          "id": "amex-walmart-plus-2026-12",
-          "startDate": "2026-12-01T00:00:00Z",
-          "endDate": "2026-12-31T23:59:59Z"
-        }
-      ],
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": false
     },
     {
       "id": "amex-saks",
       "cardId": "amex-platinum",
       "name": "Saks Fifth Avenue",
       "shortDescription": "$100 annually ($50 twice per year)",
-      "fullDescription": "Receive up to $100 in statement credits annually at Saks Fifth Avenue, split as $50 for the first half of the year and $50 for the second half when enrolled.",
       "creditAmount": 100,
       "resetFrequency": "twice-yearly",
-      "enrollmentRequired": true,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Shopping",
-      "periods": [
-        {
-          "id": "amex-saks-h1-2026",
-          "startDate": "2026-01-01T00:00:00Z",
-          "endDate": "2026-06-30T23:59:59Z"
-        },
-        {
-          "id": "amex-saks-h2-2026",
-          "startDate": "2026-07-01T00:00:00Z",
-          "endDate": "2026-12-31T23:59:59Z"
-        }
-      ],
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": true
     },
     {
       "id": "amex-oura",
       "cardId": "amex-platinum",
       "name": "Oura Ring",
       "shortDescription": "$200 annually for Oura Ring",
-      "fullDescription": "Receive up to $200 in statement credits each calendar year for an Oura Ring purchase at Ouraring.com when enrolled.",
       "creditAmount": 200,
       "resetFrequency": "annual",
-      "enrollmentRequired": true,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Wellness",
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": true
     },
     {
       "id": "amex-equinox",
       "cardId": "amex-platinum",
       "name": "Equinox",
       "shortDescription": "$300 annually for Equinox",
-      "fullDescription": "Receive up to $300 in statement credits each calendar year for eligible Equinox memberships or Equinox+ subscriptions when enrolled.",
       "creditAmount": 300,
       "resetFrequency": "annual",
-      "enrollmentRequired": true,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Wellness",
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": true
     },
     {
       "id": "amex-global-entry",
       "cardId": "amex-platinum",
       "name": "Global Entry/TSA PreCheck",
       "shortDescription": "$120 every 4 years",
-      "fullDescription": "Receive one statement credit up to $120 for a Global Entry, TSA PreCheck, or NEXUS application fee once every 4 years.",
       "creditAmount": 120,
-      "resetFrequency": "annual",
-      "enrollmentRequired": false,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2029-12-31T23:59:59Z",
-      "category": "Travel",
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "resetFrequency": "4-year",
+      "enrollmentRequired": false
     },
     {
       "id": "csr-travel-credit",
       "cardId": "chase-sapphire-reserve",
       "name": "Travel Credit",
       "shortDescription": "$300 annually for travel purchases",
-      "fullDescription": "Receive up to $300 in statement credits each calendar year for travel purchases. Credits apply automatically to eligible travel spend.",
       "creditAmount": 300,
       "resetFrequency": "annual",
-      "enrollmentRequired": false,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Travel",
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": false
     },
     {
       "id": "csr-global-entry",
       "cardId": "chase-sapphire-reserve",
       "name": "Global Entry/TSA PreCheck",
       "shortDescription": "$120 every 4 years",
-      "fullDescription": "Receive one statement credit up to $120 for a Global Entry, TSA PreCheck, or NEXUS application fee once every 4 years.",
       "creditAmount": 120,
-      "resetFrequency": "annual",
-      "enrollmentRequired": false,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2029-12-31T23:59:59Z",
-      "category": "Travel",
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "resetFrequency": "4-year",
+      "enrollmentRequired": false
     },
     {
       "id": "csr-edit-hotel",
       "cardId": "chase-sapphire-reserve",
       "name": "The Edit Hotel Credit",
       "shortDescription": "$500 annually for The Edit bookings",
-      "fullDescription": "Receive up to $500 in annual statement credits for prepaid bookings made with The Edit by Chase Travel, with a maximum of $250 per transaction.",
       "creditAmount": 500,
       "resetFrequency": "annual",
-      "enrollmentRequired": false,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Travel",
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": false
     },
     {
       "id": "csr-dining-exclusive-tables",
       "cardId": "chase-sapphire-reserve",
       "name": "Exclusive Tables Dining",
       "shortDescription": "$300 annually ($150 twice per year)",
-      "fullDescription": "Receive up to $300 in statement credits annually for Sapphire Reserve Exclusive Tables dining, split as $150 for January-June and $150 for July-December.",
       "creditAmount": 300,
       "resetFrequency": "twice-yearly",
-      "enrollmentRequired": false,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Dining",
-      "periods": [
-        {
-          "id": "csr-dining-exclusive-tables-h1-2026",
-          "startDate": "2026-01-01T00:00:00Z",
-          "endDate": "2026-06-30T23:59:59Z"
-        },
-        {
-          "id": "csr-dining-exclusive-tables-h2-2026",
-          "startDate": "2026-07-01T00:00:00Z",
-          "endDate": "2026-12-31T23:59:59Z"
-        }
-      ],
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": false
     },
     {
       "id": "csr-doordash",
       "cardId": "chase-sapphire-reserve",
       "name": "DoorDash Credit",
       "shortDescription": "$300 annually ($25 monthly)",
-      "fullDescription": "Receive $25 in monthly DoorDash credits, totaling up to $300 annually when enrolled.",
       "creditAmount": 300,
       "resetFrequency": "monthly",
-      "enrollmentRequired": true,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Dining",
-      "periods": [
-        {
-          "id": "csr-doordash-2026-01",
-          "startDate": "2026-01-01T00:00:00Z",
-          "endDate": "2026-01-31T23:59:59Z"
-        },
-        {
-          "id": "csr-doordash-2026-02",
-          "startDate": "2026-02-01T00:00:00Z",
-          "endDate": "2026-02-28T23:59:59Z"
-        },
-        {
-          "id": "csr-doordash-2026-03",
-          "startDate": "2026-03-01T00:00:00Z",
-          "endDate": "2026-03-31T23:59:59Z"
-        },
-        {
-          "id": "csr-doordash-2026-04",
-          "startDate": "2026-04-01T00:00:00Z",
-          "endDate": "2026-04-30T23:59:59Z"
-        },
-        {
-          "id": "csr-doordash-2026-05",
-          "startDate": "2026-05-01T00:00:00Z",
-          "endDate": "2026-05-31T23:59:59Z"
-        },
-        {
-          "id": "csr-doordash-2026-06",
-          "startDate": "2026-06-01T00:00:00Z",
-          "endDate": "2026-06-30T23:59:59Z"
-        },
-        {
-          "id": "csr-doordash-2026-07",
-          "startDate": "2026-07-01T00:00:00Z",
-          "endDate": "2026-07-31T23:59:59Z"
-        },
-        {
-          "id": "csr-doordash-2026-08",
-          "startDate": "2026-08-01T00:00:00Z",
-          "endDate": "2026-08-31T23:59:59Z"
-        },
-        {
-          "id": "csr-doordash-2026-09",
-          "startDate": "2026-09-01T00:00:00Z",
-          "endDate": "2026-09-30T23:59:59Z"
-        },
-        {
-          "id": "csr-doordash-2026-10",
-          "startDate": "2026-10-01T00:00:00Z",
-          "endDate": "2026-10-31T23:59:59Z"
-        },
-        {
-          "id": "csr-doordash-2026-11",
-          "startDate": "2026-11-01T00:00:00Z",
-          "endDate": "2026-11-30T23:59:59Z"
-        },
-        {
-          "id": "csr-doordash-2026-12",
-          "startDate": "2026-12-01T00:00:00Z",
-          "endDate": "2026-12-31T23:59:59Z"
-        }
-      ],
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": true
     },
     {
       "id": "csr-lyft",
       "cardId": "chase-sapphire-reserve",
       "name": "Lyft Credit",
       "shortDescription": "$120 annually ($10 monthly)",
-      "fullDescription": "Receive $10 in monthly Lyft credits, totaling up to $120 annually when enrolled.",
       "creditAmount": 120,
       "resetFrequency": "monthly",
-      "enrollmentRequired": true,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Transportation",
-      "periods": [
-        {
-          "id": "csr-lyft-2026-01",
-          "startDate": "2026-01-01T00:00:00Z",
-          "endDate": "2026-01-31T23:59:59Z"
-        },
-        {
-          "id": "csr-lyft-2026-02",
-          "startDate": "2026-02-01T00:00:00Z",
-          "endDate": "2026-02-28T23:59:59Z"
-        },
-        {
-          "id": "csr-lyft-2026-03",
-          "startDate": "2026-03-01T00:00:00Z",
-          "endDate": "2026-03-31T23:59:59Z"
-        },
-        {
-          "id": "csr-lyft-2026-04",
-          "startDate": "2026-04-01T00:00:00Z",
-          "endDate": "2026-04-30T23:59:59Z"
-        },
-        {
-          "id": "csr-lyft-2026-05",
-          "startDate": "2026-05-01T00:00:00Z",
-          "endDate": "2026-05-31T23:59:59Z"
-        },
-        {
-          "id": "csr-lyft-2026-06",
-          "startDate": "2026-06-01T00:00:00Z",
-          "endDate": "2026-06-30T23:59:59Z"
-        },
-        {
-          "id": "csr-lyft-2026-07",
-          "startDate": "2026-07-01T00:00:00Z",
-          "endDate": "2026-07-31T23:59:59Z"
-        },
-        {
-          "id": "csr-lyft-2026-08",
-          "startDate": "2026-08-01T00:00:00Z",
-          "endDate": "2026-08-31T23:59:59Z"
-        },
-        {
-          "id": "csr-lyft-2026-09",
-          "startDate": "2026-09-01T00:00:00Z",
-          "endDate": "2026-09-30T23:59:59Z"
-        },
-        {
-          "id": "csr-lyft-2026-10",
-          "startDate": "2026-10-01T00:00:00Z",
-          "endDate": "2026-10-31T23:59:59Z"
-        },
-        {
-          "id": "csr-lyft-2026-11",
-          "startDate": "2026-11-01T00:00:00Z",
-          "endDate": "2026-11-30T23:59:59Z"
-        },
-        {
-          "id": "csr-lyft-2026-12",
-          "startDate": "2026-12-01T00:00:00Z",
-          "endDate": "2026-12-31T23:59:59Z"
-        }
-      ],
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": true
     },
     {
       "id": "csr-peloton",
       "cardId": "chase-sapphire-reserve",
       "name": "Peloton Credit",
       "shortDescription": "$120 annually for Peloton",
-      "fullDescription": "Receive up to $120 in statement credits annually for eligible Peloton memberships when enrolled.",
       "creditAmount": 120,
       "resetFrequency": "annual",
-      "enrollmentRequired": true,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Wellness",
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": true
     },
     {
       "id": "csr-stubhub",
       "cardId": "chase-sapphire-reserve",
       "name": "StubHub/viagogo Credit",
       "shortDescription": "$300 annually ($150 twice per year)",
-      "fullDescription": "Receive up to $300 in annual statement credits for StubHub or viagogo purchases, split as $150 for January-June and $150 for July-December when enrolled.",
       "creditAmount": 300,
       "resetFrequency": "twice-yearly",
-      "enrollmentRequired": true,
-      "startDate": "2026-01-01T00:00:00Z",
-      "endDate": "2026-12-31T23:59:59Z",
-      "category": "Entertainment",
-      "periods": [
-        {
-          "id": "csr-stubhub-h1-2026",
-          "startDate": "2026-01-01T00:00:00Z",
-          "endDate": "2026-06-30T23:59:59Z"
-        },
-        {
-          "id": "csr-stubhub-h2-2026",
-          "startDate": "2026-07-01T00:00:00Z",
-          "endDate": "2026-12-31T23:59:59Z"
-        }
-      ],
-      "ignored": false,
-      "currentUsed": 0,
-      "status": "pending",
-      "enrolled": false
+      "enrollmentRequired": true
     }
   ]
 }

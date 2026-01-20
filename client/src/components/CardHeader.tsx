@@ -1,10 +1,10 @@
 import { useState, useCallback, memo } from 'react';
-import type { CreditCard, Benefit, CardStats, TransactionStatus } from '@shared/types';
+import type { CreditCard, Benefit, Stats, TransactionStatus } from '@shared/types';
 import { getAnnualFee, formatDateRange } from '@shared/utils';
 
 interface CardHeaderProps {
   card: CreditCard;
-  stats?: CardStats;
+  stats?: Stats;
   allBenefits: Benefit[];
   selectedYear: number;
   onUpdateBenefit: (id: string) => void;

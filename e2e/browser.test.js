@@ -48,10 +48,6 @@ test.describe('Benefit Cards', () => {
     await expect(page.getByText('Pending').first()).toBeVisible();
   });
 
-  test('shows expiration date', async ({ page }) => {
-    const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
-    await expect(uberCard.getByText('Expires: Dec 31, 2026')).toBeVisible();
-  });
 });
 
 test.describe('Enrollment Toggle', () => {
@@ -349,5 +345,98 @@ test.describe('Past Year Segments', () => {
     await expect(lululemonCard.locator('.progress-segment.completed')).toHaveCount(1);
     await expect(lululemonCard.locator('.progress-segment.missed')).toHaveCount(0);
     await expect(lululemonCard.locator('.progress-segment.pending')).toHaveCount(3);
+  });
+});
+
+test.describe('4-Year Benefits (Global Entry)', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+  });
+
+  test('shows as pending without any transactions', async ({ page }) => {
+    // No transactions for Global Entry - should show pending
+    const globalEntryCard = page.locator('.benefit-card', { hasText: 'Global Entry' }).first();
+    await expect(globalEntryCard.locator('.progress-segment')).toHaveCount(1);
+    await expect(globalEntryCard.locator('.progress-segment.current')).toHaveCount(1);
+    await expect(globalEntryCard.getByText('Pending')).toBeVisible();
+  });
+
+  test('shows as completed in current year with 2024 transaction', async ({ page }) => {
+    // Transaction from 2024 should make 2025 and 2026 show as completed
+    await page.evaluate(() => {
+      const userData = {
+        benefits: {},
+        cardTransactions: {
+          'amex-platinum': {
+            transactions: [
+              { date: '2024-03-15T00:00:00.000Z', description: 'Platinum Global Entry Credit', amount: -100 }
+            ],
+            importedAt: new Date().toISOString()
+          }
+        }
+      };
+      localStorage.setItem('use-your-benefits', JSON.stringify(userData));
+    });
+    await page.reload();
+
+    const globalEntryCard = page.locator('.benefit-card', { hasText: 'Global Entry' }).first();
+    await expect(globalEntryCard.locator('.progress-segment.completed')).toHaveCount(1);
+    await expect(globalEntryCard.getByText('Completed')).toBeVisible();
+  });
+
+  test('shows transaction year in tooltip for multi-year benefits', async ({ page }) => {
+    // Transaction from 2024 - tooltip should show year in date
+    await page.evaluate(() => {
+      const userData = {
+        benefits: {},
+        cardTransactions: {
+          'amex-platinum': {
+            transactions: [
+              { date: '2024-03-15T00:00:00.000Z', description: 'Platinum Global Entry Credit', amount: -100 }
+            ],
+            importedAt: new Date().toISOString()
+          }
+        }
+      };
+      localStorage.setItem('use-your-benefits', JSON.stringify(userData));
+    });
+    await page.reload();
+
+    const globalEntryCard = page.locator('.benefit-card', { hasText: 'Global Entry' }).first();
+    // Hover over the progress segment to show tooltip
+    await globalEntryCard.locator('.progress-segment').hover();
+    // The tooltip should show the validity period (4 years) and transaction with year
+    // The date range header shows "Mar 15, 2024 - Mar 14, 2028"
+    await expect(page.getByText('Mar 15, 2024 - Mar 14, 2028')).toBeVisible();
+    // The transaction line shows "Mar 15, 2024 Platinum Global Entry Credit"
+    await expect(page.getByText('Mar 15, 2024 Platinum Global Entry Credit')).toBeVisible();
+  });
+
+  test('shows completed for years within validity period when viewing past year', async ({ page }) => {
+    // Transaction from 2024 - viewing 2025 should show completed
+    await page.evaluate(() => {
+      const userData = {
+        benefits: {},
+        cardTransactions: {
+          'amex-platinum': {
+            transactions: [
+              { date: '2024-03-15T00:00:00.000Z', description: 'Platinum Global Entry Credit', amount: -100 }
+            ],
+            importedAt: new Date().toISOString()
+          }
+        }
+      };
+      localStorage.setItem('use-your-benefits', JSON.stringify(userData));
+    });
+    await page.reload();
+
+    // Switch to 2025 view
+    await page.getByRole('button', { name: '2025', exact: true }).click();
+    await page.waitForLoadState('domcontentloaded');
+
+    const globalEntryCard = page.locator('.benefit-card', { hasText: 'Global Entry' }).first();
+    await expect(globalEntryCard.locator('.progress-segment.completed')).toHaveCount(1);
   });
 });

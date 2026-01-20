@@ -16,16 +16,14 @@ export interface StoredTransaction {
   type?: string; // Transaction type (e.g., "Adjustment", "Sale", "Return" for Chase)
 }
 
+// Period definition for runtime-generated periods
 export interface BenefitPeriodDefinition {
   id: string;
   startDate: string;
   endDate: string;
 }
 
-export interface BenefitPeriodUserState {
-  transactions?: StoredTransaction[];
-}
-
+// Full period with computed usage data
 export interface BenefitPeriod extends BenefitPeriodDefinition {
   usedAmount: number;
   status: BenefitStatus;
@@ -35,40 +33,36 @@ export interface BenefitPeriod extends BenefitPeriodDefinition {
   daysLeft?: number;
 }
 
+// User-specific state stored in localStorage
 export interface BenefitUserState {
   enrolled: boolean;
   ignored: boolean;
-  periods?: Record<string, BenefitPeriodUserState>;
-  transactions?: StoredTransaction[];
 }
 
-export interface BenefitDerivedFields {
-  currentUsed: number;
-  status: BenefitStatus;
-}
+export type ResetFrequency = 'annual' | 'twice-yearly' | 'quarterly' | 'monthly' | '4-year';
 
 export interface BenefitDefinition {
   id: string;
   cardId: string;
   name: string;
   shortDescription: string;
-  fullDescription: string;
   creditAmount: number;
-  resetFrequency: 'annual' | 'twice-yearly' | 'quarterly' | 'monthly';
+  resetFrequency: ResetFrequency;
   enrollmentRequired: boolean;
-  startDate: string;
-  endDate: string;
-  category: string;
-  periods?: BenefitPeriodDefinition[];
 }
 
-export type Benefit = Omit<BenefitDefinition, 'periods'> &
-  BenefitUserState &
-  BenefitDerivedFields & {
+// Full benefit with all computed fields (definition + user state + derived)
+export type Benefit = BenefitDefinition &
+  BenefitUserState & {
+    currentUsed: number;
+    status: BenefitStatus;
+    startDate: string;  // Computed at runtime
+    endDate: string;    // Computed at runtime
     periods?: BenefitPeriod[];
+    transactions?: StoredTransaction[];
     card?: CreditCard;
     claimedElsewhereYear?: number;
-    autoEnrolledAt?: string; // Derived: ISO date of earliest credit for enrollment-required benefits
+    autoEnrolledAt?: string;
   };
 
 
@@ -80,6 +74,8 @@ export interface BenefitsStaticData {
 export interface CardTransactionStore {
   transactions: StoredTransaction[];
   importedAt: string; // ISO date of last import
+  // Pre-matched transactions by benefit ID (computed on import)
+  matchedByBenefit?: Record<string, StoredTransaction[]>;
 }
 
 export interface UserBenefitsData {
@@ -100,7 +96,7 @@ export interface Stats {
   missedCount: number;
 }
 
-export type CardStats = Stats;
+
 
 // Transaction status for card data imports
 export interface TransactionStatus {
@@ -120,4 +116,5 @@ export interface ProgressSegment {
   transactions?: StoredTransaction[];
   usedAmount?: number;
   segmentValue?: number;
+  isMultiYear?: boolean; // True for 4-year benefits
 }

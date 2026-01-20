@@ -20,22 +20,32 @@ import {
 import { matchCredits } from './benefitMatcher';
 import type { CardType, ParsedTransaction } from '../types/import';
 
+// In-memory cache for matched transactions per card
+// Key: cardId, Value: { importedAt, matchedByBenefit }
+const matchCache = new Map<string, {
+  importedAt: string;
+  matchedByBenefit: Record<string, StoredTransaction[]>;
+}>();
+
 /**
- * Derive transactions for a specific benefit from card-level stored transactions.
- * Runs the benefit matcher to identify which credits belong to this benefit.
+ * Get matched transactions for a card, running the matcher only once per import.
  */
-function deriveBenefitTransactions(
-  benefitId: string,
+function getMatchedTransactions(
   cardId: string,
   allDefinitions: BenefitDefinition[]
-): StoredTransaction[] {
+): Record<string, StoredTransaction[]> {
   const cardStore = getCardTransactions(cardId);
   if (!cardStore || cardStore.transactions.length === 0) {
-    return [];
+    return {};
   }
 
-  // Convert stored transactions to ParsedTransaction format for the matcher
-  // Filter for credits based on card type
+  // Check cache validity
+  const cached = matchCache.get(cardId);
+  if (cached && cached.importedAt === cardStore.importedAt) {
+    return cached.matchedByBenefit;
+  }
+
+  // Run matcher once for all benefits on this card
   const credits: ParsedTransaction[] = cardStore.transactions
     .filter(tx => isBenefitCredit(tx.amount, tx.description, cardId, tx.type))
     .map(tx => ({
@@ -45,22 +55,41 @@ function deriveBenefitTransactions(
     }));
 
   if (credits.length === 0) {
-    return [];
+    matchCache.set(cardId, { importedAt: cardStore.importedAt, matchedByBenefit: {} });
+    return {};
   }
 
-  // Run matcher to identify which credits belong to which benefit
   const cardDefinitions = allDefinitions.filter(d => d.cardId === cardId);
   const result = matchCredits(credits, cardId as CardType, cardDefinitions);
 
-  // Filter matched credits for this specific benefit and convert back to StoredTransaction
-  // Use creditAmount (positive) for benefit usage tracking
-  return result.matchedCredits
-    .filter(mc => mc.benefitId === benefitId)
-    .map(mc => ({
+  // Group matched credits by benefit ID
+  const matchedByBenefit: Record<string, StoredTransaction[]> = {};
+  for (const mc of result.matchedCredits) {
+    if (!mc.benefitId) continue; // Skip unmatched
+    if (!matchedByBenefit[mc.benefitId]) {
+      matchedByBenefit[mc.benefitId] = [];
+    }
+    matchedByBenefit[mc.benefitId].push({
       date: mc.transaction.date.toISOString(),
       description: mc.transaction.description,
       amount: mc.creditAmount,
-    }));
+    });
+  }
+
+  matchCache.set(cardId, { importedAt: cardStore.importedAt, matchedByBenefit });
+  return matchedByBenefit;
+}
+
+/**
+ * Get transactions for a specific benefit from the cached match results.
+ */
+function deriveBenefitTransactions(
+  benefitId: string,
+  cardId: string,
+  allDefinitions: BenefitDefinition[]
+): StoredTransaction[] {
+  const matchedByBenefit = getMatchedTransactions(cardId, allDefinitions);
+  return matchedByBenefit[benefitId] ?? [];
 }
 
 function mergeBenefit(
@@ -112,6 +141,8 @@ function mergeBenefit(
     status: snapshot.status,
     claimedElsewhereYear: snapshot.claimedElsewhereYear,
     transactions: snapshot.yearTransactions,
+    startDate: snapshot.effectiveStartDate,
+    endDate: snapshot.effectiveEndDate,
   };
 }
 

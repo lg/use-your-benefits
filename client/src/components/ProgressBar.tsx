@@ -21,6 +21,8 @@ const buildTooltipContent = (segment: ProgressSegment): ReactNode => {
   const transactions = segment.transactions ?? [];
   const usedAmount = segment.usedAmount ?? 0;
   const segmentValue = segment.segmentValue ?? 0;
+  // For multi-year benefits (e.g., 4-year Global Entry), include year in transaction dates
+  const includeYear = segment.isMultiYear ?? false;
 
   if (transactions.length === 0) {
     return (
@@ -37,7 +39,7 @@ const buildTooltipContent = (segment: ProgressSegment): ReactNode => {
       <div className="border-t border-slate-600 my-1" />
       {transactions.map((tx, i) => (
         <div key={i} className="flex justify-between gap-4 text-[10px]">
-          <span className="text-slate-300">{formatDate(tx.date, { includeYear: false })} {tx.description}</span>
+          <span className="text-slate-300">{formatDate(tx.date, { includeYear })} {tx.description}</span>
           <span className="text-emerald-300">${tx.amount.toFixed(2)}</span>
         </div>
       ))}

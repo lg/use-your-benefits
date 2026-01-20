@@ -259,6 +259,76 @@ To update the README screenshot:
    pkill -f "vite"
    ```
 
+## Verifying UI Changes with agent-browser
+
+When making visual/CSS changes, use `agent-browser` to verify changes instead of asking the user to check manually.
+
+### Basic Workflow
+
+1. Start the dev server in the background:
+   ```bash
+   bun run dev &
+   ```
+
+2. Wait for server and open the page:
+   ```bash
+   sleep 2 && agent-browser open http://localhost:5173 --session verify
+   ```
+
+3. Navigate to the relevant area (scroll if needed):
+   ```bash
+   agent-browser scroll down 300 --session verify
+   ```
+
+4. Take a screenshot to inspect:
+   ```bash
+   agent-browser screenshot /tmp/check.png --session verify
+   ```
+
+5. Read the screenshot to view it:
+   ```bash
+   # Use the Read tool on /tmp/check.png
+   ```
+
+### Interacting with Elements
+
+To click buttons or interact with the page:
+
+1. Get interactive element refs:
+   ```bash
+   agent-browser snapshot -i --session verify
+   ```
+   This outputs elements like:
+   ```
+   - button "Needs Enrollment" [ref=e9]
+   - button "Pending" [ref=e10]
+   ```
+
+2. Click using the ref:
+   ```bash
+   agent-browser click @e9 --session verify
+   ```
+
+3. Screenshot to verify the result:
+   ```bash
+   agent-browser screenshot /tmp/after-click.png --session verify
+   ```
+
+### Cleanup
+
+Always clean up when done:
+```bash
+agent-browser close --session verify && pkill -f "vite" 2>/dev/null; rm /tmp/check.png 2>/dev/null
+```
+
+### Tips
+
+- Use unique `--session` names to avoid conflicts
+- Chain commands with `&&` for efficiency
+- After page changes (reload, navigation), wait briefly: `sleep 0.5`
+- For full-page screenshots: `agent-browser screenshot /tmp/full.png --session verify --full`
+- To reload after code changes: `agent-browser reload --session verify`
+
 ## README and readme.html
 
 The project has two README views:

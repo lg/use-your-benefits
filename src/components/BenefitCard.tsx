@@ -5,16 +5,8 @@ import { Tooltip } from './Tooltip';
 import { useBenefits } from '../context/BenefitsContext';
 import { buildProgressSegments, formatDate } from '@lib/utils';
 
-const STATUS_COLORS = {
-  pending: 'bg-amber-400 text-slate-900',
-  completed: 'bg-emerald-500 text-white',
-  missed: 'bg-red-500 text-white',
-} as const;
-
-const StatusBadge = ({ status }: { status: keyof typeof STATUS_COLORS }) => (
-  <span className={`px-2 py-0.5 rounded text-xs font-medium capitalize ${STATUS_COLORS[status]}`}>
-    {status}
-  </span>
+const StatusBadge = ({ status }: { status: 'pending' | 'completed' | 'missed' }) => (
+  <span className={`badge-status-${status} capitalize`}>{status}</span>
 );
 
 interface BenefitCardProps {
@@ -51,19 +43,13 @@ function BenefitCardComponent({ benefit, onToggleEnrollment }: BenefitCardProps)
                 content={`Enrolled due to credit on ${formatDate(benefit.autoEnrolledAt)}`}
                 inline
               >
-                <span className="inline-flex items-center text-[11px] px-2 py-0.5 rounded border leading-tight border-emerald-400/50 text-emerald-400 bg-emerald-500/10 cursor-default">
-                  Enrolled
-                </span>
+                <span className="badge-enrolled cursor-default">Enrolled</span>
               </Tooltip>
             ) : (
               // Manual enrollment: clickable toggle
               <button
                 onClick={() => onToggleEnrollment?.(benefit.id)}
-                className={`inline-flex items-center text-[11px] px-2 py-0.5 rounded border leading-tight transition-colors hover:opacity-80 ${
-                  benefit.enrolled
-                    ? 'border-emerald-400/50 text-emerald-400 bg-emerald-500/10'
-                    : 'border-red-400/60 text-red-400 bg-red-400/10'
-                }`}
+                className={`${benefit.enrolled ? 'badge-enrolled' : 'badge-needs-enrollment'} transition-colors hover:opacity-80`}
               >
                 {benefit.enrolled ? 'Enrolled' : 'Needs Enrollment'}
               </button>

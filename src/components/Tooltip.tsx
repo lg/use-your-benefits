@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo, type ReactNode, type ReactElement, type MouseEvent as ReactMouseEvent } from 'react';
+import { useState, useEffect, useCallback, cloneElement, memo, type ReactNode, type ReactElement, type MouseEvent as ReactMouseEvent } from 'react';
 import { createPortal } from 'react-dom';
 
 interface TooltipProps {
@@ -33,25 +33,40 @@ function TooltipComponent({ content, children, inline }: TooltipProps) {
     setPosition(null);
   }, []);
 
+  const tooltipPortal = visible && position !== null && createPortal(
+    <div
+      className="fixed z-50 bg-slate-800 border border-slate-600 shadow-lg rounded text-xs text-white text-left leading-tight px-2 py-1 pointer-events-none whitespace-pre-line"
+      style={{
+        left: position.x,
+        bottom: window.innerHeight - position.y
+      }}
+    >
+      {content}
+    </div>,
+    document.body
+  );
+
+  // For inline mode, clone the child and attach handlers directly (no wrapper)
+  if (inline && children) {
+    return (
+      <>
+        {cloneElement(children, {
+          onMouseEnter: handleMouseEnter,
+          onMouseLeave: handleMouseLeave,
+        })}
+        {tooltipPortal}
+      </>
+    );
+  }
+
   return (
     <div
-      className={inline ? "relative inline-block" : "relative w-full h-full"}
+      className="relative w-full h-full"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       {children}
-      {visible && position !== null && createPortal(
-        <div
-          className="fixed z-50 bg-slate-800 border border-slate-600 shadow-lg rounded text-xs text-white text-left leading-tight px-2 py-1 pointer-events-none whitespace-pre-line"
-          style={{
-            left: position.x,
-            bottom: window.innerHeight - position.y
-          }}
-        >
-          {content}
-        </div>,
-        document.body
-      )}
+      {tooltipPortal}
     </div>
   );
 }

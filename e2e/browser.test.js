@@ -1,4 +1,9 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { test, expect } from '@playwright/test';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const chaseNoCreditsCsv = path.join(__dirname, 'fixtures', 'chase-no-credits.csv');
 
 test.describe('Dashboard', () => {
   test.beforeEach(async ({ page }) => {
@@ -450,6 +455,26 @@ test.describe('4-Year Benefits (Global Entry)', () => {
 
     const globalEntryCard = page.locator('.benefit-card', { hasText: 'Global Entry' }).first();
     await expect(globalEntryCard.locator('.progress-segment.completed')).toHaveCount(1);
+  });
+});
+
+test.describe('Transaction Import', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    await page.evaluate(() => localStorage.clear());
+    await page.reload();
+  });
+
+  test('allows importing Chase activity CSVs with no statement credits', async ({ page }) => {
+    await page.getByTitle('Transactions').click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Chase Sapphire Reserve' }).click();
+    await page.locator('input[type="file"]').setInputFiles(chaseNoCreditsCsv);
+
+    await expect(page.getByText('Imported successfully, but no statement credits were found in this CSV.')).toBeVisible();
+    await expect(page.getByText('TESLA')).toBeVisible();
+    await expect(page.getByText('WAYMO')).toBeVisible();
   });
 });
 

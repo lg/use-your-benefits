@@ -32,10 +32,12 @@ Import your credit card statements to automatically track benefit credits. All p
 
 ### Chase
 
-1. Go to [Chase Account Activity](https://secure.chase.com/web/auth/dashboard#/dashboard/accountDetails/downloadAccountTransactions/index)
-2. Select your Sapphire Reserve card and set your date range (note: exporting can be finicky, try different ranges if it fails)
-3. Click **Download** and select **CSV**
-4. In the app, open **Transactions** and drag/drop your CSV file
+1. Go to [Chase Account Activity](https://secure.chase.com/web/auth/dashboard#/dashboard/overviewAccounts/transactions/gwmAccounts)
+2. In the **Showing** dropdown, select your credit card
+3. Set the date range to **Year to date**
+4. Optionally use **Search** to get a larger period, but Chase limits the maximum export range
+5. Click **Download** and select **CSV**
+6. In the app, open **Transactions** and drag/drop your CSV file
 
 ## Supported Benefits
 

@@ -1,6 +1,7 @@
 import {
   useState,
   useCallback,
+  useEffect,
   type DragEvent,
   type ChangeEvent,
 } from 'react';
@@ -36,6 +37,7 @@ export function CardTransactionsTab({
 }: CardTransactionsTabProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const isChase = card.id.startsWith('chase');
   const isAmex = card.id.startsWith('amex');
@@ -48,16 +50,18 @@ export function CardTransactionsTab({
           <>
             Go to your account activity:{' '}
             <a
-              href="https://secure.chase.com/web/auth/dashboard#/dashboard/accountActivity"
+              href="https://secure.chase.com/web/auth/dashboard#/dashboard/overviewAccounts/transactions/gwmAccounts"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-400 hover:text-blue-300 underline"
             >
-              chase.com/accountActivity
+              secure.chase.com
               {externalLinkIcon}
             </a>
           </>,
-          'Select your Sapphire Reserve card and set date range',
+          'In the "Showing" dropdown, select your credit card.',
+          'Set the date range to "Year to date."',
+          'Optionally use Search to get a larger period, but Chase limits the maximum export range.',
           'Click the download icon and select CSV',
           'Drag/upload the CSV above.',
         ],
@@ -84,9 +88,16 @@ export function CardTransactionsTab({
 
   const hasTransactions = transactions.length > 0;
 
+  useEffect(() => {
+    if (!hasTransactions) {
+      setNotice(null);
+    }
+  }, [hasTransactions]);
+
   const processFile = useCallback(
     async (file: File) => {
       setError(null);
+      setNotice(null);
 
       if (!file.name.toLowerCase().endsWith('.csv')) {
         setError('Please upload a CSV file');
@@ -104,11 +115,12 @@ export function CardTransactionsTab({
 
         const config = isChase ? CHASE_CONFIG : AMEX_CONFIG;
         const parsedTransactions = parseStatement(content, config);
-        const credits = extractCredits(parsedTransactions, config);
-        if (credits.length === 0) {
-          setError('No statement credits found in the CSV. Make sure you exported the correct file.');
+        if (parsedTransactions.length === 0) {
+          setError('No transactions could be read from this CSV. Make sure you exported account activity from the supported card.');
           return;
         }
+
+        const credits = extractCredits(parsedTransactions, config);
 
         // Convert to StoredTransaction format
         // For Amex, extendedDetails has the full description; for Chase, use description directly
@@ -121,6 +133,9 @@ export function CardTransactionsTab({
         }));
 
         onTransactionsUpdate(storedTransactions);
+        if (credits.length === 0) {
+          setNotice('Imported successfully, but no statement credits were found in this CSV.');
+        }
       } catch (err) {
         setError(`Failed to parse CSV: ${(err as Error).message}`);
       }
@@ -219,6 +234,9 @@ export function CardTransactionsTab({
         {error && (
           <p className="mt-4 text-sm text-red-400">{error}</p>
         )}
+        {notice && (
+          <p className="mt-4 text-sm text-amber-300">{notice}</p>
+        )}
 
         <div className="mt-6 text-xs text-slate-500">
           <p className="font-medium mb-1">{instructions.title}</p>
@@ -239,6 +257,9 @@ export function CardTransactionsTab({
   // Show transactions view
   return (
     <div className="py-4">
+      {notice && (
+        <p className="mb-4 text-sm text-amber-300">{notice}</p>
+      )}
       <TransactionTable
         transactions={transactions}
         cardId={card.id}

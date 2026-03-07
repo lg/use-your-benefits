@@ -37,7 +37,8 @@
       "shortDescription": "$200 annually ($15 monthly + $20 in December)",
       "creditAmount": 200,
       "resetFrequency": "monthly",
-      "enrollmentRequired": false
+      "enrollmentRequired": false,
+      "unsupported": true
     },
     {
       "id": "amex-uber-one",

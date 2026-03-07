@@ -49,6 +49,7 @@ export interface BenefitDefinition {
   creditAmount: number;
   resetFrequency: ResetFrequency;
   enrollmentRequired: boolean;
+  unsupported?: boolean;
 }
 
 // Full benefit with all computed fields (definition + user state + derived)

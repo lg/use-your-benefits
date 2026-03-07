@@ -180,6 +180,37 @@ test.describe('Transaction-based Progress', () => {
 
     const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
     await expect(uberCard.locator('.progress-segment.completed')).toHaveCount(1);
+    await expect(uberCard.locator('.progress-bar-segments-obscured')).toHaveCount(1);
+    await expect(uberCard.getByText('Unsupported at this time')).toBeVisible();
+  });
+
+  test('unsupported benefit progress does not show hover tooltips', async ({ page }) => {
+    await page.evaluate(() => {
+      const userData = {
+        benefits: {
+          'amex-uber-cash': {
+            enrolled: true,
+            ignored: false
+          }
+        },
+        cardTransactions: {
+          'amex-platinum': {
+            transactions: [
+              { date: '2026-01-15T00:00:00.000Z', description: 'Platinum Uber Cash Credit', amount: -17 }
+            ],
+            importedAt: new Date().toISOString()
+          }
+        }
+      };
+      localStorage.setItem('use-your-benefits', JSON.stringify(userData));
+    });
+    await page.reload();
+
+    const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
+    await uberCard.locator('.progress-segment').first().hover();
+    await page.waitForTimeout(150);
+
+    await expect(page.locator('body > div.fixed.z-50.bg-slate-800')).toHaveCount(0);
   });
 
   test('benefit without transactions shows as pending segment', async ({ page }) => {

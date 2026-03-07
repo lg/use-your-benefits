@@ -66,7 +66,11 @@ function BenefitCardComponent({ benefit, onToggleEnrollment }: BenefitCardProps)
             ${benefit.currentUsed.toFixed(0)} / ${benefit.creditAmount}
           </span>
         </div>
-        <ProgressBar segments={segments} segmentsCount={segmentsCount} />
+        <ProgressBar
+          segments={segments}
+          segmentsCount={segmentsCount}
+          isUnsupported={Boolean(benefit.unsupported)}
+        />
       </div>
     </div>
   );

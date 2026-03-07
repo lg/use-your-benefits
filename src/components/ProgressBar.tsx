@@ -6,7 +6,10 @@ import { Tooltip } from './Tooltip';
 interface ProgressBarProps {
   segments: ProgressSegment[];
   segmentsCount: number;
+  isUnsupported?: boolean;
 }
+
+const UNSUPPORTED_BENEFIT_LABEL = 'Unsupported at this time';
 
 const segmentClass = (segment: ProgressSegment) => {
   if (segment.status === 'completed') return 'progress-segment completed';
@@ -52,39 +55,59 @@ const buildTooltipContent = (segment: ProgressSegment): ReactNode => {
   );
 };
 
-function ProgressBarComponent({ segments, segmentsCount }: ProgressBarProps) {
+function ProgressBarComponent({
+  segments,
+  segmentsCount,
+  isUnsupported = false,
+}: ProgressBarProps) {
   return (
-    <div className="flex gap-1">
-      {Array.from({ length: segmentsCount }).map((_, index) => {
-        const segment = segments[index];
-        return (
-          <div
-            key={index}
-            className={`flex-1 relative ${segment ? segmentClass(segment) : 'bg-slate-700'}`}
-          >
-            <Tooltip content={segment ? buildTooltipContent(segment) : `Segment ${index + 1}`}>
-              <div className="w-full h-full" />
-            </Tooltip>
-            {segment && segment.isCurrent && segment.timeProgress !== undefined && segment.daysLeft !== undefined ? (
-              <div
-                className="absolute -top-1 -bottom-1 w-1 bg-white border border-slate-800 rounded-sm"
-                style={{ left: `${segment.timeProgress}%` }}
-              >
-                <Tooltip
-                  content={
-                    <div>
-                      <div>{Math.round(segment.timeProgress)}% complete</div>
-                      <div>{segment.daysLeft} days left</div>
-                    </div>
-                  }
-                >
-                  <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-3" />
+    <div className="progress-bar">
+      <div className={`flex gap-1${isUnsupported ? ' progress-bar-segments-obscured' : ''}`}>
+        {Array.from({ length: segmentsCount }).map((_, index) => {
+          const segment = segments[index];
+
+          return (
+            <div
+              key={index}
+              className={`flex-1 relative ${segment ? segmentClass(segment) : 'bg-slate-700'}`}
+            >
+              {isUnsupported ? (
+                <div className="w-full h-full" />
+              ) : (
+                <Tooltip content={segment ? buildTooltipContent(segment) : `Segment ${index + 1}`}>
+                  <div className="w-full h-full" />
                 </Tooltip>
-              </div>
-            ) : null}
-          </div>
-        );
-      })}
+              )}
+              {segment && segment.isCurrent && segment.timeProgress !== undefined && segment.daysLeft !== undefined ? (
+                <div
+                  className="absolute -top-1 -bottom-1 w-1 bg-white border border-slate-800 rounded-sm"
+                  style={{ left: `${segment.timeProgress}%` }}
+                >
+                  {isUnsupported ? (
+                    <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-3" />
+                  ) : (
+                    <Tooltip
+                      content={
+                        <div>
+                          <div>{Math.round(segment.timeProgress)}% complete</div>
+                          <div>{segment.daysLeft} days left</div>
+                        </div>
+                      }
+                    >
+                      <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-3" />
+                    </Tooltip>
+                  )}
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+      {isUnsupported ? (
+        <div className="progress-bar-overlay">
+          <span className="progress-bar-overlay-label">{UNSUPPORTED_BENEFIT_LABEL}</span>
+        </div>
+      ) : null}
     </div>
   );
 }

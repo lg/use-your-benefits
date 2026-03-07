@@ -53,6 +53,16 @@ test.describe('Benefit Cards', () => {
     await expect(page.getByText('Pending').first()).toBeVisible();
   });
 
+  test('shows unsupported overlay for configured unsupported benefits', async ({ page }) => {
+    const uberCashCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
+    const doorDashCard = page.locator('.benefit-card', { hasText: 'DoorDash' });
+    const lyftCard = page.locator('.benefit-card', { hasText: 'Lyft' });
+
+    await expect(uberCashCard.getByText('Unsupported at this time')).toBeVisible();
+    await expect(doorDashCard.getByText('Unsupported at this time')).toBeVisible();
+    await expect(lyftCard.getByText('Unsupported at this time')).toBeVisible();
+  });
+
 });
 
 test.describe('Enrollment Toggle', () => {

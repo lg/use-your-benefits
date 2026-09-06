@@ -1,16 +1,17 @@
 import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react';
-import type { CreditCard, Benefit, BenefitDefinition, Stats, StoredTransaction } from '@lib/types';
+import type { CreditCard, Benefit, BenefitDefinition, CardSettings, Stats, StoredTransaction } from '@lib/types';
 import { calculateStats } from '@lib/utils';
 import { Dashboard } from './pages/Dashboard';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { BenefitsProvider } from './context/BenefitsContext';
 import * as benefitsService from './services/benefits';
 import { api } from './api/client';
-import { saveCardTransactions, getCardTransactionDateRange } from './storage/userBenefits';
+import { saveCardTransactions, getCardTransactionDateRange, updateUserState, updateCardSettings, useUserBenefitsStore } from './storage/userBenefits';
 
 const TransactionsModal = lazy(() => import('./components/TransactionsModal/TransactionsModal').then(m => ({ default: m.TransactionsModal })));
 
 function App() {
+  const userData = useUserBenefitsStore();
   const [cards, setCards] = useState<CreditCard[]>([]);
   const [definitions, setDefinitions] = useState<BenefitDefinition[]>([]);
   const [benefits, setBenefits] = useState<Benefit[]>([]);
@@ -107,6 +108,16 @@ function App() {
     setUpdateError(null);
   }, [selectedYear, refreshBenefits]);
 
+  const handleAnnualResetDateChange = useCallback(async (id: string, date: string) => {
+    updateUserState(id, { annualResetDate: date || undefined });
+    await refreshBenefits(selectedYear);
+  }, [selectedYear, refreshBenefits]);
+
+  const handleCardSettingsChange = useCallback(async (id: string, settings: CardSettings) => {
+    updateCardSettings(id, settings);
+    await refreshBenefits(selectedYear);
+  }, [selectedYear, refreshBenefits]);
+
   // Build card transaction status for UI
   // transactionVersion triggers recomputation when transactions change
   const cardTransactionStatus = useMemo(() => {
@@ -137,6 +148,17 @@ function App() {
       update();
     }
   }, [selectedYear]);
+  const benefitsContextValue = useMemo(() => ({
+    definitions,
+    selectedYear,
+    onToggleEnrollment: handleToggleEnrollment,
+    onToggleVisibility: handleToggleVisibility,
+    onAnnualResetDateChange: handleAnnualResetDateChange,
+    onCardSettingsChange: handleCardSettingsChange,
+    cardSettings: userData.cardSettings ?? {},
+  }), [definitions, selectedYear, handleToggleEnrollment, handleToggleVisibility,
+    handleAnnualResetDateChange, handleCardSettingsChange, userData.cardSettings]);
+
   if (error) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
@@ -149,13 +171,6 @@ function App() {
       </div>
     );
   }
-
-  const benefitsContextValue = useMemo(() => ({
-    definitions,
-    selectedYear,
-    onToggleEnrollment: handleToggleEnrollment,
-    onToggleVisibility: handleToggleVisibility,
-  }), [definitions, selectedYear, handleToggleEnrollment, handleToggleVisibility]);
 
   return (
     <div className="min-h-screen bg-slate-900">

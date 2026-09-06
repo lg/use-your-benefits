@@ -1,6 +1,7 @@
 import { useState, useCallback, memo } from 'react';
 import type { CreditCard, Benefit, Stats, TransactionStatus } from '@lib/types';
 import { getAnnualFee, formatDateRange } from '@lib/utils';
+import { useBenefits } from '../context/BenefitsContext';
 
 interface CardHeaderProps {
   card: CreditCard;
@@ -14,8 +15,10 @@ interface CardHeaderProps {
 
 function CardHeaderComponent({ card, stats, allBenefits, selectedYear, onUpdateBenefit, transactionStatus, onOpenTransactions }: CardHeaderProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const { cardSettings, onCardSettingsChange } = useBenefits();
+  const hasRolloutDates = allBenefits.some(benefit => benefit.policies?.some(policy => policy.newCardStartsOn));
 
-  const percentUsed = stats 
+  const percentUsed = stats?.totalValue
     ? Math.min((stats.usedValue / stats.totalValue) * 100, 100) 
     : 0;
 
@@ -47,9 +50,9 @@ function CardHeaderComponent({ card, stats, allBenefits, selectedYear, onUpdateB
       className="rounded-lg p-6 mb-6 relative"
       style={{ backgroundColor: `${card.color}20`, borderLeft: `4px solid ${card.color}` }}
     >
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-start gap-2">
         <div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <h2 className="text-2xl font-bold">{card.name}</h2>
             {transactionPill}
           </div>
@@ -85,6 +88,18 @@ function CardHeaderComponent({ card, stats, allBenefits, selectedYear, onUpdateB
                      role="menu"
                    >
                    <div className="p-2">
+                     {hasRolloutDates && <label className="block px-2 py-2 text-xs text-slate-400 border-b border-slate-700 mb-2">
+                       2025 benefit rollout
+                       <select
+                         className="block w-full mt-1 rounded bg-slate-900 border border-slate-600 p-2 text-slate-200"
+                         value={cardSettings[card.id]?.newCardDuringRefresh ? 'new' : 'existing'}
+                         onChange={event => onCardSettingsChange(card.id, { newCardDuringRefresh: event.target.value === 'new' })}
+                       >
+                         <option value="existing">Existing card: Oct 26, 2025</option>
+                         <option value="new">New card: Jun 23, 2025</option>
+                       </select>
+                       <span className="block mt-1">Use October if you applied before June 23, 2025.</span>
+                     </label>}
                      <p className="text-xs text-slate-500 px-2 py-1">Toggle benefits visibility</p>
                      {allBenefits.map(benefit => (
                        <label
@@ -123,15 +138,18 @@ function CardHeaderComponent({ card, stats, allBenefits, selectedYear, onUpdateB
               style={{ width: `${percentUsed}%` }}
             />
           </div>
-          <div className="flex gap-4 mt-2 text-xs">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs">
             <span className="text-emerald-400">
-              Current: {stats.currentPeriodCompletedCount}/{stats.totalBenefits}
+              Current: {stats.currentPeriodCompletedCount}/{stats.currentPeriodCount}
             </span>
             <span className="text-emerald-400">
               YTD: {stats.ytdCompletedPeriods}/{stats.ytdTotalPeriods}
             </span>
             <span className="text-slate-400">◐ {stats.pendingCount} pending</span>
             <span className="text-red-400">✗ {stats.missedCount} missed</span>
+            {selectedYear === new Date().getUTCFullYear() && <span className="text-amber-300">
+              Still available: ${stats.availableValue.toFixed(2)}{stats.unknownAvailabilityCount > 0 ? ' + unknown' : ''}
+            </span>}
           </div>
         </div>
       )}

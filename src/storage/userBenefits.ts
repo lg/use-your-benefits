@@ -3,6 +3,7 @@ import type {
   BenefitDefinition,
   BenefitUserState,
   CardTransactionStore,
+  CardSettings,
   StoredTransaction,
   UserBenefitsData,
 } from '@lib/types';
@@ -24,12 +25,13 @@ function parseStoredData(stored: string | null): UserBenefitsData {
       benefits?: Record<string, { enrolled?: boolean; ignored?: boolean }>;
     };
     
-    // Migration: keep only enrolled/ignored, strip legacy fields
-    const migratedBenefits: Record<string, { enrolled: boolean; ignored: boolean }> = {};
+    // Keep user preferences and discard legacy calculated fields.
+    const migratedBenefits: Record<string, BenefitUserState> = {};
     for (const [id, state] of Object.entries(parsed.benefits ?? {})) {
       migratedBenefits[id] = {
         enrolled: state?.enrolled ?? false,
         ignored: state?.ignored ?? false,
+        annualResetDate: state?.annualResetDate,
       };
     }
     
@@ -37,6 +39,7 @@ function parseStoredData(stored: string | null): UserBenefitsData {
       benefits: migratedBenefits,
       importNotes: parsed.importNotes ?? {},
       cardTransactions: parsed.cardTransactions ?? {},
+      cardSettings: parsed.cardSettings ?? {},
     };
   } catch {
     return getDefaultData();
@@ -91,6 +94,12 @@ export function saveUserBenefitsData(data: UserBenefitsData): void {
 /** Get current data (non-reactive) */
 export function getUserBenefitsData(): UserBenefitsData {
   return getSnapshot();
+}
+
+export function updateCardSettings(cardId: string, settings: CardSettings): void {
+  const data = getUserBenefitsData();
+  data.cardSettings = { ...data.cardSettings, [cardId]: { ...data.cardSettings?.[cardId], ...settings } };
+  saveUserBenefitsData(data);
 }
 
 // ===== Benefit State =====

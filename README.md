@@ -22,24 +22,18 @@ A fully static web application to track credit card benefits for Amex Platinum a
 
 ## Importing Transactions
 
-Import your credit card statements to automatically track benefit credits. All processing happens client-side — your data never leaves your browser.
+Import your credit card statements to automatically track benefit credits. CSV imports are processed in your browser.
 
-### American Express
+1. Open **Transactions** and select your card.
+2. Choose **Download manually** for the bank's export steps, or **Use an LLM agent** for a copyable prompt.
+3. If using an agent, click **Copy prompt**, paste it into an LLM agent with browser and Downloads access, and help with sign-in or MFA if needed.
+4. Once downloaded, drag the CSV from **Downloads** into the app, or use **Choose File**.
 
-1. Go to [americanexpress.com/activity](https://global.americanexpress.com/activity) and set your date range from 01-01-2024 to today
-2. Click **Download** → **CSV** (Include all additional transaction details) → **Download**
-3. In the app, open **Transactions** and drag/drop your CSV file
-
-### Chase
-
-1. Go to [Chase Account Activity](https://secure.chase.com/web/auth/dashboard#/dashboard/overviewAccounts/transactions/gwmAccounts)
-2. In the **Showing** dropdown, select your credit card
-3. Set the date range to **Year to date**
-4. Optionally use **Search** to get a larger period, but Chase limits the maximum export range
-5. Click **Download** and select **CSV**
-6. In the app, open **Transactions** and drag/drop your CSV file
+The prompts include the export settings for Chase or Amex, request all available posted transaction history, and tell the agent to save one CSV in Downloads for you to upload manually. Use **View prompt** to read or copy the instructions yourself. Repeat for your other card.
 
 ## Supported Benefits
+
+Amounts below reflect the 2026 policies. The app uses dated definitions for historical views and shows unavailable periods in gray. Hover over a period for its allowance, effective dates, and credit details.
 
 ### American Express Platinum
 
@@ -48,12 +42,12 @@ Import your credit card statements to automatically track benefit credits. All p
 | Hotel | $600 | Twice-yearly ($300 each) | No |
 | Uber One | $120 | Annual | No |
 | Airline Fee | $200 | Annual | Yes |
-| CLEAR Plus | $209 | Annual | No |
+| CLEAR Plus | $219 from July 1, 2026 | Annual, previously $209 | No |
 | Resy | $400 | Quarterly ($100 each) | Yes |
 | Digital Entertainment | $300 | Monthly ($25/mo) | Yes |
 | lululemon | $300 | Quarterly ($75 each) | Yes |
-| Walmart+ | $155 | Monthly (~$12.95/mo) | No |
-| Saks Fifth Avenue | $100 | Twice-yearly ($50 each) | Yes |
+| Walmart+ | $155.40 plus applicable tax | Monthly ($12.95 plus tax) | No |
+| Saks Fifth Avenue | $50 in 2026 | Ended June 30, 2026 | Yes |
 | Oura Ring | $200 | Annual | Yes |
 | Equinox | $300 | Annual | Yes |
 
@@ -61,19 +55,32 @@ Import your credit card statements to automatically track benefit credits. All p
 
 | Benefit | Annual Value | Reset Frequency | Enrollment Required |
 |---------|--------------|-----------------|---------------------|
-| Travel | $300 | Annual | No |
-| The Edit Hotel | $500 | Annual | No |
+| Travel | $300 | Account anniversary | No |
+| The Edit Hotel | $500 | Annual, up to $250 per qualifying stay | No |
+| Select Hotels | $250 in 2026 | Available only during 2026 | No |
 | Exclusive Tables Dining | $300 | Twice-yearly ($150 each) | No |
 | DoorDash | $300 | Monthly ($25/mo) | Yes |
 | Lyft | $120 | Monthly ($10/mo) | Yes |
-| Peloton | $120 | Annual | Yes |
+| Peloton | $120 | Monthly ($10/mo) | Yes |
 | StubHub/viagogo | $300 | Twice-yearly ($150 each) | Yes |
 
-### Limitations
+### Calculations and account settings
 
-- **Uber Cash**, **DoorDash credits**, and **Lyft credits** are not currently tracked (these credits are loaded directly into their respective apps rather than appearing as statement credits)
-- **Global Entry/TSA PreCheck** is not fully functional yet due to its multi-year (4-year) reset cycle
-- Benefits are considered "completed" if 50%+ of the credit is redeemed, or if 50%+ of segments are completed
+- **Still available** adds the unused allowances in active periods. Expired allowances and future periods contribute zero. Amounts are based on imported credits, so missing history can overstate availability.
+- **Completed** means at least 50% of a period's allowance was used. Any unused dollars remain available until the period ends.
+- **Airline Fee** can show an inferred airline from a reimbursement's description or a same-amount airline charge in the preceding 14 days. Detection uses only the selected year's credits and leaves conflicting evidence unresolved. The hint does not confirm the selection in your Amex account.
+- **Uber Cash** is excluded from all calculations. **DoorDash** and **Lyft** usage cannot currently be read from a card statement.
+- **Global Entry/TSA PreCheck** retains its four-year eligibility cycle across years, while a reimbursement contributes to used value only in the year received. A covered cycle does not add another annual allowance. Amex's current limits are $120 for Global Entry or up to $85 for TSA PreCheck. Eligibility depends on having the earlier credit in imported history.
+- Set the **Travel credit reset date** shown by Chase in the Travel benefit card. Until that date is provided, the summary shows a `+` and leaves the unknown travel allowance out of Still available.
+- Chase's **Manage benefits** menu has a **2025 benefit rollout** setting. The default is October 26 for existing cardholders who applied before June 23, 2025. Select June 23 for the new-card rollout.
+
+### Updating policy history
+
+Each benefit in `public/benefits.json` has a `policies` array. A policy gives its inclusive `startsOn` and optional `endsOn` dates, allowance per reset period, reset frequency, description, and source URLs. A later policy replaces the preceding policy from its start date. Use `newCardStartsOn` for Chase's alternate rollout date.
+
+Changes within an existing period, such as CLEAR's annual cap increase, preserve credits already used in that period. Set `resetOnChange: true` when a new policy explicitly opens a separate allowance, as the September 2025 Amex hotel refresh did. Calendar periods remain visible when unavailable and do not count as missed. Chase Travel uses `resetBasis: "anniversary"` and the reset date stored locally for that account.
+
+The latest definitions were checked on September 6, 2026 against [Amex's current terms](https://global.americanexpress.com/card-benefits/terms/platinum), [the 2025 Amex refresh](https://ir.americanexpress.com/news/investor-relations-news/investor-relations-news-details/2025/Theres-Nothing-Like-Platinum-American-Express-Unveils-Updated-U-S--Consumer-and-Business-Platinum-Cards-Each-with-Over-3500-in-Annual-Value/default.aspx), and [Chase's current terms](https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve). Individual policies include their supporting sources.
 
 ## Tech Stack
 
@@ -116,6 +123,9 @@ bun run preview
 ### Running Tests
 
 ```bash
+# Run calculation tests
+bun test src/lib
+
 # Run E2E tests
 bun run test:e2e
 
@@ -148,11 +158,11 @@ This is a fully static app - no server required. To deploy:
 ## Data Storage
 
 - **Benefit definitions**: Stored in `public/benefits.json` (static, version-controlled)
-- **User data**: Stored in browser `localStorage` under key `user-benefits`
-  - Usage amounts
+- **User data**: Stored in browser `localStorage` under key `use-your-benefits`
+  - Imported transactions
   - Enrollment status
   - Ignored/hidden benefits
-  - Period-specific tracking
+  - Account reset dates and rollout settings
 
 ## License
 

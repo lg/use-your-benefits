@@ -42,13 +42,13 @@ export function Dashboard({
           valueClass: 'text-emerald-400',
         },
         {
-          label: 'Remaining',
-          value: `$${(stats.totalValue - stats.usedValue).toFixed(0)}`,
+          label: 'Still available',
+          value: `$${stats.availableValue.toFixed(0)}${stats.unknownAvailabilityCount > 0 ? '+' : ''}`,
           valueClass: 'text-amber-400',
         },
         {
           label: 'Current Period',
-          value: `${stats.currentPeriodCompletedCount}/${stats.totalBenefits}`,
+          value: `${stats.currentPeriodCompletedCount}/${stats.currentPeriodCount}`,
           valueClass: 'text-emerald-400',
         },
         {
@@ -62,7 +62,7 @@ export function Dashboard({
   return (
     <div>
       {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-3">
           {summaryCards.map(({ label, value, valueClass }) => (
             <div key={label} className="bg-slate-800 rounded-lg p-4 border border-slate-700">
               <p className="text-slate-400 text-sm">{label}</p>
@@ -71,6 +71,11 @@ export function Dashboard({
           ))}
         </div>
       )}
+
+      {stats && <p className="text-xs text-slate-400 mb-6">
+        Still available uses current allowances and imported credits. Completed means the 50% usage target was met.
+        {stats.unknownAvailabilityCount > 0 ? ' Chase travel credit is excluded until its reset date is set.' : ''}
+      </p>}
 
       {benefitsByCard.map(({ card, benefits: cardBenefits, allBenefits: cardAllBenefits }) => (
         cardBenefits.length > 0 && (
@@ -84,7 +89,7 @@ export function Dashboard({
               transactionStatus={cardTransactionStatus[card.id]}
               onOpenTransactions={onOpenTransactions}
             />
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-x-4 md:grid-cols-2">
               {cardBenefits.map(benefit => (
                 <BenefitCard
                   key={benefit.id}

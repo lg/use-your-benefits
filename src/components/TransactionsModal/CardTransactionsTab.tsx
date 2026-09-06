@@ -7,20 +7,8 @@ import {
 } from 'react';
 import type { StoredTransaction, BenefitDefinition, CreditCard } from '@lib/types';
 import { parseStatement, extractCredits, AMEX_CONFIG, CHASE_CONFIG } from '../../services/statementParser';
+import { DownloadInstructions } from './DownloadInstructions';
 import { TransactionTable } from './TransactionTable';
-
-const externalLinkIcon = (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="inline-block ml-0.5 h-3 w-3"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-  </svg>
-);
 
 interface CardTransactionsTabProps {
   card: CreditCard;
@@ -42,49 +30,6 @@ export function CardTransactionsTab({
   const isChase = card.id.startsWith('chase');
   const isAmex = card.id.startsWith('amex');
   const cardLabel = isChase ? 'Chase' : 'Amex';
-  const amexEndDate = new Date().toISOString().split('T')[0];
-  const instructions = isChase
-    ? {
-        title: 'How to export from Chase:',
-        steps: [
-          <>
-            Go to your account activity:{' '}
-            <a
-              href="https://secure.chase.com/web/auth/dashboard#/dashboard/overviewAccounts/transactions/gwmAccounts"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 underline"
-            >
-              secure.chase.com
-              {externalLinkIcon}
-            </a>
-          </>,
-          'In the "Showing" dropdown, select your credit card.',
-          'Set the date range to "Year to date."',
-          'Optionally use Search to get a larger period, but Chase limits the maximum export range.',
-          'Click the download icon and select CSV',
-          'Drag/upload the CSV above.',
-        ],
-      }
-    : {
-        title: 'How to export from Amex:',
-        steps: [
-          <>
-            Go to transaction activity as far back as possible:{' '}
-            <a
-              href={`https://global.americanexpress.com/activity?endDate=${amexEndDate}&startDate=2024-01-01`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 underline"
-            >
-              global.americanexpress.com/activity
-              {externalLinkIcon}
-            </a>
-          </>,
-          'Click Download → CSV (Include all additional transaction details) → Download',
-          'Drag/upload the CSV above.',
-        ],
-      };
 
   const hasTransactions = transactions.length > 0;
 
@@ -184,9 +129,9 @@ export function CardTransactionsTab({
   if (!hasTransactions) {
     return (
       <div className="py-4">
-        <p className="text-sm text-slate-400 mb-4">
-          Upload your {cardLabel} statement CSV to automatically import your benefit credits.
-        </p>
+        {(isChase || isAmex) && (
+          <DownloadInstructions key={card.id} bank={cardLabel} cardName={card.name} cardId={card.id} />
+        )}
 
         <div
           onDragOver={handleDragOver}
@@ -238,17 +183,8 @@ export function CardTransactionsTab({
           <p className="mt-4 text-sm text-amber-300">{notice}</p>
         )}
 
-        <div className="mt-6 text-xs text-slate-500">
-          <p className="font-medium mb-1">{instructions.title}</p>
-          <ol className="list-decimal list-inside space-y-1">
-            {instructions.steps.map((step, index) => (
-              <li key={index}>{step}</li>
-            ))}
-          </ol>
-        </div>
-
-        <p className="mt-4 text-center text-sm text-white">
-          Everything is done client-side and never uploaded anywhere!
+        <p className="mt-4 text-center text-sm text-slate-400">
+          Your CSV is processed entirely in your browser and is never sent to a server.
         </p>
       </div>
     );

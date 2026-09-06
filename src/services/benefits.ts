@@ -17,6 +17,7 @@ import {
   updateUserState,
 } from '../storage/userBenefits';
 import { getMatchedCredits, groupMatchedCreditsByBenefit } from './benefitMatcher';
+import { inferAirlineSelection } from './airlineSelection';
 
 // In-memory cache for matched transactions per card
 // Key: cardId, Value: { importedAt, matchedByBenefit }
@@ -104,15 +105,25 @@ function mergeBenefit(
     transactions: derivedTransactions,
   };
   
-  const snapshot = buildBenefitUsageSnapshot(definition, stateWithTransactions, year);
+  const snapshot = buildBenefitUsageSnapshot(definition, stateWithTransactions, year,
+    getUserBenefitsData().cardSettings?.[definition.cardId]);
 
   return {
     ...definition,
     ...resolvedUserState,
     enrolled,
     autoEnrolledAt,
+    inferredAirline: definition.id === 'amex-airline-fee'
+      ? inferAirlineSelection(derivedTransactions, getCardTransactions(definition.cardId)?.transactions ?? [], year ?? new Date().getUTCFullYear())
+      : undefined,
     currentUsed: snapshot.currentUsed,
-    periods: snapshot.periods as unknown as Benefit['periods'],
+    creditAmount: snapshot.creditAmount,
+    annualValue: snapshot.annualValue,
+    availableNow: snapshot.availableNow,
+    availabilityNote: snapshot.availabilityNote,
+    shortDescription: snapshot.shortDescription,
+    resetFrequency: snapshot.resetFrequency,
+    periods: snapshot.periods,
     status: snapshot.status,
     claimedElsewhereYear: snapshot.claimedElsewhereYear,
     transactions: snapshot.yearTransactions,

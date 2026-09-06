@@ -35,10 +35,12 @@ function TooltipComponent({ content, children, inline }: TooltipProps) {
 
   const tooltipPortal = visible && position !== null && createPortal(
     <div
+      role="tooltip"
       className="fixed z-50 bg-slate-800 border border-slate-600 shadow-lg rounded text-xs text-white text-left leading-tight px-2 py-1 pointer-events-none whitespace-pre-line"
       style={{
-        left: position.x,
-        bottom: window.innerHeight - position.y
+        left: Math.max(8, Math.min(position.x, window.innerWidth - 328)),
+        bottom: window.innerHeight - position.y + 8,
+        maxWidth: 'min(320px, calc(100vw - 16px))',
       }}
     >
       {content}

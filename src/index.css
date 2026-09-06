@@ -35,6 +35,10 @@ body {
   @apply bg-red-500;
 }
 
+.progress-segment.unavailable {
+  @apply bg-slate-700 border border-slate-500 border-dashed;
+}
+
 .progress-bar-overlay {
   @apply absolute inset-0 flex items-center justify-center pointer-events-none;
 }
@@ -49,6 +53,16 @@ body {
 
 .benefit-card {
   @apply bg-slate-800 border border-slate-700 rounded-lg p-4 transition-all duration-200;
+}
+
+.benefit-card-header {
+  container-type: inline-size;
+}
+
+@container (max-width: 22rem) {
+  .benefit-card-badges {
+    @apply flex-col items-end;
+  }
 }
 
 .benefit-card:hover {
@@ -96,6 +110,10 @@ body {
 
 .badge-status-missed {
   @apply badge bg-red-500 text-white;
+}
+
+.badge-status-unavailable {
+  @apply badge bg-slate-700 text-slate-300;
 }
 
 .badge-enrolled {

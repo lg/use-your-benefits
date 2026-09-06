@@ -14,8 +14,9 @@
       "id": "chase-sapphire-reserve",
       "name": "Chase Sapphire Reserve",
       "annualFeeByYear": {
+        "2024": 550,
         "2025": 550,
-        "2026": 695
+        "2026": 795
       },
       "color": "#117aca"
     }
@@ -25,10 +26,33 @@
       "id": "amex-hotel-credit",
       "cardId": "amex-platinum",
       "name": "Hotel",
-      "shortDescription": "$600 annually ($300 twice per year)",
+      "shortDescription": "$300 each half-year for prepaid FHR or Hotel Collection bookings",
       "creditAmount": 600,
       "resetFrequency": "twice-yearly",
-      "enrollmentRequired": false
+      "enrollmentRequired": false,
+      "policies": [
+        {
+          "startsOn": "2024-01-01",
+          "allowance": 200,
+          "resetFrequency": "annual",
+          "description": "$200 annually for prepaid FHR or Hotel Collection bookings",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum"
+          ]
+        },
+        {
+          "startsOn": "2025-09-18",
+          "allowance": 300,
+          "resetFrequency": "twice-yearly",
+          "description": "$300 each half-year for prepaid FHR or Hotel Collection bookings",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum",
+            "https://www.americanexpress.com/en-us/travel/get-inspired/platinum-card-600-dollar-hotel-credit/"
+          ],
+          "resetOnChange": true,
+          "note": "The Hotel Collection requires at least two consecutive nights."
+        }
+      ]
     },
     {
       "id": "amex-uber-cash",
@@ -38,7 +62,33 @@
       "creditAmount": 200,
       "resetFrequency": "monthly",
       "enrollmentRequired": false,
-      "unsupported": true
+      "unsupported": true,
+      "policies": [
+        {
+          "startsOn": "2024-01-01",
+          "allowance": 15,
+          "resetFrequency": "monthly",
+          "description": "$200 annually ($15 monthly + $20 in December)",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum"
+          ],
+          "monthlyAllowances": [
+            15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            15,
+            35
+          ]
+        }
+      ],
+      "excludeFromTotals": true
     },
     {
       "id": "amex-uber-one",
@@ -47,25 +97,87 @@
       "shortDescription": "$120 annually for Uber One",
       "creditAmount": 120,
       "resetFrequency": "annual",
-      "enrollmentRequired": false
+      "enrollmentRequired": false,
+      "policies": [
+        {
+          "startsOn": "2025-09-18",
+          "allowance": 120,
+          "resetFrequency": "annual",
+          "description": "$120 annually for Uber One",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum",
+            "https://ir.americanexpress.com/news/investor-relations-news/investor-relations-news-details/2025/Theres-Nothing-Like-Platinum-American-Express-Unveils-Updated-U-S--Consumer-and-Business-Platinum-Cards-Each-with-Over-3500-in-Annual-Value/default.aspx"
+          ]
+        }
+      ]
     },
     {
       "id": "amex-airline-fee",
       "cardId": "amex-platinum",
       "name": "Airline Fee",
-      "shortDescription": "$200 annually for one airline",
+      "shortDescription": "$200 annually for one selected airline",
       "creditAmount": 200,
       "resetFrequency": "annual",
-      "enrollmentRequired": true
+      "enrollmentRequired": true,
+      "policies": [
+        {
+          "startsOn": "2024-01-01",
+          "allowance": 200,
+          "resetFrequency": "annual",
+          "description": "$200 annually for one selected airline",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum"
+          ]
+        }
+      ]
     },
     {
       "id": "amex-clear-plus",
       "cardId": "amex-platinum",
       "name": "CLEAR Plus",
-      "shortDescription": "$209 annually for CLEAR Plus",
-      "creditAmount": 209,
+      "shortDescription": "$219 annually for CLEAR Plus",
+      "creditAmount": 219,
       "resetFrequency": "annual",
-      "enrollmentRequired": false
+      "enrollmentRequired": false,
+      "policies": [
+        {
+          "startsOn": "2024-01-01",
+          "allowance": 189,
+          "resetFrequency": "annual",
+          "description": "$189 annually for CLEAR Plus",
+          "sourceUrls": [
+            "https://thepointsguy.com/news/price-increase-clear/"
+          ]
+        },
+        {
+          "startsOn": "2024-08-01",
+          "allowance": 199,
+          "resetFrequency": "annual",
+          "description": "$199 annually for CLEAR Plus",
+          "sourceUrls": [
+            "https://thepointsguy.com/news/price-increase-clear/"
+          ]
+        },
+        {
+          "startsOn": "2025-07-01",
+          "allowance": 209,
+          "resetFrequency": "annual",
+          "description": "$209 annually for CLEAR Plus",
+          "sourceUrls": [
+            "https://www.doctorofcredit.com/clear-pricing-will-increase-to-209-credit-card-rebates-to-increase-as-well/"
+          ]
+        },
+        {
+          "startsOn": "2026-07-01",
+          "allowance": 219,
+          "resetFrequency": "annual",
+          "description": "$219 annually for CLEAR Plus",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/detail/clear-credit/platinum",
+            "https://upgradedpoints.com/news/clear-plus-membership-price-increase-july-2026/"
+          ]
+        }
+      ]
     },
     {
       "id": "amex-resy-credit",
@@ -74,7 +186,19 @@
       "shortDescription": "$400 annually ($100 per quarter)",
       "creditAmount": 400,
       "resetFrequency": "quarterly",
-      "enrollmentRequired": true
+      "enrollmentRequired": true,
+      "policies": [
+        {
+          "startsOn": "2025-09-18",
+          "allowance": 100,
+          "resetFrequency": "quarterly",
+          "description": "$400 annually ($100 per quarter)",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum",
+            "https://ir.americanexpress.com/news/investor-relations-news/investor-relations-news-details/2025/Theres-Nothing-Like-Platinum-American-Express-Unveils-Updated-U-S--Consumer-and-Business-Platinum-Cards-Each-with-Over-3500-in-Annual-Value/default.aspx"
+          ]
+        }
+      ]
     },
     {
       "id": "amex-digital-entertainment",
@@ -83,7 +207,28 @@
       "shortDescription": "$300 annually ($25 monthly)",
       "creditAmount": 300,
       "resetFrequency": "monthly",
-      "enrollmentRequired": true
+      "enrollmentRequired": true,
+      "policies": [
+        {
+          "startsOn": "2024-01-01",
+          "allowance": 20,
+          "resetFrequency": "monthly",
+          "description": "$240 annually ($20 monthly)",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum"
+          ]
+        },
+        {
+          "startsOn": "2025-09-18",
+          "allowance": 25,
+          "resetFrequency": "monthly",
+          "description": "$300 annually ($25 monthly)",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum",
+            "https://ir.americanexpress.com/news/investor-relations-news/investor-relations-news-details/2025/Theres-Nothing-Like-Platinum-American-Express-Unveils-Updated-U-S--Consumer-and-Business-Platinum-Cards-Each-with-Over-3500-in-Annual-Value/default.aspx"
+          ]
+        }
+      ]
     },
     {
       "id": "amex-lululemon",
@@ -92,126 +237,374 @@
       "shortDescription": "$300 annually ($75 per quarter)",
       "creditAmount": 300,
       "resetFrequency": "quarterly",
-      "enrollmentRequired": true
+      "enrollmentRequired": true,
+      "policies": [
+        {
+          "startsOn": "2025-09-18",
+          "allowance": 75,
+          "resetFrequency": "quarterly",
+          "description": "$300 annually ($75 per quarter)",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum",
+            "https://ir.americanexpress.com/news/investor-relations-news/investor-relations-news-details/2025/Theres-Nothing-Like-Platinum-American-Express-Unveils-Updated-U-S--Consumer-and-Business-Platinum-Cards-Each-with-Over-3500-in-Annual-Value/default.aspx"
+          ]
+        }
+      ]
     },
     {
       "id": "amex-walmart-plus",
       "cardId": "amex-platinum",
       "name": "Walmart+",
-      "shortDescription": "$155 annually ($12.95 monthly)",
-      "creditAmount": 155,
+      "shortDescription": "$12.95 monthly plus applicable taxes for Walmart+",
+      "creditAmount": 155.4,
       "resetFrequency": "monthly",
-      "enrollmentRequired": false
+      "enrollmentRequired": false,
+      "policies": [
+        {
+          "startsOn": "2024-01-01",
+          "allowance": 12.95,
+          "resetFrequency": "monthly",
+          "description": "$12.95 monthly plus applicable taxes for Walmart+",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum"
+          ],
+          "note": "Monthly membership only. Applicable taxes are also reimbursed. Annual totals exclude taxes."
+        }
+      ]
     },
     {
       "id": "amex-saks",
       "cardId": "amex-platinum",
       "name": "Saks Fifth Avenue",
-      "shortDescription": "$100 annually ($50 twice per year)",
+      "shortDescription": "$50 each half-year through June 2026",
       "creditAmount": 100,
       "resetFrequency": "twice-yearly",
-      "enrollmentRequired": true
+      "enrollmentRequired": true,
+      "policies": [
+        {
+          "startsOn": "2024-01-01",
+          "allowance": 50,
+          "resetFrequency": "twice-yearly",
+          "description": "$50 each half-year through June 2026",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/view-all/platinum?linknav=en-US-oneAmex-axpSearchResults-2&searchresult=bonus+tracker"
+          ],
+          "endsOn": "2026-06-30"
+        }
+      ]
     },
     {
       "id": "amex-oura",
       "cardId": "amex-platinum",
       "name": "Oura Ring",
-      "shortDescription": "$200 annually for Oura Ring",
+      "shortDescription": "$200 annually for an Oura Ring at ouraring.com",
       "creditAmount": 200,
       "resetFrequency": "annual",
-      "enrollmentRequired": true
+      "enrollmentRequired": true,
+      "policies": [
+        {
+          "startsOn": "2025-09-18",
+          "allowance": 200,
+          "resetFrequency": "annual",
+          "description": "$200 annually for an Oura Ring at ouraring.com",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum",
+            "https://ir.americanexpress.com/news/investor-relations-news/investor-relations-news-details/2025/Theres-Nothing-Like-Platinum-American-Express-Unveils-Updated-U-S--Consumer-and-Business-Platinum-Cards-Each-with-Over-3500-in-Annual-Value/default.aspx"
+          ]
+        }
+      ]
     },
     {
       "id": "amex-equinox",
       "cardId": "amex-platinum",
       "name": "Equinox",
-      "shortDescription": "$300 annually for Equinox",
+      "shortDescription": "$300 annually for an eligible Equinox membership",
       "creditAmount": 300,
       "resetFrequency": "annual",
-      "enrollmentRequired": true
+      "enrollmentRequired": true,
+      "policies": [
+        {
+          "startsOn": "2024-01-01",
+          "allowance": 300,
+          "resetFrequency": "annual",
+          "description": "$300 annually for an eligible Equinox membership",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum"
+          ]
+        }
+      ]
     },
     {
       "id": "amex-global-entry",
       "cardId": "amex-platinum",
       "name": "Global Entry/TSA PreCheck",
-      "shortDescription": "$120 every 4 years",
+      "shortDescription": "$120 Global Entry or up to $85 TSA PreCheck every 4 years",
       "creditAmount": 120,
       "resetFrequency": "4-year",
-      "enrollmentRequired": false
+      "enrollmentRequired": false,
+      "policies": [
+        {
+          "startsOn": "2024-01-01",
+          "allowance": 100,
+          "resetFrequency": "4-year",
+          "description": "$100 Global Entry or up to $85 TSA PreCheck",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum"
+          ],
+          "tsaAllowance": 85
+        },
+        {
+          "startsOn": "2024-10-01",
+          "allowance": 120,
+          "resetFrequency": "4-year",
+          "description": "$120 Global Entry or up to $85 TSA PreCheck every 4 years",
+          "sourceUrls": [
+            "https://global.americanexpress.com/card-benefits/terms/platinum"
+          ],
+          "tsaAllowance": 85
+        }
+      ]
     },
     {
       "id": "csr-travel-credit",
       "cardId": "chase-sapphire-reserve",
       "name": "Travel",
-      "shortDescription": "$300 annually for travel purchases",
+      "shortDescription": "$300 each account anniversary year for travel",
       "creditAmount": 300,
       "resetFrequency": "annual",
-      "enrollmentRequired": false
+      "enrollmentRequired": false,
+      "policies": [
+        {
+          "startsOn": "2024-01-01",
+          "allowance": 300,
+          "resetFrequency": "annual",
+          "description": "$300 each account anniversary year for travel",
+          "sourceUrls": [
+            "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve"
+          ]
+        }
+      ],
+      "resetBasis": "anniversary"
     },
     {
       "id": "csr-global-entry",
       "cardId": "chase-sapphire-reserve",
       "name": "Global Entry/TSA PreCheck",
-      "shortDescription": "$120 every 4 years",
+      "shortDescription": "Up to $120 every 4 years for Global Entry, TSA PreCheck or NEXUS",
       "creditAmount": 120,
       "resetFrequency": "4-year",
-      "enrollmentRequired": false
+      "enrollmentRequired": false,
+      "policies": [
+        {
+          "startsOn": "2024-01-01",
+          "allowance": 100,
+          "resetFrequency": "4-year",
+          "description": "Up to $100 every 4 years for Global Entry, TSA PreCheck or NEXUS",
+          "sourceUrls": [
+            "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve"
+          ]
+        },
+        {
+          "startsOn": "2024-10-01",
+          "allowance": 120,
+          "resetFrequency": "4-year",
+          "description": "Up to $120 every 4 years for Global Entry, TSA PreCheck or NEXUS",
+          "sourceUrls": [
+            "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve"
+          ]
+        }
+      ]
     },
     {
       "id": "csr-edit-hotel",
       "cardId": "chase-sapphire-reserve",
       "name": "The Edit Hotel",
-      "shortDescription": "$500 annually for The Edit bookings",
+      "shortDescription": "$500 annually for The Edit, up to $250 per stay",
       "creditAmount": 500,
       "resetFrequency": "annual",
-      "enrollmentRequired": false
+      "enrollmentRequired": false,
+      "policies": [
+        {
+          "startsOn": "2025-10-26",
+          "allowance": 250,
+          "resetFrequency": "twice-yearly",
+          "description": "$250 each half-year for The Edit",
+          "sourceUrls": [
+            "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
+            "https://media.chase.com/news/the-most-rewarding-cards-are-here"
+          ],
+          "newCardStartsOn": "2025-06-23",
+          "endsOn": "2025-12-31",
+          "maxPerTransaction": 250,
+          "note": "Prepaid stays of at least two nights."
+        },
+        {
+          "startsOn": "2026-01-01",
+          "allowance": 500,
+          "resetFrequency": "annual",
+          "description": "$500 annually for The Edit, up to $250 per stay",
+          "sourceUrls": [
+            "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve"
+          ],
+          "maxPerTransaction": 250,
+          "note": "Prepaid stays of at least two nights. Both credits may be used in the same half-year."
+        }
+      ]
     },
     {
       "id": "csr-dining-exclusive-tables",
       "cardId": "chase-sapphire-reserve",
       "name": "Exclusive Tables Dining",
-      "shortDescription": "$300 annually ($150 twice per year)",
+      "shortDescription": "$300 annually ($150 each half-year) at eligible Exclusive Tables restaurants",
       "creditAmount": 300,
       "resetFrequency": "twice-yearly",
-      "enrollmentRequired": false
+      "enrollmentRequired": false,
+      "policies": [
+        {
+          "startsOn": "2025-10-26",
+          "allowance": 150,
+          "resetFrequency": "twice-yearly",
+          "description": "$300 annually ($150 each half-year) at eligible Exclusive Tables restaurants",
+          "sourceUrls": [
+            "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
+            "https://media.chase.com/news/the-most-rewarding-cards-are-here"
+          ],
+          "newCardStartsOn": "2025-06-23"
+        }
+      ]
     },
     {
       "id": "csr-doordash",
       "cardId": "chase-sapphire-reserve",
       "name": "DoorDash",
-      "shortDescription": "$300 annually ($25 monthly)",
+      "shortDescription": "$25 monthly in DoorDash promos",
       "creditAmount": 300,
       "resetFrequency": "monthly",
       "enrollmentRequired": true,
-      "unsupported": true
+      "unsupported": true,
+      "policies": [
+        {
+          "startsOn": "2024-01-01",
+          "allowance": 5,
+          "resetFrequency": "monthly",
+          "description": "$5 monthly DoorDash credit",
+          "sourceUrls": [
+            "https://media.chase.com/news/chase-doordash-benefits"
+          ]
+        },
+        {
+          "startsOn": "2024-08-01",
+          "allowance": 25,
+          "resetFrequency": "monthly",
+          "description": "$25 monthly in DoorDash credits and grocery promos",
+          "sourceUrls": [
+            "https://media.chase.com/news/chase-doordash-benefits"
+          ]
+        },
+        {
+          "startsOn": "2025-02-01",
+          "allowance": 25,
+          "resetFrequency": "monthly",
+          "description": "$25 monthly in DoorDash promos",
+          "sourceUrls": [
+            "https://media.chase.com/news/chase-doordash-benefits",
+            "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve"
+          ],
+          "endsOn": "2027-12-31",
+          "note": "One $5 restaurant promo and two $10 non-restaurant promos. Requires DashPass activation."
+        }
+      ]
     },
     {
       "id": "csr-lyft",
       "cardId": "chase-sapphire-reserve",
       "name": "Lyft",
-      "shortDescription": "$120 annually ($10 monthly)",
+      "shortDescription": "$10 monthly in Lyft app credits",
       "creditAmount": 120,
       "resetFrequency": "monthly",
       "enrollmentRequired": true,
-      "unsupported": true
+      "unsupported": true,
+      "policies": [
+        {
+          "startsOn": "2025-04-01",
+          "allowance": 10,
+          "resetFrequency": "monthly",
+          "description": "$10 monthly in Lyft app credits",
+          "sourceUrls": [
+            "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
+            "https://www.lyft.com/blog/posts/lyft-deepens-its-partnership-with-chase"
+          ],
+          "endsOn": "2027-09-30"
+        }
+      ]
     },
     {
       "id": "csr-peloton",
       "cardId": "chase-sapphire-reserve",
       "name": "Peloton",
-      "shortDescription": "$120 annually for Peloton",
+      "shortDescription": "$120 annually ($10 monthly) for eligible Peloton memberships",
       "creditAmount": 120,
-      "resetFrequency": "annual",
-      "enrollmentRequired": true
+      "resetFrequency": "monthly",
+      "enrollmentRequired": true,
+      "policies": [
+        {
+          "startsOn": "2025-10-26",
+          "allowance": 10,
+          "resetFrequency": "monthly",
+          "description": "$120 annually ($10 monthly) for eligible Peloton memberships",
+          "sourceUrls": [
+            "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
+            "https://media.chase.com/news/the-most-rewarding-cards-are-here"
+          ],
+          "newCardStartsOn": "2025-06-23",
+          "endsOn": "2027-12-31"
+        }
+      ]
     },
     {
       "id": "csr-stubhub",
       "cardId": "chase-sapphire-reserve",
       "name": "StubHub/viagogo",
-      "shortDescription": "$300 annually ($150 twice per year)",
+      "shortDescription": "$300 annually ($150 each half-year) at StubHub or viagogo",
       "creditAmount": 300,
       "resetFrequency": "twice-yearly",
-      "enrollmentRequired": true
+      "enrollmentRequired": true,
+      "policies": [
+        {
+          "startsOn": "2025-10-26",
+          "allowance": 150,
+          "resetFrequency": "twice-yearly",
+          "description": "$300 annually ($150 each half-year) at StubHub or viagogo",
+          "sourceUrls": [
+            "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
+            "https://media.chase.com/news/the-most-rewarding-cards-are-here"
+          ],
+          "newCardStartsOn": "2025-06-23",
+          "endsOn": "2027-12-31"
+        }
+      ]
+    },
+    {
+      "id": "csr-select-hotels",
+      "cardId": "chase-sapphire-reserve",
+      "name": "Select Hotels",
+      "shortDescription": "$250 for select Chase Travel hotels in 2026",
+      "creditAmount": 250,
+      "resetFrequency": "annual",
+      "enrollmentRequired": false,
+      "policies": [
+        {
+          "startsOn": "2026-01-01",
+          "allowance": 250,
+          "resetFrequency": "annual",
+          "description": "$250 for select Chase Travel hotels in 2026",
+          "sourceUrls": [
+            "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve"
+          ],
+          "endsOn": "2026-12-31",
+          "note": "Prepaid stays of at least two nights at eligible IHG, Montage, Pendry, Omni, Virgin, Minor or Pan Pacific hotels."
+        }
+      ]
     }
   ]
 }

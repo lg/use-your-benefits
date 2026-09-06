@@ -40,6 +40,7 @@ const AMEX_PLATINUM_PATTERNS: BenefitPattern[] = [
 // Chase Sapphire Reserve credit patterns
 // Based on actual credit descriptions from Chase statements (e.g., "TRAVEL CREDIT $300/YEAR")
 const CHASE_SAPPHIRE_PATTERNS: BenefitPattern[] = [
+  { pattern: /(?:select\s*hotels?|chase\s*travel\s*hotels?)\s*credit/i, benefitId: 'csr-select-hotels' },
   { pattern: /travel\s*credit/i, benefitId: 'csr-travel-credit' },
   { pattern: /the\s*edit/i, benefitId: 'csr-edit-hotel' },
   { pattern: /exclusive\s*tables/i, benefitId: 'csr-dining-exclusive-tables' },

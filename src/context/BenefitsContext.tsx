@@ -1,11 +1,14 @@
 import { createContext, useContext, type ReactNode } from 'react';
-import type { BenefitDefinition } from '@lib/types';
+import type { BenefitDefinition, CardSettings } from '@lib/types';
 
 interface BenefitsContextValue {
   definitions: BenefitDefinition[];
   selectedYear: number;
   onToggleEnrollment: (id: string) => void;
   onToggleVisibility: (id: string) => void;
+  onAnnualResetDateChange: (id: string, date: string) => void;
+  onCardSettingsChange: (id: string, settings: CardSettings) => void;
+  cardSettings: Record<string, CardSettings>;
 }
 
 const BenefitsContext = createContext<BenefitsContextValue | null>(null);

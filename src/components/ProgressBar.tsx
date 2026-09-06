@@ -12,6 +12,7 @@ interface ProgressBarProps {
 const UNSUPPORTED_BENEFIT_LABEL = 'Unsupported at this time';
 
 const segmentClass = (segment: ProgressSegment) => {
+  if (segment.status === 'unavailable') return 'progress-segment unavailable';
   if (segment.status === 'completed') return 'progress-segment completed';
   if (segment.status === 'missed') return 'progress-segment missed';
   // pending status: yellow if current, gray if future
@@ -27,11 +28,11 @@ const buildTooltipContent = (segment: ProgressSegment): ReactNode => {
   // For multi-year benefits (e.g., 4-year Global Entry), include year in transaction dates
   const includeYear = segment.isMultiYear ?? false;
 
-  if (transactions.length === 0) {
+  if (segment.status === 'unavailable') {
     return (
       <div>
         <div className="font-medium">{dateLabel}</div>
-        <div className="text-slate-400 text-[10px] mt-1">No transactions</div>
+        <div className="text-slate-300 mt-1">{segment.unavailableReason}</div>
       </div>
     );
   }
@@ -39,7 +40,10 @@ const buildTooltipContent = (segment: ProgressSegment): ReactNode => {
   return (
     <div>
       <div className="font-medium">{dateLabel}</div>
+      <div className="text-slate-300 mt-1">Allowance: ${segmentValue.toFixed(2)}</div>
+      {segment.policyNote && <div className="text-slate-400 mt-1">{segment.policyNote}</div>}
       <div className="border-t border-slate-600 my-1" />
+      {transactions.length === 0 && <div className="text-slate-400 text-[10px]">No transactions</div>}
       {transactions.map((tx, i) => (
         <div key={i} className="flex justify-between gap-4 text-[10px]">
           <span className="text-slate-300">{formatDate(tx.date, { includeYear })} {tx.description}</span>
@@ -49,8 +53,10 @@ const buildTooltipContent = (segment: ProgressSegment): ReactNode => {
       <div className="border-t border-slate-600 my-1" />
       <div className="flex justify-between gap-4 text-[10px] font-medium">
         <span>Total</span>
-        <span>${usedAmount.toFixed(2)} / ${segmentValue.toFixed(0)}</span>
+        <span>${usedAmount.toFixed(2)} / ${segmentValue.toFixed(2)}</span>
       </div>
+      {segment.isCurrent && <div className="text-amber-300 mt-1">Still available: ${(segment.availableNow ?? 0).toFixed(2)}</div>}
+      <div className="text-slate-400 text-[10px] mt-1">Completed at 50% of the allowance.</div>
     </div>
   );
 };
@@ -80,7 +86,7 @@ function ProgressBarComponent({
               )}
               {segment && segment.isCurrent && segment.timeProgress !== undefined && segment.daysLeft !== undefined ? (
                 <div
-                  className="absolute -top-1 -bottom-1 w-1 bg-white border border-slate-800 rounded-sm"
+                  className="progress-time-marker absolute -top-1 -bottom-1 w-1 bg-white border border-slate-800 rounded-sm"
                   style={{ left: `${segment.timeProgress}%` }}
                 >
                   {isUnsupported ? (
@@ -89,8 +95,8 @@ function ProgressBarComponent({
                     <Tooltip
                       content={
                         <div>
-                          <div>{Math.round(segment.timeProgress)}% complete</div>
-                          <div>{segment.daysLeft} days left</div>
+                          <div>{Math.round(segment.timeProgress)}% of period elapsed</div>
+                          <div>{segment.daysLeft} days left in period</div>
                         </div>
                       }
                     >

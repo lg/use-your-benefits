@@ -9,7 +9,7 @@ This document provides instructions for AI agents working on the Use Your Benefi
 3. **Static JSON for definitions** - Benefit definitions stored in `public/benefits.json`
 4. **localStorage for user data** - User state (usage, enrollment, ignored) stored in browser localStorage
 5. **UTC timezone** - All date handling assumes UTC
-6. **Calendar year resets** - All benefits reset on a calendar year basis
+6. **Dated policies** - Use the benefit's effective dates and reset frequency. Chase Travel follows the account anniversary date supplied by the user.
 7. **Single package.json** - Keep dependencies and scripts at the repo root
 8. **No automatic commits** - Never commit changes unless explicitly instructed by the user
 9. **Git commands require explicit permission** - Never run `git commit`, `git push`, or any git command that modifies the repository without the user explicitly asking you to do so
@@ -117,9 +117,12 @@ use-your-benefits/
 
 ### Benefit Status States
 
-- **pending**: Benefit is active, not fully used, hasn't expired
-- **completed**: Full credit amount has been used
-- **missed**: Benefit expired without being fully used
+- **pending**: Benefit has not reached the 50% usage target and has not expired
+- **completed**: At least 50% of the period's allowance has been used
+- **missed**: Benefit expired without reaching the 50% usage target
+- **unavailable**: No allowance applies to the period. Show gray and exclude from completion and missed counts.
+
+Still available counts unused dollars in active periods, even after the 50% target is met. Exclude benefits with `excludeFromTotals` from every aggregate. Dated allowance rules and their sources live in each benefit's `policies` array in `public/benefits.json`.
 
 ### Reset Frequencies
 
@@ -137,19 +140,19 @@ use-your-benefits/
 
 ### localStorage Schema
 
-User data is stored under the key `user-benefits`:
+User data is stored under the key `use-your-benefits`. Calculated amounts and statuses are derived at runtime:
 
 ```typescript
 {
   benefits: {
     [benefitId: string]: {
-      currentUsed: number;
       enrolled: boolean;
-      status: 'pending' | 'completed' | 'missed';
       ignored: boolean;
-      periods?: Record<string, { usedAmount: number; status: string }>;
+      annualResetDate?: string;
     }
-  }
+  },
+  cardSettings?: Record<string, { newCardDuringRefresh?: boolean }>,
+  cardTransactions?: Record<string, { transactions: StoredTransaction[]; importedAt: string }>
 }
 ```
 

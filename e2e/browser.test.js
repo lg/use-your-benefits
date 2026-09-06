@@ -5,6 +5,10 @@ import { test, expect } from '@playwright/test';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const chaseNoCreditsCsv = path.join(__dirname, 'fixtures', 'chase-no-credits.csv');
 
+test.beforeEach(async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-01-15T12:00:00Z'));
+});
+
 test.describe('Dashboard', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
@@ -44,9 +48,10 @@ test.describe('Benefit Cards', () => {
     await expect(page.getByText('$200 annually ($15 monthly + $20 in December)')).toBeVisible();
   });
 
-  test('shows progress bar', async ({ page }) => {
+  test('shows excluded Uber Cash without calculated usage', async ({ page }) => {
     const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
-    await expect(uberCard.getByText(/\$\d+ \/ \$200/)).toBeVisible();
+    await expect(uberCard.getByText('Excluded from all calculations')).toBeVisible();
+    await expect(uberCard.getByText(/\$\d+ \/ \$200/)).toHaveCount(0);
   });
 
   test('shows status badge', async ({ page }) => {
@@ -166,7 +171,7 @@ test.describe('Transaction-based Progress', () => {
     await expect(uberCard.locator('.progress-segment.current')).toHaveCount(1);
   });
 
-  test('benefit with sufficient transactions shows completed segment', async ({ page }) => {
+  test('Uber Cash remains excluded even when a matching transaction is imported', async ({ page }) => {
     await page.evaluate(() => {
       const userData = {
         benefits: {
@@ -189,7 +194,8 @@ test.describe('Transaction-based Progress', () => {
     await page.reload();
 
     const uberCard = page.locator('.benefit-card', { hasText: 'Uber Cash' });
-    await expect(uberCard.locator('.progress-segment.completed')).toHaveCount(1);
+    await expect(uberCard.locator('.progress-segment.completed')).toHaveCount(0);
+    await expect(uberCard.locator('.progress-segment.unavailable')).toHaveCount(12);
     await expect(uberCard.locator('.progress-bar-segments-obscured')).toHaveCount(1);
     await expect(uberCard.getByText('Unsupported at this time')).toBeVisible();
   });
@@ -285,7 +291,7 @@ test.describe('Past Year Segments', () => {
 
     for (let i = 0; i < segmentCount; i++) {
       const segment = allSegments.nth(i);
-      await expect(segment).toHaveClass(/(completed|missed)/);
+      await expect(segment).toHaveClass(/(completed|missed|unavailable)/);
     }
   });
 

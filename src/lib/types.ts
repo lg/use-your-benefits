@@ -7,13 +7,19 @@ export interface CreditCard {
   color: string;
 }
 
-export type BenefitStatus = 'pending' | 'completed' | 'missed';
+export type BenefitStatus = 'pending' | 'completed' | 'missed' | 'unavailable';
 
 export interface StoredTransaction {
   date: string;
   description: string;
   amount: number;
   type?: string; // Transaction type (e.g., "Adjustment", "Sale", "Return" for Chase)
+}
+
+export interface InferredAirline {
+  name: string;
+  creditCount: number;
+  latestCreditDate: string;
 }
 
 // Period definition for runtime-generated periods
@@ -31,15 +37,40 @@ export interface BenefitPeriod extends BenefitPeriodDefinition {
   isCurrent?: boolean;
   timeProgress?: number;
   daysLeft?: number;
+  allowance?: number;
+  availableNow?: number;
+  policyNote?: string;
+  unavailableReason?: string;
+  sourceUrls?: string[];
 }
 
 // User-specific state stored in localStorage
 export interface BenefitUserState {
   enrolled: boolean;
   ignored: boolean;
+  annualResetDate?: string;
+}
+
+export interface CardSettings {
+  newCardDuringRefresh?: boolean;
 }
 
 export type ResetFrequency = 'annual' | 'twice-yearly' | 'quarterly' | 'monthly' | '4-year';
+
+export interface BenefitPolicy {
+  startsOn: string;
+  endsOn?: string;
+  newCardStartsOn?: string;
+  allowance: number;
+  resetFrequency: ResetFrequency;
+  description: string;
+  note?: string;
+  sourceUrls: string[];
+  resetOnChange?: boolean;
+  monthlyAllowances?: number[];
+  maxPerTransaction?: number;
+  tsaAllowance?: number;
+}
 
 export interface BenefitDefinition {
   id: string;
@@ -50,6 +81,9 @@ export interface BenefitDefinition {
   resetFrequency: ResetFrequency;
   enrollmentRequired: boolean;
   unsupported?: boolean;
+  excludeFromTotals?: boolean;
+  resetBasis?: 'calendar' | 'anniversary';
+  policies?: BenefitPolicy[];
 }
 
 // Full benefit with all computed fields (definition + user state + derived)
@@ -64,6 +98,10 @@ export type Benefit = BenefitDefinition &
     card?: CreditCard;
     claimedElsewhereYear?: number;
     autoEnrolledAt?: string;
+    annualValue?: number;
+    availableNow?: number | null;
+    availabilityNote?: string;
+    inferredAirline?: InferredAirline;
   };
 
 
@@ -83,6 +121,7 @@ export interface UserBenefitsData {
   benefits: Record<string, BenefitUserState>;
   importNotes?: Record<string, string>;
   cardTransactions?: Record<string, CardTransactionStore>;
+  cardSettings?: Record<string, CardSettings>;
 }
 
 
@@ -95,6 +134,9 @@ export interface Stats {
   ytdTotalPeriods: number;
   pendingCount: number;
   missedCount: number;
+  availableValue: number;
+  unknownAvailabilityCount: number;
+  currentPeriodCount: number;
 }
 
 
@@ -107,7 +149,7 @@ export interface TransactionStatus {
 // Progress segment type used by UI components
 export interface ProgressSegment {
   id: string;
-  status: 'pending' | 'completed' | 'missed';
+  status: BenefitStatus;
   label?: string;
   timeProgress?: number;
   startDate?: string;
@@ -118,4 +160,8 @@ export interface ProgressSegment {
   usedAmount?: number;
   segmentValue?: number;
   isMultiYear?: boolean; // True for 4-year benefits
+  availableNow?: number;
+  policyNote?: string;
+  unavailableReason?: string;
+  sourceUrls?: string[];
 }
